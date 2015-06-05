@@ -1,4 +1,4 @@
-var PubSub = (function () {
+var LiveEvents = (function () {
     'use strict';
 
     var messageHandlers = {};

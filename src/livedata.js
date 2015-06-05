@@ -7,7 +7,7 @@ var LiveData = (function () {
 
     LiveApi.init();
 
-    PubSub.on('message', messageFunc);
+    LiveEvents.on('message', messageFunc);
 
     LiveApi.send({portfolio:1});
     LiveApi.send({offerings:{}});
