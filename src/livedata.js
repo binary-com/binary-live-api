@@ -12,3 +12,5 @@ var LiveData = (function () {
     LiveApi.send({portfolio:1});
     LiveApi.send({offerings:{}});
 })();
+
+module.exports = LiveData;

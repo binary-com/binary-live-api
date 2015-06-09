@@ -22,3 +22,5 @@ var LiveEvents = (function () {
         on: on
     };
 })();
+
+module.exports = LiveEvents;
