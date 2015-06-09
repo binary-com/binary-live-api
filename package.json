@@ -1,11 +1,8 @@
 {
     "name": "binary-live-api",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "JS library to consume Binary.com WebSocket API",
     "main": "lib/binary-live-api.js",
-    "dependencies": {
-        "gulp": "^3.9.0"
-    },
     "devDependencies": {
         "gulp": "^3.9.0",
         "gulp-concat": "^2.5.2"
@@ -15,12 +12,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/borisyankov/binary-live-api.git"
+        "url": "git+https://github.com/binary-com/binary-live-api.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/borisyankov/binary-live-api/issues"
+        "url": "https://github.com/binary-com/binary-live-api/issues"
     },
-    "homepage": "https://github.com/borisyankov/binary-live-api#readme"
+    "homepage": "https://github.com/binary-com/binary-live-api#readme"
 }

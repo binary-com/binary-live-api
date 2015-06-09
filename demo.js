@@ -2,7 +2,7 @@ LiveEvents.on('message', function(data) {
     console.log(data);
 });
 
-LiveApi.send({portfolio:1});
+LiveApi.send({ portfolio: 1 });
 
 /*
     LiveEvents.on('ticks', ticksFunc);
