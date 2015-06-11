@@ -47,5 +47,3 @@ var LiveApi = (function () {
         send: send,
     };
 })();
-
-module.exports = LiveApi;
