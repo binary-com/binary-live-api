@@ -1,14 +1,17 @@
 var LiveData = (function () {
     'use strict';
 
-    var messageFunc = function(data) {
-//        console.log(data);
+    LiveEvents.on('*', function(data) {
+        console.log(data);
+    });
+
+    var init = function () {
+        LiveApi.init();
+        LiveApi.send({ portfolio: 1 });
+        LiveApi.send({ offerings: {} });
     };
 
-    LiveApi.init();
-
-    LiveEvents.on('message', messageFunc);
-
-    LiveApi.send({portfolio:1});
-    LiveApi.send({offerings:{}});
+    return {
+        init: init
+    };
 })();
