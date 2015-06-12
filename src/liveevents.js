@@ -7,13 +7,13 @@ var LiveEvents = (function() {
 
     var emitSingle = function (msgName, data) {
         messageHandlers[msgName].forEach(function(handler) {
-            handler(data);
+            handler(JSON.parse(data));
         });
     };
 
     var emitWildcard = function (data) {
         messageHandlers['*'].forEach(function(handler) {
-            handler(data);
+            handler(JSON.parse(data));
         });
     };
 
