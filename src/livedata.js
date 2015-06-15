@@ -4,14 +4,11 @@ var LiveData = (function () {
     var Ticks = (function() {
 
         var ticks = {};
-        var sampleTickData = {
-
-        }
 
         var appendData = function (data) {
             var symbol = data.ticks;
 
-            if (!ticks[symbol]) ticks[symbol] = {};
+            if (!ticks[symbol]) ticks[symbol] = { history: [] };
 
             ticks[symbol].history.push({
                 epoch: data.epoch,
@@ -24,7 +21,11 @@ var LiveData = (function () {
         };
 
         var current = function (symbol) {
-            return ticks[symbol].history[ticks[symbol].history.length - 1];
+            var lastTick = ticks[symbol].history[ticks[symbol].history.length - 1];
+
+            lastTick.diff = diff(symbol);
+
+            return lastTick;
         };
 
         var diff = function (symbol) {
@@ -58,9 +59,9 @@ var LiveData = (function () {
 
     LiveEvents.on('message', function(data) {
         if (data.offerings) {
-            Ticks.appendData(data);
+            offeringsHandler(data);
         } else if (data.ticks) {
-            ticksHandler(data);
+            Ticks.appendData(data);
         } else if (data.portfolio) {
             portfolioHandler(data);
         }
