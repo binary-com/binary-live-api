@@ -1,5 +1,7 @@
-module.exports = {
-    LiveEvents: require('./LiveEvents'),
-    LiveApi: require('./LiveApi'),
-    LiveData: require('./LiveData')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    module.exports = {
+        LiveEvents: LiveEvents,
+        LiveApi: LiveApi,
+        LiveData: LiveData
+    };
 }

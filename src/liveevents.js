@@ -1,19 +1,34 @@
-var LiveEvents = (function () {
+var LiveEvents = (function() {
     'use strict';
 
-    var messageHandlers = {};
+    var messageHandlers = {
+        '*': []
+    };
 
-    var emit = function(msgName, data) {
-
-        if (!messageHandlers[msgName]) return;
-
+    var emitSingle = function (msgName, data) {
         messageHandlers[msgName].forEach(function(handler) {
-            handler(data);
+            handler(JSON.parse(data));
         });
     };
 
-    var on = function(msgName, callback) {
+    var emitWildcard = function (data) {
+        messageHandlers['*'].forEach(function(handler) {
+            handler(JSON.parse(data));
+        });
+    };
+
+    var emit = function (msgName, data) {
+
+        if (!messageHandlers[msgName]) return;
+
+        emitSingle(msgName, data);
+        emitWildcard(data);
+    };
+
+    var on = function (msgName, callback) {
+
         if (!messageHandlers[msgName]) messageHandlers[msgName] = [];
+
         messageHandlers[msgName].push(callback);
     };
 

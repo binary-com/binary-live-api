@@ -31,7 +31,7 @@ var LiveApi = (function () {
         ws.onclose = onClose;
         ws.onerror = onError;
         ws.onmessage = onMessage;
-    }
+    };
 
     var send = function(data) {
         if (ws && ws.readystate === 1) {

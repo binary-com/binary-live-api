@@ -1,9 +1,17 @@
 LiveEvents.on('message', function(data) {
-    console.log(data);
+    console.log('first event', data);
 });
 
-LiveApi.send({ portfolio: 1 });
+// you can add multiple even handlers
+LiveEvents.on('message', function(data) {
+    console.log('second event', data);
+});
 
+
+//LiveApi.send({ portfolio: 1 });
+
+
+LiveData.init();
 /*
     LiveEvents.on('ticks', ticksFunc);
     LiveEvents.on('active_symbols', activeSymbolsFunc);
