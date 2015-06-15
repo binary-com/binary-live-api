@@ -5,6 +5,10 @@ var LiveData = (function () {
 
         var ticks = {};
 
+        var symbols = function() {
+            return Object.keys(ticks);
+        };
+
         var appendData = function (data) {
             var symbol = data.ticks;
 
@@ -38,6 +42,7 @@ var LiveData = (function () {
         };
 
         return {
+            symbols: symbols,
             appendData: appendData,
             history: history,
             current: current,
@@ -55,8 +60,6 @@ var LiveData = (function () {
 
     };
 
-    LiveApi.init();
-
     LiveEvents.on('message', function(data) {
         if (data.offerings) {
             offeringsHandler(data);
@@ -68,6 +71,9 @@ var LiveData = (function () {
     });
 
     var init = function() {
+
+        LiveApi.init();
+
         LiveApi.send({portfolio:1});
         LiveApi.send({offerings:{}});
         LiveApi.send({ ticks: 'R_100' });
