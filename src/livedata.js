@@ -66,6 +66,10 @@ var LiveData = (function () {
 
     };
 
+    var activeSymbolsHandler = function(data) {
+
+    };
+
     LiveEvents.on('message', function(data) {
         if (data.offerings) {
             offeringsHandler(data);
@@ -73,6 +77,8 @@ var LiveData = (function () {
             Ticks.appendData(data);
         } else if (data.portfolio) {
             portfolioHandler(data);
+        } else if (data.active_symbols) {
+            activeSymbolsHandler(data);
         }
     });
 
@@ -80,10 +86,9 @@ var LiveData = (function () {
 
         LiveApi.init();
 
-        LiveApi.send({portfolio:1});
-        LiveApi.send({offerings:{}});
-        LiveApi.send({ ticks: 'R_100' });
-        LiveApi.send({ ticks: 'frxXPDUSD' });
+        LiveApi.getPortfolio(1);
+        LiveApi.getOfferings();
+        LiveApi.trackSymbols(['R_100', 'frxXPDUSD']);
     }
 
     return {
