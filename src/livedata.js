@@ -56,18 +56,18 @@ var LiveData = (function () {
         };
     })();
 
-    var offerings, ticks, portfolio;
+    var offerings, portfolio, activeSymbols;
 
     var offeringsHandler = function(data) {
         offerings = data.offerings.offerings;
     };
 
     var portfolioHandler = function(data) {
-
+        portfolio = portfolio_stat;
     };
 
     var activeSymbolsHandler = function(data) {
-
+        activeSymbols = data.active_symbols;
     };
 
     LiveEvents.on('message', function(data) {
@@ -75,7 +75,7 @@ var LiveData = (function () {
             offeringsHandler(data);
         } else if (data.ticks) {
             Ticks.appendData(data);
-        } else if (data.portfolio) {
+        } else if (data.portfolio_stat) {
             portfolioHandler(data);
         } else if (data.active_symbols) {
             activeSymbolsHandler(data);
@@ -86,9 +86,10 @@ var LiveData = (function () {
 
         LiveApi.init();
 
-        LiveApi.getPortfolio(1);
-        LiveApi.getOfferings();
-        LiveApi.trackSymbols(['R_100', 'frxXPDUSD']);
+        LiveApi.getPortfolio();
+        //LiveApi.getOfferings();
+        //LiveApi.getActiveSymbolsByName();
+        //LiveApi.trackSymbols(['R_100', 'frxXPDUSD', 'USATNT', 'frxXPTEUR']);
     }
 
     return {
