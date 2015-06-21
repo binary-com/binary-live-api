@@ -50,10 +50,8 @@ var LiveApi = (function () {
     };
 
     var send = function(data) {
-        console.log('isready', isReady(), ws, ws.readyState);
         if (isReady()) {
             ws.send(JSON.stringify(data));
-            console.log('sending ', data);
         } else {
             bufferedSends.push(data);
         }
@@ -71,7 +69,7 @@ var LiveApi = (function () {
         send({ authorize: token });
     };
 
-    var getOfferings = function(id) {
+    var getOfferings = function() {
         send({ offerings: {} });
     };
 
@@ -87,7 +85,7 @@ var LiveApi = (function () {
         send({ forget: symbol });
     };
 
-    var untrackSymbols = function(symbol) {
+    var untrackSymbols = function(symbols) {
         symbols.forEach(untrackSymbols);
     };
 
@@ -132,6 +130,7 @@ var LiveApi = (function () {
         status: status,
         send: send,
         execute: execute,
+        authorize: authorize,
 
         getOfferings: getOfferings,
         trackSymbol: trackSymbol,

@@ -49,6 +49,7 @@ var LiveData = (function () {
     return {
         init: init,
         offerings: offerings,
+        activeSymbols: activeSymbols,
         Ticks: Ticks,
         portfolio: portfolio,
         trackActiveSymbols: trackActiveSymbols
