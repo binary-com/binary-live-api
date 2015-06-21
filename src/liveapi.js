@@ -4,12 +4,28 @@ var LiveApi = (function () {
     var ws,
         status = 'unknown',
         apiUrl = 'wss://ws.binary.com/websockets/contracts',
-        bufferedSends = [];
+        bufferedSends = [],
+        bufferedExecutes = [];
 
-    var onOpen = function() {
+    var isReady = function() {
+        return ws && ws.readyState === 1;
+    };
+
+    var sendBufferedSends = function() {
         while (bufferedSends.length > 0) {
             ws.send(JSON.stringify(bufferedSends.shift()));
         }
+    };
+
+    var executeBufferedExecutes = function() {
+        while (bufferedExecutes.length > 0) {
+            bufferedExecutes.shift()();
+        }
+    };
+
+    var onOpen = function() {
+        sendBufferedSends();
+        executeBufferedExecutes();
     };
 
     var onClose = function() {
@@ -34,11 +50,25 @@ var LiveApi = (function () {
     };
 
     var send = function(data) {
-        if (ws && ws.readystate === 1) {
+        console.log('isready', isReady(), ws, ws.readyState);
+        if (isReady()) {
             ws.send(JSON.stringify(data));
+            console.log('sending ', data);
         } else {
             bufferedSends.push(data);
         }
+    };
+
+    var execute = function(func) {
+        if (isReady()) {
+            func();
+        } else {
+            bufferedExecutes.push(func);
+        }
+    };
+
+    var authorize = function(token) {
+        send({ authorize: token });
     };
 
     var getOfferings = function(id) {
@@ -101,6 +131,7 @@ var LiveApi = (function () {
         init: init,
         status: status,
         send: send,
+        execute: execute,
 
         getOfferings: getOfferings,
         trackSymbol: trackSymbol,
