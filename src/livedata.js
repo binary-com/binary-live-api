@@ -48,6 +48,7 @@ var LiveData = (function () {
 
     return {
         init: init,
+        on: LiveEvents.on,
         offerings: function () { return offerings; },
         activeSymbols: function () { return activeSymbols; },
         portfolio: function () { return portfolio; },
