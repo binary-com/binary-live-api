@@ -1,5 +1,5 @@
 LiveEvents.on('message', function(data) {
-    console.log(data);
+    console.log('message', data, LiveData);
 });
 
 LiveData.init();

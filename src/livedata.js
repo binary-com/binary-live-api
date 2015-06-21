@@ -8,7 +8,7 @@ var LiveData = (function () {
     };
 
     var portfolioHandler = function(data) {
-        portfolio = portfolio_stat;
+        portfolio = data.portfolio_stats;
     };
 
     var activeSymbolsHandler = function(data) {
@@ -20,11 +20,11 @@ var LiveData = (function () {
             offeringsHandler(data);
         } else if (data.ticks) {
             Ticks.appendData(data);
-        } else if (data.portfolio_stat) {
+        } else if (data.portfolio_stats) {
             portfolioHandler(data);
         } else if (data.active_symbols) {
             activeSymbolsHandler(data);
-            trackActiveSymbols();
+            //trackActiveSymbols();
         }
     });
 
@@ -48,10 +48,10 @@ var LiveData = (function () {
 
     return {
         init: init,
-        offerings: offerings,
-        activeSymbols: activeSymbols,
+        offerings: function () { return offerings; },
+        activeSymbols: function () { return activeSymbols; },
+        portfolio: function () { return portfolio; },        
         Ticks: Ticks,
-        portfolio: portfolio,
         trackActiveSymbols: trackActiveSymbols
     };
 })();
