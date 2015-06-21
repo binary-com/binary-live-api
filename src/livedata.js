@@ -24,7 +24,7 @@ var LiveData = (function () {
             portfolioHandler(data);
         } else if (data.active_symbols) {
             activeSymbolsHandler(data);
-            //trackActiveSymbols();
+            trackActiveSymbols();
         }
     });
 
@@ -50,7 +50,7 @@ var LiveData = (function () {
         init: init,
         offerings: function () { return offerings; },
         activeSymbols: function () { return activeSymbols; },
-        portfolio: function () { return portfolio; },        
+        portfolio: function () { return portfolio; },
         Ticks: Ticks,
         trackActiveSymbols: trackActiveSymbols
     };
