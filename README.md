@@ -88,7 +88,7 @@ LiveApi.sellContract(contractId, price);
 ## LiveData
 
 ```
-LiveData.init();
+LiveData.init(apiToken);
 ```
 
 ```

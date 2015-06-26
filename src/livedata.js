@@ -37,9 +37,9 @@ var LiveData = (function () {
         LiveApi.trackSymbols(list);
     };
 
-    var init = function() {
+    var init = function(apiToken) {
 
-        LiveApi.init();
+        LiveApi.init(apiToken);
 
         LiveApi.getPortfolio();
         LiveApi.getOfferings();

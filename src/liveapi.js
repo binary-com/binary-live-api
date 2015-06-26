@@ -39,14 +39,16 @@ var LiveApi = (function () {
         LiveEvents.emit(e.type, e.data);
     };
 
-    var init = function(customApiUrl) {
+    var init = function(apiToken) {
 
-        ws = new WebSocket(customApiUrl || apiUrl);
+        ws = new WebSocket(apiUrl);
 
         ws.onopen = onOpen;
         ws.onclose = onClose;
         ws.onerror = onError;
         ws.onmessage = onMessage;
+
+        authorize(apiToken);
     };
 
     var send = function(data) {
