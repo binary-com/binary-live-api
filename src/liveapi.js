@@ -91,6 +91,10 @@ var LiveApi = (function () {
         symbols.forEach(untrackSymbols);
     };
 
+    var getMarketHistory = function(symbol, start, end, count) {
+        send({ ticks: symbol, end: end });
+    };
+
     var getContractsForSymbol = function(symbol) {
         send({ contracts_for: symbol });
     };
@@ -139,6 +143,7 @@ var LiveApi = (function () {
         trackSymbols: trackSymbols,
         untrackSymbol: untrackSymbol,
         untrackSymbols: untrackSymbols,
+        getMarketHistory: getMarketHistory,
         getActiveSymbolsByName: getActiveSymbolsByName,
         getActiveSymbolsBySymbol: getActiveSymbolsBySymbol,
         getContractsForSymbol: getContractsForSymbol,

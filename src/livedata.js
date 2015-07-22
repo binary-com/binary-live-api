@@ -41,9 +41,6 @@ var LiveData = (function () {
 
         LiveApi.init(apiToken);
 
-        LiveApi.getPortfolio();
-        LiveApi.getOfferings();
-        LiveApi.getActiveSymbolsByName();
     };
 
     return {
