@@ -1,39 +1,35 @@
-var LiveEvents = (function() {
-    'use strict';
+export default class LiveEvents {
 
-    var messageHandlers = {
-        '*': []
-    };
+    constructor() {
+        this.messageHandlers = {
+            '*': []
+        };
+    }
 
-    var emitSingle = function (msgName, data) {
-        messageHandlers[msgName].forEach(function(handler) {
+    emitSingle(msgName, data) {
+        this.messageHandlers[msgName].forEach(function(handler) {
             handler(JSON.parse(data));
         });
-    };
+    }
 
-    var emitWildcard = function (data) {
-        messageHandlers['*'].forEach(function(handler) {
+    emitWildcard(data) {
+        this.messageHandlers['*'].forEach(function(handler) {
             handler(JSON.parse(data));
         });
-    };
+    }
 
-    var emit = function (msgName, data) {
+    emit(msgName, data) {
 
-        if (!messageHandlers[msgName]) return;
+        if (!this.messageHandlers[msgName]) return;
 
         emitSingle(msgName, data);
         emitWildcard(data);
-    };
+    }
 
-    var on = function (msgName, callback) {
+    on(msgName, callback) {
 
-        if (!messageHandlers[msgName]) messageHandlers[msgName] = [];
+        if (!this.messageHandlers[msgName]) this.messageHandlers[msgName] = [];
 
-        messageHandlers[msgName].push(callback);
-    };
-
-    return {
-        emit: emit,
-        on: on
-    };
-})();
+        this.messageHandlers[msgName].push(callback);
+    }
+}

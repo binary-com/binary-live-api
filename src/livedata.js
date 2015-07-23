@@ -1,55 +1,45 @@
-var LiveData = (function () {
-    'use strict';
+import LiveApi from './LiveApi';
 
-    var offerings, portfolio, activeSymbols;
+export default class LiveData {
 
-    var offeringsHandler = function(data) {
-        offerings = data.offerings.offerings;
-    };
+    constructor(apiToken) {
+        this.offerings = [];
+        this.portfolio = {};
+        this.activeSymbols = [];
 
-    var portfolioHandler = function(data) {
-        portfolio = data.portfolio_stats;
-    };
+        this.LiveApi = new LiveApi(apiToken);
+        this.LiveEvents.on('message', this.messageProcessing);
+    }
 
-    var activeSymbolsHandler = function(data) {
-        activeSymbols = data.active_symbols;
-    };
+    offeringsHandler(data) {
+        this.offerings = data.offerings.offerings;
+    }
 
-    LiveEvents.on('message', function(data) {
+    portfolioHandler(data) {
+        this.portfolio = data.portfolio_stats;
+    }
+
+    activeSymbolsHandler(data) {
+        this.activeSymbols = data.active_symbols;
+    }
+
+    messageProcessing(data) {
         if (data.offerings) {
-            offeringsHandler(data);
+            this.offeringsHandler(data);
         } else if (data.ticks) {
             Ticks.appendData(data);
         } else if (data.portfolio_stats) {
-            portfolioHandler(data);
+            this.portfolioHandler(data);
         } else if (data.active_symbols) {
-            activeSymbolsHandler(data);
-            trackActiveSymbols();
+            this.activeSymbolsHandler(data);
+            this.trackActiveSymbols();
         }
-    });
+    }
 
-    var trackActiveSymbols = function() {
+    trackActiveSymbols() {
 
-        var list = Object.keys(activeSymbols).map(function(s) {
-            return activeSymbols[s].symbol;
-        });
+        const list = Object.keys(activeSymbols).map(s => activeSymbols[s].symbol);
 
-        LiveApi.trackSymbols(list);
-    };
-
-    var init = function(apiToken) {
-
-        LiveApi.init(apiToken);
-
-    };
-
-    return {
-        init: init,
-        on: LiveEvents.on,
-        offerings: function () { return offerings; },
-        activeSymbols: function () { return activeSymbols; },
-        portfolio: function () { return portfolio; },
-        Ticks: Ticks,
-        trackActiveSymbols: trackActiveSymbols
-    };
-})();
+        this.LiveApi.trackSymbols(list);
+    }
+}

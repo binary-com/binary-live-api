@@ -1,155 +1,131 @@
-var LiveApi = (function () {
-    'use strict';
+import LiveEvents from './LiveEvents';
 
-    var ws,
-        status = 'unknown',
-        apiUrl = 'wss://ws.binary.com/websockets/contracts',
-        bufferedSends = [],
-        bufferedExecutes = [];
+export default class LiveApi extends LiveEvents {
 
-    var isReady = function() {
-        return ws && ws.readyState === 1;
-    };
+    static apiUrl = 'wss://ws.binary.com/websockets/contracts';
 
-    var sendBufferedSends = function() {
-        while (bufferedSends.length > 0) {
-            ws.send(JSON.stringify(bufferedSends.shift()));
+    constructor() {
+        super();
+
+        this.status = 'unknown',
+        this.bufferedSends = [],
+        this.bufferedExecutes = [];
+
+        this.socket = new WebSocket(apiUrl);
+        this.socket.onopen = this.onOpen;
+        this.socket.onclose = this.onClose;
+        this.socket.onerror = this.onError;
+        this.socket.onmessage = this.onMessage;
+    }
+
+    isReady() {
+        return this.socket && this.socket.readyState === 1;
+    }
+
+    sendBufferedSends() {
+        while (this.bufferedSends.length > 0) {
+            this.socket.send(JSON.stringify(this.bufferedSends.shift()));
         }
-    };
+    }
 
-    var executeBufferedExecutes = function() {
-        while (bufferedExecutes.length > 0) {
-            bufferedExecutes.shift()();
+    executeBufferedExecutes() {
+        while (this.bufferedExecutes.length > 0) {
+            this.bufferedExecutes.shift()();
         }
-    };
+    }
 
-    var onOpen = function() {
-        sendBufferedSends();
-        executeBufferedExecutes();
-    };
+    onOpen() {
+        this.sendBufferedSends();
+        this.executeBufferedExecutes();
+    }
 
-    var onClose = function() {
-    };
+    onClose() {
+    }
 
-    var onError = function(error) {
+    onError(error) {
         console.log(error);
-    };
+    }
 
-    var onMessage = function(e) {
+    onMessage(e) {
         LiveEvents.emit(e.type, e.data);
-    };
+    }
 
-    var init = function(apiToken) {
-
-        ws = new WebSocket(apiUrl);
-
-        ws.onopen = onOpen;
-        ws.onclose = onClose;
-        ws.onerror = onError;
-        ws.onmessage = onMessage;
-
-        authorize(apiToken);
-    };
-
-    var send = function(data) {
+    send(data) {
         if (isReady()) {
-            ws.send(JSON.stringify(data));
+            this.socket.send(JSON.stringify(data));
         } else {
-            bufferedSends.push(data);
+            this.bufferedSends.push(data);
         }
-    };
+    }
 
-    var execute = function(func) {
+    execute(func) {
         if (isReady()) {
             func();
         } else {
-            bufferedExecutes.push(func);
+            this.bufferedExecutes.push(func);
         }
-    };
+    }
 
-    var authorize = function(token) {
-        send({ authorize: token });
-    };
+    authorize(token) {
+        this.send({ authorize: token });
+    }
 
-    var getOfferings = function() {
-        send({ offerings: {} });
-    };
+    getOfferings() {
+        this.send({ offerings: {} });
+    }
 
-    var trackSymbol = function(symbol) {
-        send({ ticks: symbol });
-    };
+    trackSymbol(symbol) {
+        this.send({ ticks: symbol });
+    }
 
-    var trackSymbols = function(symbols) {
-        symbols.forEach(trackSymbol);
-    };
+    trackSymbols(symbols) {
+        symbols.forEach(this.trackSymbol);
+    }
 
-    var untrackSymbol = function(symbol) {
-        send({ forget: symbol });
-    };
+    untrackSymbol(symbol) {
+        this.send({ forget: symbol });
+    }
 
-    var untrackSymbols = function(symbols) {
-        symbols.forEach(untrackSymbols);
-    };
+    untrackSymbols(symbols) {
+        symbols.forEach(this.untrackSymbol);
+    }
 
-    var getMarketHistory = function(symbol, start, end, count) {
-        send({ ticks: symbol, end: end });
-    };
+    getMarketHistory(symbol, start, end, count) {
+        this.send({ ticks: symbol, end: end });
+    }
 
-    var getContractsForSymbol = function(symbol) {
-        send({ contracts_for: symbol });
-    };
+    getContractsForSymbol(symbol) {
+        this.send({ contracts_for: symbol });
+    }
 
-    var getActiveSymbolsByName = function() {
-        send({ active_symbols: 'display_name' });
-    };
+    getActiveSymbolsByName() {
+        this.send({ active_symbols: 'display_name' });
+    }
 
-    var getActiveSymbolsBySymbol = function() {
-        send({ active_symbols: 'symbol' });
-    };
+    getActiveSymbolsBySymbol() {
+        this.send({ active_symbols: 'symbol' });
+    }
 
-    var getPrice = function(contractProposal) {
+    getPrice(contractProposal) {
         contractProposal.proposal = 1;
-        send(contractProposal);
-    };
+        this.send(contractProposal);
+    }
 
-    var buyContract = function(contractId, price) {
-        send({
+    buyContract(contractId, price) {
+        this.send({
             buy: contractId,
             price: price
         });
-    };
+    }
 
-    var getPortfolio = function() {
-        send({ portfolio: 1 });
-    };
+    getPortfolio() {
+        this.send({ portfolio: 1 });
+    }
 
-    var sellContract = function(contractId, price) {
-        send({
+    sellContract(contractId, price) {
+        this.send({
             sell: contractId,
             price: price
         });
-    };
-
-
-    return {
-        init: init,
-        status: status,
-        send: send,
-        execute: execute,
-        authorize: authorize,
-
-        getOfferings: getOfferings,
-        trackSymbol: trackSymbol,
-        trackSymbols: trackSymbols,
-        untrackSymbol: untrackSymbol,
-        untrackSymbols: untrackSymbols,
-        getMarketHistory: getMarketHistory,
-        getActiveSymbolsByName: getActiveSymbolsByName,
-        getActiveSymbolsBySymbol: getActiveSymbolsBySymbol,
-        getContractsForSymbol: getContractsForSymbol,
-        getPrice: getPrice,
-        buyContract: buyContract,
-        getPortfolio: getPortfolio,
-        sellContract: sellContract
-    };
-})();
+    }
+}

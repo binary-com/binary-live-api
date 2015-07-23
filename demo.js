@@ -1,4 +1,7 @@
-LiveEvents.on('message', function(data) {
+import LiveApi from './src/LiveApi';
+import LiveData from './src/LiveData';
+
+LiveData.on('message', function(data) {
     console.log('message', data, LiveData);
 });
 
