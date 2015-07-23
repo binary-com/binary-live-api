@@ -7,13 +7,13 @@ export default class LiveEvents {
     }
 
     emitSingle(msgName, data) {
-        this.messageHandlers[msgName].forEach(function(handler) {
+        this.messageHandlers[msgName].forEach(handler => {
             handler(JSON.parse(data));
         });
     }
 
     emitWildcard(data) {
-        this.messageHandlers['*'].forEach(function(handler) {
+        this.messageHandlers['*'].forEach(handler => {
             handler(JSON.parse(data));
         });
     }

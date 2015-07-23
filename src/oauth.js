@@ -1,34 +1,38 @@
+import fetch from 'fetch';
 import * as api from './api';
 
-let clientId = 'ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH';
-let state = 'fjcapp01';
+export default class OAuth {
 
-let authUrl = `${api.rootUrl}/oauth/authorize?response_type=token&client_id=${clientId}&scope=S110&state=${state}`;
-let renewUrl = `${api.rootUrl}/oauth/refresh_accesstoken`;
+    static clientId = 'ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH';
+    static state = 'fjcapp01';
 
-export function authorize() {
+    static authUrl = `${api.rootUrl}/oauth/authorize?response_type=token&client_id=${clientId}&scope=S110&state=${state}`;
+    static renewUrl = `${api.rootUrl}/oauth/refresh_accesstoken`;
 
-    let authWindow = window.open(authUrl, '_blank', 'clearcache=yes,clearsessioncache=yes,location=no');
+    authorize() {
 
-    authWindow.addEventListener('load', function(e) {
-        let url = e.originalEvent.url;
-        let matches = /[&\?]access_token=(.+)$/.exec(url);
-        let accessToken = matches[1];
+        let authWindow = window.open(authUrl, '_blank', 'clearcache=yes,clearsessioncache=yes,location=no');
 
-        if (!accessToken) return;
+        authWindow.addEventListener('load', function(e) {
+            let url = e.originalEvent.url;
+            let matches = /[&\?]access_token=(.+)$/.exec(url);
+            let accessToken = matches[1];
 
-        window.localStorage.setItem('access-token', accessToken);
-        authWindow.close();
-    });
-}
+            if (!accessToken) return;
 
-export function renewToken() {
-    // Authorization: Basic ENCODED
-    return fetch(`${rootUrl}/markets/`, {
-        method: 'post',
-        body: {
-            "grant_type": "refresh_token",
-            "refresh_token": "REFRESH_TOKEN"
-        }
-    });
+            window.localStorage.setItem('access-token', accessToken);
+            authWindow.close();
+        });
+    }
+
+    renewToken() {
+        // Authorization: Basic ENCODED
+        return fetch(`${rootUrl}/markets/`, {
+            method: 'post',
+            body: {
+                "grant_type": "refresh_token",
+                "refresh_token": "REFRESH_TOKEN"
+            }
+        });
+    }
 }

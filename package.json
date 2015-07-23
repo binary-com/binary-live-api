@@ -1,23 +1,26 @@
 {
-    "name": "binary-live-api",
-    "version": "0.6.0",
-    "description": "JS library to consume Binary.com WebSocket API",
-    "main": "lib/binary-live-api.js",
-    "devDependencies": {
-        "gulp": "^3.9.0",
-        "gulp-concat": "^2.5.2"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/binary-com/binary-live-api.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/binary-com/binary-live-api/issues"
-    },
-    "homepage": "https://github.com/binary-com/binary-live-api#readme"
+  "name": "binary-live-api",
+  "version": "0.7.0",
+  "description": "JS library to consume Binary.com WebSocket API",
+  "main": "lib/binary-live-api.js",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.5.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/binary-com/binary-live-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/binary-com/binary-live-api/issues"
+  },
+  "homepage": "https://github.com/binary-com/binary-live-api#readme",
+  "dependencies": {
+    "fetch": "^0.3.6"
+  }
 }
