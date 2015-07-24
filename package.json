@@ -4,18 +4,28 @@
   "description": "JS library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-concat": "^2.5.2"
+    "babel": "^5.8.5",
+    "babel-core": "^5.8.5",
+    "babel-eslint": "^4.0.0",
+    "babel-loader": "^5.3.2",
+    "webpack": "^1.10.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf lib dist",
+    "build": "babel src --out-dir lib",
+    "build:umd": "webpack src/index.js dist/library-boilerplate.js && NODE_ENV=production webpack src/index.js dist/library-boilerplate.min.js",
+    "lint": "eslint src test examples",
+    "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive",
+    "test:watch": "NODE_ENV=test mocha --compilers js:babel/register --recursive --watch",
+    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha -- --recursive",
+    "prepublish": "npm run lint && npm run test && npm run clean && npm run build && npm run build:umd"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/binary-com/binary-live-api.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Boris @ Binary.com",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/binary-com/binary-live-api/issues"
   },

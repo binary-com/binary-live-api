@@ -1,7 +1,3 @@
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = {
-        LiveEvents: LiveEvents,
-        LiveApi: LiveApi,
-        LiveData: LiveData
-    };
-}
+export { LiveEvents } from './LiveEvents';
+export { LiveApi } from './LiveApi';
+export { LiveData } from './LiveData';

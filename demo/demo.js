@@ -1,5 +1,6 @@
 import LiveApi from './src/LiveApi';
 import LiveData from './src/LiveData';
+import RestApi from './src/RestApi';
 
 LiveData.on('message', function(data) {
     console.log('message', data, LiveData);
