@@ -1,6 +1,6 @@
-import LiveApi from './src/LiveApi';
-import LiveData from './src/LiveData';
-import RestApi from './src/RestApi';
+import { LiveApi, LiveData, RestApi } from '../lib/';
+
+console.log(LiveData, LiveApi, RestApi);
 
 LiveData.on('message', function(data) {
     console.log('message', data, LiveData);
