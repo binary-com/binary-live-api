@@ -22,8 +22,8 @@ export default class LiveEvents {
 
         if (!this.messageHandlers[msgName]) return;
 
-        emitSingle(msgName, data);
-        emitWildcard(data);
+        this.emitSingle(msgName, data);
+        this.emitWildcard(data);
     }
 
     on(msgName, callback) {
@@ -33,3 +33,5 @@ export default class LiveEvents {
         this.messageHandlers[msgName].push(callback);
     }
 }
+
+export const instance = new LiveEvents();

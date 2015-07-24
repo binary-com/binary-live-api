@@ -1,21 +1,19 @@
-import LiveEvents from './LiveEvents';
+import { instance as LiveEvents } from './LiveEvents';
 
-export default class LiveApi extends LiveEvents {
+const apiUrl = 'wss://ws.binary.com/websockets/contracts';
 
-    static apiUrl = 'wss://ws.binary.com/websockets/contracts';
+export default class LiveApi {
 
     constructor() {
-        super();
-
         this.status = 'unknown',
         this.bufferedSends = [],
         this.bufferedExecutes = [];
 
         this.socket = new WebSocket(apiUrl);
-        this.socket.onopen = this.onOpen;
-        this.socket.onclose = this.onClose;
-        this.socket.onerror = this.onError;
-        this.socket.onmessage = this.onMessage;
+        this.socket.onopen = ::this.onOpen;
+        this.socket.onclose = ::this.onClose;
+        this.socket.onerror = ::this.onError;
+        this.socket.onmessage = ::this.onMessage;
     }
 
     isReady() {
@@ -51,7 +49,7 @@ export default class LiveApi extends LiveEvents {
     }
 
     send(data) {
-        if (isReady()) {
+        if (this.isReady()) {
             this.socket.send(JSON.stringify(data));
         } else {
             this.bufferedSends.push(data);
@@ -59,7 +57,7 @@ export default class LiveApi extends LiveEvents {
     }
 
     execute(func) {
-        if (isReady()) {
+        if (this.isReady()) {
             func();
         } else {
             this.bufferedExecutes.push(func);

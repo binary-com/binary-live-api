@@ -1,11 +1,12 @@
-import { LiveApi, LiveData, RestApi } from '../lib/';
+import { LiveApi, LiveData } from '../lib/';
 
-console.log(LiveData, LiveApi, RestApi);
+const liveApi = new LiveApi();
+const liveData = new LiveData('iLEylxcgJAabTQ4jrKwZEfNSvXYN4lcqLtnbLfuVZxyOysCYnW0pp3AJIJHZibUiyGqiaeXrL1S4TMLzAOYeZkjV2G2LTYLQNtp6vN04K1HnWwz7VvMAeAieCVtqR5dS');
 
-LiveData.on('message', function(data) {
+console.log(liveApi, LiveApi);
+
+liveData.on('message', function(data) {
     console.log('message', data, LiveData);
 });
 
-LiveData.init('9cRhCQRGfhyKJd016aKPkPxjkwXOiPhMHkJmK9pbAOnW3lDqz5fiV8KokKoJY9ZuDqJtkxQyQqWWc3Hvsw2nGyozyWj06zDQyfXIyJhhNc5ezHUpqfkAxFM9UnuiOpyr');
-
-LiveApi.getMarketHistory('frxXPDUSD');
+liveApi.getMarketHistory('frxXPDUSD');

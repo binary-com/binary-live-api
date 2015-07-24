@@ -1,17 +1,17 @@
-import fetch from 'fetch';
-import * as api from './api';
+import fetch from 'whatwg-fetch';
+import api from './RestApi';
+
+const clientId = 'ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH';
+const state = 'fjcapp01';
 
 export default class OAuth {
-
-    static clientId = 'ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH';
-    static state = 'fjcapp01';
 
     static authUrl = `${api.rootUrl}/oauth/authorize?response_type=token&client_id=${clientId}&scope=S110&state=${state}`;
     static renewUrl = `${api.rootUrl}/oauth/refresh_accesstoken`;
 
     authorize() {
 
-        let authWindow = window.open(authUrl, '_blank', 'clearcache=yes,clearsessioncache=yes,location=no');
+        let authWindow = window.open(this.authUrl, '_blank', 'clearcache=yes,clearsessioncache=yes,location=no');
 
         authWindow.addEventListener('load', function(e) {
             let url = e.originalEvent.url;

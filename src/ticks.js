@@ -12,7 +12,7 @@ export default class Ticks {
 
         const symbol = data.ticks;
 
-        if (!ticks[symbol]) ticks[symbol] = { history: [] };
+        if (!this.ticks[symbol]) this.ticks[symbol] = { history: [] };
 
         this.ticks[symbol].history.push({
             epoch: data.epoch,
@@ -40,7 +40,7 @@ export default class Ticks {
 
     diff(symbol) {
 
-        const t = ticks[symbol];
+        const t = this.ticks[symbol];
 
         if (!t || !t.history || t.history.length <= 1) return 0;
 

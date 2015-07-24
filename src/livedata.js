@@ -1,14 +1,20 @@
+import { instance as LiveEvents } from './LiveEvents';
 import LiveApi from './LiveApi';
+import Ticks from './Ticks';
 
 export default class LiveData {
 
     constructor(apiToken) {
+
         this.offerings = [];
         this.portfolio = {};
         this.activeSymbols = [];
 
+        this.on = ::LiveEvents.on;
+        this.on('message', ::this.messageProcessing);
+
         this.LiveApi = new LiveApi(apiToken);
-        this.LiveEvents.on('message', this.messageProcessing);
+        this.ticks = new Ticks();
     }
 
     offeringsHandler(data) {
@@ -27,7 +33,7 @@ export default class LiveData {
         if (data.offerings) {
             this.offeringsHandler(data);
         } else if (data.ticks) {
-            Ticks.appendData(data);
+            this.ticks.appendData(data);
         } else if (data.portfolio_stats) {
             this.portfolioHandler(data);
         } else if (data.active_symbols) {

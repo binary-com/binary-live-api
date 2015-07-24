@@ -1,10 +1,9 @@
-import fetch from 'fetch';
+import fetch from 'whatwg-fetch';
+
+const rootUrl = 'https://rmg-prod.apigee.net/v1/binary';
 
 export default class RestApi {
 
-    static rootUrl = 'https://rmg-prod.apigee.net/v1/binary';
-
-    static authUrl = `${rootUrl}/oauth/authorize?response_type=token&client_id=ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH&scope=S111&state=fjcapp01`;
     static apiOptions = {
         mode: 'cors'
     };
