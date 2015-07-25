@@ -1,28 +1,33 @@
-import fetch from 'whatwg-fetch';
-import api from './RestApi';
-
+const rootUrl = 'https://rmg-prod.apigee.net/v1/binary';
 const clientId = 'ldqAtjU9Vj8xojmK0awwOerdIDvQlyWH';
 const state = 'fjcapp01';
+const authUrl = `${rootUrl}/oauth/authorize?response_type=token&client_id=${clientId}&scope=S110&state=${state}`;
+const renewUrl = `${rootUrl}/oauth/refresh_accesstoken`;
 
 export default class OAuth {
 
-    static authUrl = `${api.rootUrl}/oauth/authorize?response_type=token&client_id=${clientId}&scope=S110&state=${state}`;
-    static renewUrl = `${api.rootUrl}/oauth/refresh_accesstoken`;
-
     authorize() {
 
-        let authWindow = window.open(this.authUrl, '_blank', 'clearcache=yes,clearsessioncache=yes,location=no');
+        //let authWindow = window.open(authUrl, 'clearcache=yes,clearsessioncache=yes,location=no,toolbar=no');
 
-        authWindow.addEventListener('load', function(e) {
-            let url = e.originalEvent.url;
-            let matches = /[&\?]access_token=(.+)$/.exec(url);
-            let accessToken = matches[1];
+        window.addEventListener('loadstart', function(e) {
+
+            alert('zup!');
+
+            const url = e.originalEvent.url;
+            const matches = /[&\?]access_token=(.+)$/.exec(url);
+            const accessToken = matches[1];
+
+            console.log(url, matches, accessToken);
 
             if (!accessToken) return;
 
             window.localStorage.setItem('access-token', accessToken);
             authWindow.close();
         });
+
+        window.location = authUrl;
+
     }
 
     renewToken() {

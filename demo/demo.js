@@ -1,12 +1,25 @@
-import { LiveApi, LiveData } from '../lib/';
+import { LiveApi, LiveData, RestApi, OAuth } from '../lib/';
 
-const liveApi = new LiveApi();
-const liveData = new LiveData('iLEylxcgJAabTQ4jrKwZEfNSvXYN4lcqLtnbLfuVZxyOysCYnW0pp3AJIJHZibUiyGqiaeXrL1S4TMLzAOYeZkjV2G2LTYLQNtp6vN04K1HnWwz7VvMAeAieCVtqR5dS');
+function rest() {
+    //new OAuth().authorize();
 
-console.log(liveApi, LiveApi);
+    const restApi = new RestApi('1ODkgtmZbZAGlFXD0gwlhjZxThPW');
+    restApi.getMarketsList().then((r) => {
+        console.log('response', r);
+    });
+}
 
-liveData.on('message', function(data) {
-    console.log('message', data, LiveData);
-});
+function ws() {
+    const liveApi = new LiveApi();
+    const liveData = new LiveData('iLEylxcgJAabTQ4jrKwZEfNSvXYN4lcqLtnbLfuVZxyOysCYnW0pp3AJIJHZibUiyGqiaeXrL1S4TMLzAOYeZkjV2G2LTYLQNtp6vN04K1HnWwz7VvMAeAieCVtqR5dS');
 
-liveApi.getMarketHistory('frxXPDUSD');
+    liveData.on('message', function(data) {
+        console.log('message', data, LiveData);
+    });
+
+    liveApi.getMarketHistory('frxXPDUSD').catch(function(err) {
+        console.log('Fetch Error :-S', err);
+    });
+}
+
+rest();

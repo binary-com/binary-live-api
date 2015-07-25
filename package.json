@@ -30,8 +30,5 @@
   "bugs": {
     "url": "https://github.com/binary-com/binary-live-api/issues"
   },
-  "homepage": "https://github.com/binary-com/binary-live-api#readme",
-  "dependencies": {
-    "whatwg-fetch": "^0.9.0"
-  }
+  "homepage": "https://github.com/binary-com/binary-live-api#readme"
 }

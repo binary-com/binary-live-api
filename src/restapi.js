@@ -1,146 +1,160 @@
-import fetch from 'whatwg-fetch';
-
 const rootUrl = 'https://rmg-prod.apigee.net/v1/binary';
 
 export default class RestApi {
 
-    static apiOptions = {
-        mode: 'cors'
-    };
+    constructor(accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    fetcher(reqStr) {
+        return fetch(reqStr, {
+            mode: 'no-cors',
+            headers: {
+                'Authorization': 'Bearer ' + this.accessToken
+            }
+        });
+    }
+
+    fetcherPost(reqStr, body) {
+        return fetch(reqUrl, {
+            mode: 'no-cors',
+            method: 'post',
+            body,
+            headers: {
+                'Authorization': 'Bearer ' + this.accessToken
+            }
+        });
+    }
 
     // Marketplace Discovery ///////////////////////////////////////////////////////
 
     // Markets Discovery
     getMarketsList() {
-        return fetch(`${rootUrl}/markets/`, apiOptions);
+        return this.fetcher(`${rootUrl}/markets/`);
     }
 
     // Symbols for Market
     getMarket(market) {
-        return fetch(`${rootUrl}/markets/${market}`, apiOptions);
+        return this.fetcher(`${rootUrl}/markets/${market}`);
     }
 
     // Exchanges Discovery
     getExchangesList() {
-        return fetch(`${rootUrl}/exchanges/`, apiOptions);
+        return fetch(`${rootUrl}/exchanges/`);
     }
 
     // Exchange Details
     getExchange(exchange) {
-        return fetch(`${rootUrl}/exchanges/${exchange}`, apiOptions);
+        return this.fetcher(`${rootUrl}/exchanges/${exchange}`);
     }
 
     // Symbols Discovery ///////////////////////////////////////////////////////////
 
     // Symbols Discovery
     getSymbolsList() {
-        return fetch(`${rootUrl}/symbols/`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/`);
     }
 
     // Symbol Detail
     getSymbol(symbol) {
-        return fetch(`${rootUrl}/symbols/${symbols}`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/${symbols}`);
     }
 
     // Symbol Price
     getSymbolPrice(symbol) {
-        return fetch(`${rootUrl}/symbols/${symbols}/price`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/${symbols}/price`);
     }
 
     // Price History ///////////////////////////////////////////////////////////////
 
     // Historical Tick Data
     getTickData(symbol) {
-        return fetch(`${rootUrl}/symbols/${symbol}/ticks`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/${symbol}/ticks`);
     }
 
     // Historical Candlestick Data
     getCandlestickData(symbol) {
-        return fetch(`${rootUrl}/symbols/${symbol}/candles`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/${symbol}/candles`);
     }
 
     // Contract Discovery //////////////////////////////////////////////////////////
 
     // Available Contracts for Symbol
     getContracts(symbol) {
-        return fetch(`${rootUrl}/symbols/${symbol}/contracts`, apiOptions);
+        return this.fetcher(`${rootUrl}/symbols/${symbol}/contracts`);
     }
 
     // Offerings Discovery
      getOfferingsList() {
-        return fetch(`${rootUrl}/offerings`, apiOptions);
+        return this.fetcher(`${rootUrl}/offerings`);
     }
 
     // Contract Categories for Market
     getContractCategories(market) {
-        return fetch(`${rootUrl}/markets/${market}/contract_categories`, apiOptions);
+        return this.fetcher(`${rootUrl}/markets/${market}/contract_categories`);
     }
 
     // Contract Negotiation ////////////////////////////////////////////////////////
 
     // Payout Currencies
     getPayoutCurrencies() {
-        return fetch(`${rootUrl}/payout_currencies`, apiOptions);
+        return this.fetcher(`${rootUrl}/payout_currencies`);
     }
 
     // Get Contract Price
     getContractPrice(contractType, symbol, durationUnit, duration, payoutCurrency, payout, startTime, barrierLow, barrierHigh) {
-        return fetch(`${rootUrl}/contract/${contractType}/${symbol}/${durationUnit}/${duration}/${payoutCurrency}/${payout}/${startTime}/${barrierLow}/${barrierHigh}`, apiOptions);
+        return this.fetcher(`${rootUrl}/contract/${contractType}/${symbol}/${durationUnit}/${duration}/${payoutCurrency}/${payout}/${startTime}/${barrierLow}/${barrierHigh}`);
     }
 
     // Buy Contract
     buyContract(contractType, symbol, durationUnit, duration, payoutCurrency, payout, startTime, barrierLow, barrierHigh) {
         apiOtions.method = 'post';
-        return fetch(`${rootUrl}/contract/${contractType}/${symbol}/${durationUnit}/${duration}/${payoutCurrency}/${payout}/${startTime}/${barrierLow}/${barrierHigh}`, apiOptions);
+        return this.fetcher(`${rootUrl}/contract/${contractType}/${symbol}/${durationUnit}/${duration}/${payoutCurrency}/${payout}/${startTime}/${barrierLow}/${barrierHigh}`);
     }
 
     // Portfolio ///////////////////////////////////////////////////////////////////
 
     // Portfolio List
     getPortfolioList() {
-        return fetch(`${rootUrl}/portfolio`, apiOptions);
+        return this.fetcher(`${rootUrl}/portfolio`);
     }
 
     // Portfolio Detail
     getPortfolio(contract) {
-        return fetch(`${rootUrl}/portfolio/${contract}`, apiOptions);
+        return this.fetcher(`${rootUrl}/portfolio/${contract}`);
     }
 
     // Sell Existing Contract
     sellContract(contract, price) {
-        return fetch(`${rootUrl}/portfolio/${contract}/sell/${price}`, apiOptions);
+        return this.fetcher(`${rootUrl}/portfolio/${contract}/sell/${price}`);
     }
 
     // Account Management //////////////////////////////////////////////////////////
 
     // Account Detail
     getAccount(contract) {
-        return fetch(`${rootUrl}/account`, apiOptions);
+        return this.fetcher(`${rootUrl}/account`);
     }
 
     // Account Update
     updateAccount(account) {
-        apiOtions.method = 'post';
-        apiOtions.body = account;
-        return fetch(`${rootUrl}/account`, apiOptions);
+        return this.fetcherPost(`${rootUrl}/account`, account);
     }
 
     // Account Creation
     createAccount(account) {
-        apiOtions.method = 'post';
-        apiOtions.body = account;
-        return fetch(`${rootUrl}/new_account`, apiOptions);
+        return this.fetcherPost(`${rootUrl}/new_account`, account);
     }
 
     // Account /////////////////////////////////////////////////////////////////////
 
     // Statement
     getStatement() {
-        return fetch(`${rootUrl}/account/statement`, apiOptions);
+        return this.fetcher(`${rootUrl}/account/statement`);
     }
 
     // Countries
     getCountries() {
-        return fetch(`${rootUrl}/countries`, apiOptions);
+        return this.fetcher(`${rootUrl}/countries`);
     }
 }
