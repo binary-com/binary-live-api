@@ -1,11 +1,14 @@
 import { LiveApi, LiveData, RestApi, OAuth } from '../lib/';
 
 function rest() {
+
     //new OAuth().authorize();
 
-    const restApi = new RestApi('1ODkgtmZbZAGlFXD0gwlhjZxThPW');
-    restApi.getMarketsList().then((r) => {
-        console.log('response', r);
+    const restApi = new RestApi('lNZzR4lt14AGppZTt1TRFznELoo6');
+    restApi.getMarketsList().then(response => {
+        response.json().then(function(json) {
+            console.log(json);
+        });
     });
 }
 
