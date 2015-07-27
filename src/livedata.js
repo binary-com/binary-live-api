@@ -13,12 +13,14 @@ export default class LiveData {
         this.on = ::LiveEvents.on;
         this.on('message', ::this.messageProcessing);
 
-        this.api = new LiveApi(apiToken);
+        this.api = new LiveApi();
+        this.api.authorize(apiToken);
         this.ticks = new Ticks();
     }
 
     dataChanged(whatData) {
         if (this.onDataChange) this.onDataChange(whatData);
+        console.log('dataChanged!', whatData, this.OnDataChange, this);
     }
 
     authorizeResponseHandler(data) {

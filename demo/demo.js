@@ -15,9 +15,7 @@ function rest() {
 }
 
 function ws() {
-    const liveApi = new LiveApi();
-    liveApi.authorize('1C8FsTiUegCGq2ZqM8ntMdHsUUQNE9grp5p9gD6VmSmyocfcJiS0n2uOM83kakaYZMRfFCbZGI6kzfu0lYkHHoYFpMJRKKVaVHe0Ezs1KqL6JZvMwNqAUFxLfulKoalD');
-    //const liveData = new LiveData('1C8FsTiUegCGq2ZqM8ntMdHsUUQNE9grp5p9gD6VmSmyocfcJiS0n2uOM83kakaYZMRfFCbZGI6kzfu0lYkHHoYFpMJRKKVaVHe0Ezs1KqL6JZvMwNqAUFxLfulKoalD');
+    const liveData = new LiveData('1C8FsTiUegCGq2ZqM8ntMdHsUUQNE9grp5p9gD6VmSmyocfcJiS0n2uOM83kakaYZMRfFCbZGI6kzfu0lYkHHoYFpMJRKKVaVHe0Ezs1KqL6JZvMwNqAUFxLfulKoalD');
 
     // liveData.on('message', function(data) {
     //     console.log('message', data, LiveData);
@@ -27,9 +25,11 @@ function ws() {
     //     console.log('Fetch Error :-S', err);
     // });
 
-    liveApi.getPortfolio();
+    liveData.api.getPortfolio();
 
-    LiveEvents.on('message', data => console.log(data));
+    liveData.onDataChange = function(yo) {
+        console.log('yo', yo);
+    }
 }
 
 ws();
