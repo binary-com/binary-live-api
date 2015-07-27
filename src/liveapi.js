@@ -127,3 +127,5 @@ export default class LiveApi {
         });
     }
 }
+
+export const instance = new LiveApi();
