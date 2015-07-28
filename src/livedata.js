@@ -20,7 +20,6 @@ export default class LiveData {
 
     dataChanged(whatData) {
         if (this.onDataChange) this.onDataChange(whatData);
-        console.log('dataChanged!', whatData, this.OnDataChange, this);
     }
 
     authorizeResponseHandler(data) {
