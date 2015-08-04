@@ -6,7 +6,8 @@ export default class LiveData {
     constructor(apiToken) {
 
         this.offerings = [];
-        this.contracts = [];
+        this.contracts = {};
+        this.portfolio = [];
         this.activeSymbols = [];
 
         this.ticks = new Ticks();
@@ -16,6 +17,10 @@ export default class LiveData {
         this.events = this.api.events;
         this.events.on('authorize', ::this.authorizeResponseHandler);
         this.events.on('portfolio', ::this.portfolioHandler);
+        this.events.on('offerings', ::this.offeringsHandler);
+        this.events.on('ticks', ::this.offeringsHandler);
+        this.events.on('active_symbols', ::this.activeSymbolsHandler); //this.trackActiveSymbols();
+        this.events.on('contracts', ::this.contractHandler);
 
         this.api.authorize(apiToken);
     }
@@ -24,60 +29,47 @@ export default class LiveData {
         if (this.onDataChange) this.onDataChange(whatData);
     }
 
-    authorizeResponseHandler(data) {
+    authorizeResponseHandler(r) {
+
         this.balance = {
-            currency: data.currency,
-            amount: data.balance
-        }
+            currency: r.data.currency,
+            amount: r.data.balance
+        };
         this.dataChanged('balance');
     }
 
-    offeringsHandler(data) {
-        this.offerings = data.offerings.offerings;
+    ticksHandler(r) {
+        this.ticks.appendData(r.data);
+        this.dataChanged('ticks');
+    }
+
+    offeringsHandler(r) {
+        this.offerings = r.data.offerings;
         this.dataChanged('offerings');
     }
 
-    portfolioHandler(data) {
-        this.portfolio = data.portfolio_stats;
+    portfolioHandler(r) {
+
+        const entry = this.portfolio.find(c => c.id == r.data.id);
+
+        if (!entry) {
+            this.portfolio.push(r.data);
+        } else {
+            Object.assign(entry, r.data);
+        }
+
         this.dataChanged('portfolio');
     }
 
-    activeSymbolsHandler(data) {
-        this.activeSymbols = data.active_symbols;
+    activeSymbolsHandler(r) {
+        this.activeSymbols = r.data;
         this.dataChanged('activeSymbols');
     }
 
-    contractHandler(data) {
-        this.contracts.push(data);
+    contractHandler(r) {
+
+        this.contracts = r.data;
         this.dataChanged('contracts');
-    }
-
-    contractUpdateHandler(data) {
-        const contract = this.contracts.find(c => c.id == data.id);
-        contract.ask_price = data.ask_price;
-        contract.spot_time = data.spot_time;
-        contract.bid_price = data.bid_price;
-        this.dataChanged('contracts');
-    }
-
-
-    messageProcessing(data) {
-        if (data.authorize) {
-            this.authorizeResponseHandler(data);
-        } else if (data.offerings) {
-            this.offeringsHandler(data);
-        } else if (data.ticks) {
-            this.ticks.appendData(data);
-        } else if (data.portfolio_stats) {
-            this.portfolioHandler(data);
-        } else if (data.active_symbols) {
-            this.activeSymbolsHandler(data);
-            this.trackActiveSymbols();
-        } else if (data.fmb_id) {
-            this.contractHandler(data);
-        } else if (data.ask_price && data.spot_time && data.bid_price) {
-            this.contractUpdateHandler(data);
-        }
     }
 
     trackActiveSymbols() {

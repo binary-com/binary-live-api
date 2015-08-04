@@ -6,15 +6,16 @@ export default class LiveEvents {
         };
     }
 
-    emitSingle(msgType, data) {
+    emitSingle(msgType, msgData) {
+
         this.messageHandlers[msgType].forEach(handler => {
-            handler(data);
+            handler(msgData);
         });
     }
 
-    emitWildcard(data) {
+    emitWildcard(msgData) {
         this.messageHandlers['*'].forEach(handler => {
-            handler(data);
+            handler(msgData);
         });
     }
 
