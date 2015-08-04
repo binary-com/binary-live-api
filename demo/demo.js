@@ -1,6 +1,4 @@
-import { LiveApi, LiveData, RestApi, OAuth } from '../lib/';
-import { instance as LiveEvents } from '../lib/LiveEvents';
-
+import { LiveData, RestApi, OAuth } from '../lib/';
 
 function rest() {
 
@@ -15,11 +13,11 @@ function rest() {
 }
 
 function ws() {
-    const liveData = new LiveData('1C8FsTiUegCGq2ZqM8ntMdHsUUQNE9grp5p9gD6VmSmyocfcJiS0n2uOM83kakaYZMRfFCbZGI6kzfu0lYkHHoYFpMJRKKVaVHe0Ezs1KqL6JZvMwNqAUFxLfulKoalD');
+    const liveData = new LiveData('fcR6ZySPS3u0ezqOEt0bCZqpAuvXejg0vRUtulSAaCDISBPlrWtjOiIK1u8ZhGf0D8fJVWi4Zepb35jwAD6IpE7JF3gyFpT0BD6aH8Q7xIhb4FNKqasHWySW1pRJBI7T');
 
-    // liveData.on('message', function(data) {
-    //     console.log('message', data, LiveData);
-    // });
+    liveData.events.on('message', function(data) {
+        console.log('message', data, LiveData);
+    });
 
     // liveApi.getMarketHistory('frxXPDUSD').catch(function(err) {
     //     console.log('Fetch Error :-S', err);
@@ -29,9 +27,7 @@ function ws() {
 
     liveData.onDataChange = function(yo) {
         console.log('yo', yo);
-    }
+    };
 }
 
 ws();
-
-console.log(Array.find)

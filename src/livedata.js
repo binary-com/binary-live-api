@@ -1,4 +1,3 @@
-import { instance as LiveEvents } from './LiveEvents';
 import LiveApi from './LiveApi';
 import Ticks from './Ticks';
 
@@ -10,12 +9,16 @@ export default class LiveData {
         this.contracts = [];
         this.activeSymbols = [];
 
-        this.on = ::LiveEvents.on;
-        this.on('message', ::this.messageProcessing);
-
         this.api = new LiveApi();
+        this.events = this.api.events;
+        this.events.on('*', ::this.onDataReceived);
         this.api.authorize(apiToken);
+
         this.ticks = new Ticks();
+    }
+
+    onDataReceived(data) {
+        console.log('msg', data);
     }
 
     dataChanged(whatData) {
@@ -57,6 +60,7 @@ export default class LiveData {
         this.dataChanged('contracts');
     }
 
+
     messageProcessing(data) {
         if (data.authorize) {
             this.authorizeResponseHandler(data);
@@ -83,5 +87,3 @@ export default class LiveData {
         this.api.trackSymbols(list);
     }
 }
-
-export const instance = new LiveData();

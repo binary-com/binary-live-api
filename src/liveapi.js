@@ -1,13 +1,21 @@
-import { instance as LiveEvents } from './LiveEvents';
+import LiveEvents from './LiveEvents';
 
 const apiUrl = 'wss://ws.binary.com/websockets/contracts';
 
 export default class LiveApi {
 
+    static Status = {
+        Unknown: 'unknown',
+        Connected: 'connected'
+    }
+
     constructor() {
-        this.status = 'unknown',
-        this.bufferedSends = [],
+
+        this.status = LiveApi.Status.Unknown;
+        this.bufferedSends = [];
         this.bufferedExecutes = [];
+
+        this.events = new LiveEvents();
 
         this.socket = new WebSocket(apiUrl);
         this.socket.onopen = ::this.onOpen;
@@ -44,8 +52,8 @@ export default class LiveApi {
         console.log(error);
     }
 
-    onMessage(e) {
-        LiveEvents.emit(e.type, e.data);
+    onMessage(data) {
+        this.events.emit(data.msg_type, data[data.msg_type]);
     }
 
     send(data) {
@@ -127,5 +135,3 @@ export default class LiveApi {
         });
     }
 }
-
-export const instance = new LiveApi();

@@ -33,5 +33,3 @@ export default class LiveEvents {
         this.messageHandlers[msgName].push(callback);
     }
 }
-
-export const instance = new LiveEvents();
