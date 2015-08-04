@@ -6,30 +6,30 @@ export default class LiveEvents {
         };
     }
 
-    emitSingle(msgName, data) {
-        this.messageHandlers[msgName].forEach(handler => {
-            handler(JSON.parse(data));
+    emitSingle(msgType, data) {
+        this.messageHandlers[msgType].forEach(handler => {
+            handler(data);
         });
     }
 
     emitWildcard(data) {
         this.messageHandlers['*'].forEach(handler => {
-            handler(JSON.parse(data));
+            handler(data);
         });
     }
 
-    emit(msgName, data) {
+    emit(msgType, msgData) {
 
-        if (!this.messageHandlers[msgName]) return;
+        if (!this.messageHandlers[msgType]) return;
 
-        this.emitSingle(msgName, data);
-        this.emitWildcard(data);
+        this.emitSingle(msgType, msgData);
+        this.emitWildcard(msgData);
     }
 
-    on(msgName, callback) {
+    on(msgType, callback) {
 
-        if (!this.messageHandlers[msgName]) this.messageHandlers[msgName] = [];
+        if (!this.messageHandlers[msgType]) this.messageHandlers[msgType] = [];
 
-        this.messageHandlers[msgName].push(callback);
+        this.messageHandlers[msgType].push(callback);
     }
 }

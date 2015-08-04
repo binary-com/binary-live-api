@@ -15,8 +15,8 @@ function rest() {
 function ws() {
     const liveData = new LiveData('fcR6ZySPS3u0ezqOEt0bCZqpAuvXejg0vRUtulSAaCDISBPlrWtjOiIK1u8ZhGf0D8fJVWi4Zepb35jwAD6IpE7JF3gyFpT0BD6aH8Q7xIhb4FNKqasHWySW1pRJBI7T');
 
-    liveData.events.on('message', function(data) {
-        console.log('message', data, LiveData);
+    liveData.events.on('*', function(data) {
+        console.log(data);
     });
 
     // liveApi.getMarketHistory('frxXPDUSD').catch(function(err) {
@@ -25,9 +25,9 @@ function ws() {
 
     liveData.api.getPortfolio();
 
-    liveData.onDataChange = function(yo) {
-        console.log('yo', yo);
-    };
+    // liveData.onDataChange = function(yo) {
+    //     console.log('dataChange', yo);
+    // };
 }
 
 ws();

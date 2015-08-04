@@ -52,11 +52,17 @@ export default class LiveApi {
         console.log(error);
     }
 
-    onMessage(data) {
-        this.events.emit(data.msg_type, data[data.msg_type]);
+    onMessage(message) {
+        const json = JSON.parse(message.data);
+        this.events.emit(json.msg_type, {
+            type: json.msg_type,
+            data: json[json.msg_type],
+            echo: json.echo_req
+        });
     }
 
     send(data) {
+        data.uid = Math.random() * 1e17;
         if (this.isReady()) {
             this.socket.send(JSON.stringify(data));
         } else {

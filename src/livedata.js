@@ -9,16 +9,15 @@ export default class LiveData {
         this.contracts = [];
         this.activeSymbols = [];
 
-        this.api = new LiveApi();
-        this.events = this.api.events;
-        this.events.on('*', ::this.onDataReceived);
-        this.api.authorize(apiToken);
-
         this.ticks = new Ticks();
-    }
 
-    onDataReceived(data) {
-        console.log('msg', data);
+        this.api = new LiveApi();
+
+        this.events = this.api.events;
+        this.events.on('authorize', ::this.authorizeResponseHandler);
+        this.events.on('portfolio', ::this.portfolioHandler);
+
+        this.api.authorize(apiToken);
     }
 
     dataChanged(whatData) {
@@ -40,6 +39,7 @@ export default class LiveData {
 
     portfolioHandler(data) {
         this.portfolio = data.portfolio_stats;
+        this.dataChanged('portfolio');
     }
 
     activeSymbolsHandler(data) {
