@@ -19,7 +19,7 @@ export default class LiveData {
         this.events.on('portfolio', ::this.portfolioHandler);
         this.events.on('offerings', ::this.offeringsHandler);
         this.events.on('ticks', ::this.offeringsHandler);
-        this.events.on('active_symbols', ::this.activeSymbolsHandler); //this.trackActiveSymbols();
+        this.events.on('symbols', ::this.activeSymbolsHandler); //this.trackActiveSymbols();
         this.events.on('contracts', ::this.contractHandler);
 
         this.api.authorize(apiToken);
@@ -67,7 +67,6 @@ export default class LiveData {
     }
 
     contractHandler(r) {
-
         this.contracts = r.data;
         this.dataChanged('contracts');
     }
