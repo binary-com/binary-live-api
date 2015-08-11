@@ -7,7 +7,7 @@ export default class LiveApi {
     static Status = {
         Unknown: 'unknown',
         Connected: 'connected'
-    }
+    };
 
     constructor() {
 
@@ -91,7 +91,7 @@ export default class LiveApi {
     }
 
     trackSymbols(symbols) {
-        symbols.forEach(this.trackSymbol);
+        symbols.forEach(this.trackSymbol.bind(this));
     }
 
     untrackSymbol(symbol) {
