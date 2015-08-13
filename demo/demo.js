@@ -1,4 +1,4 @@
-import { LiveData, RestApi, OAuth } from '../lib/';
+import { LiveApi } from '../lib/';
 
 function rest() {
 
@@ -13,23 +13,25 @@ function rest() {
 }
 
 function ws() {
-    const liveData = new LiveData('fcR6ZySPS3u0ezqOEt0bCZqpAuvXejg0vRUtulSAaCDISBPlrWtjOiIK1u8ZhGf0D8fJVWi4Zepb35jwAD6IpE7JF3gyFpT0BD6aH8Q7xIhb4FNKqasHWySW1pRJBI7T');
+    const liveApi = new LiveApi();
+    liveApi.authorize('yVHlmNpJNKfOUgJ2UfFAhujYnYGrnlozvg63bHdhA3LqyhtE');
 
-    liveData.events.on('*', function(data) {
-        console.log(data, liveData);
+    liveApi.events.on('*', function(data) {
+        console.log(data);
     });
 
     // liveData.api.getOfferings();
     // liveData.api.getActiveSymbolsByName(); // active_symbols not working!!!
     // liveData.api.getContractsForSymbol('GBP/AUD');
 
-    liveData.api.getPortfolio();
+    // liveData.api.getPortfolio();
 
     //liveData.api.trackSymbol('GBP/AUD');
     //liveData.api.getMarketHistory();
 
     //liveData.api.getPrice();
 
+    liveApi.getStatement();
 }
 
 ws();
