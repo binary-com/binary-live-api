@@ -82,8 +82,8 @@ export default class LiveApi {
         this.send({ authorize: token });
     }
 
-    getOfferings() {
-        this.send({ offerings: {} });
+    getOfferings(options = {}) {
+        this.send({ offerings: options });
     }
 
     trackSymbol(symbol) {
