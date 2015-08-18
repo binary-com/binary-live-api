@@ -144,4 +144,8 @@ export default class LiveApi {
             price: price
         });
     }
+
+    getTradingTimes() {
+        this.send({ trading_times: {} });
+    }
 }
