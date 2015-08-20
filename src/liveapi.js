@@ -134,8 +134,8 @@ export default class LiveApi {
         this.send({ portfolio: 1 });
     }
 
-    getStatement() {
-        this.send({ statement: {} });
+    getStatement(options = {}) {
+        this.send({ transactions: options });
     }
 
     sellContract(contractId, price) {
