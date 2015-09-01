@@ -148,4 +148,12 @@ export default class LiveApi {
     getTradingTimes() {
         this.send({ trading_times: {} });
     }
+
+    ping() {
+        this.send({ ping: 1 });
+    }
+
+    getBalance() {
+        this.send({ balance: 1 });
+    }
 }
