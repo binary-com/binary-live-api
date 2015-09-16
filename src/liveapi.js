@@ -1,6 +1,6 @@
 import LiveEvents from './LiveEvents';
 
-const apiUrl = 'wss://ws.binary.com/websockets/contracts';
+const apiUrl = 'wss://ws.binary.com/websockets/v2';
 
 export default class LiveApi {
 
@@ -78,49 +78,149 @@ export default class LiveApi {
         }
     }
 
-    authorize(token) {
-        this.send({ authorize: token });
+
+    /////
+
+
+    getMarketHistory(marketHistoryOptions = {}) {
+        this.send({
+            ticks: symbol,
+            ...marketHistoryOptions
+        });
     }
 
-    getOfferings(options = {}) {
-        this.send({ offerings: options });
+    getActiveSymbolsBrief() {
+        this.send({
+            active_symbols: 'brief'
+        });
     }
 
-    trackSymbol(symbol) {
-        this.send({ ticks: symbol });
-    }
-
-    trackSymbols(symbols) {
-        symbols.forEach(this.trackSymbol.bind(this));
-    }
-
-    untrackSymbol(symbol) {
-        this.send({ forget: symbol });
-    }
-
-    untrackSymbols(symbols) {
-        symbols.forEach(this.untrackSymbol);
-    }
-
-    getMarketHistory(symbol, start, end, count) {
-        this.send({ ticks: symbol, end: end });
+    getActiveSymbolsFull() {
+        this.send({
+            active_symbols: 'full'
+        });
     }
 
     getContractsForSymbol(symbol) {
-        this.send({ contracts_for: symbol });
+        this.send({
+            contracts_for: symbol
+        });
     }
 
-    getActiveSymbolsByName() {
-        this.send({ active_symbols: 'display_name' });
+    getPayoutCurrencies(symbol) {
+        this.send({
+            payout_currencies: 1
+        });
     }
 
-    getActiveSymbolsBySymbol() {
-        this.send({ active_symbols: 'symbol' });
+    getTradingTimes(date) {
+        this.send({
+            trading_times: date.toString('yyyy-mm-dd')
+        });
     }
 
-    getPrice(contractProposal) {
-        contractProposal.proposal = 1;
-        this.send(contractProposal);
+    ping() {
+        this.send({
+            ping: 1
+        });
+    }
+
+
+    getServerTime() {
+        this.send({
+            time: 1
+        });
+    }
+
+
+    /////
+
+
+    subscribeToTick(symbol) {
+        this.send({
+            ticks: symbol
+        });
+    }
+
+    subscribeToTicks(symbols) {
+        symbols.forEach(this.subscribeToTick.bind(this));
+    }
+
+    getLatestPriceForContractProposal(contractProposal) {
+        this.send({
+            proposal: 1,
+            ...contractProposal
+        });
+    }
+
+    unsubscribeFromTick(symbol) {
+        this.send({
+            forget: symbol
+        });
+    }
+
+    unsubscribeFromTicks(symbols) {
+        symbols.forEach(this.unsubscribeFromTick);
+    }
+
+    unsubscribeFromAllTicks() {
+        this.send({
+            forget_all: "ticks"
+        });
+    }
+
+    unsubscribeFromAllProposals() {
+        this.send({
+            forget_all: "proposal"
+        });
+    }
+
+    unsubscribeFromAllPortfolios() {
+        this.send({
+            forget_all: "portfolio"
+        });
+    }
+
+    unsubscribeFromAlProposals() {
+        this.send({
+            forget_all: "proposal_open_contract"
+        });
+    }
+
+
+    /////
+
+    authorize(token) {
+        this.send({
+            authorize: token
+        });
+    }
+
+    getBalance() {
+        this.send({
+            balance: 1
+        });
+    }
+
+    getStatement(statementOptions = {}) {
+        this.send({
+            statement: 1,
+            ...statementOptions
+        });
+    }
+
+    getPortfolio(subscribeToUpdates) {
+        this.send({
+            portfolio: 1,
+            spawn: +subscribeToUpdates
+        });
+    }
+
+    getPriceForOpenContract(contractId) {
+        this.send({
+            proposal_open_contract: 1,
+            fmd_id: contractId
+        });
     }
 
     buyContract(contractId, price) {
@@ -130,30 +230,10 @@ export default class LiveApi {
         });
     }
 
-    getPortfolio() {
-        this.send({ portfolio: 1 });
-    }
-
-    getStatement(options = {}) {
-        this.send({ transactions: options });
-    }
-
     sellContract(contractId, price) {
         this.send({
             sell: contractId,
             price: price
         });
-    }
-
-    getTradingTimes() {
-        this.send({ trading_times: {} });
-    }
-
-    ping() {
-        this.send({ ping: 1 });
-    }
-
-    getBalance() {
-        this.send({ balance: 1 });
     }
 }
