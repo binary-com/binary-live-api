@@ -113,9 +113,10 @@ export default class LiveApi {
         });
     }
 
-    getTradingTimes(date) {
+    getTradingTimes(date = Date.now()) {
+        const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
         this.send({
-            trading_times: date.toString('yyyy-mm-dd')
+            trading_times: date.toString(dateStr)
         });
     }
 
