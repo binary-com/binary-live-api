@@ -107,7 +107,7 @@ export default class LiveApi {
         });
     }
 
-    getPayoutCurrencies(symbol) {
+    getPayoutCurrencies() {
         this.send({
             payout_currencies: 1
         });
