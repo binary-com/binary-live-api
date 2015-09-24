@@ -6,7 +6,7 @@ This library is a high-level abstraction over the [Binary.com Developers Portal]
 var api = new LiveApi();
 api.authorize('yourtoken');
 api.getPortfolio();
-api.on('portfolio', function(data) {
+api.events.on('portfolio', function(data) {
     // do stuff with portfolio data
 });
 ```
