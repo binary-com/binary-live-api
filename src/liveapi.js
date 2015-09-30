@@ -113,7 +113,7 @@ export default class LiveApi {
         });
     }
 
-    getTradingTimes(date = Date.now()) {
+    getTradingTimes(date = new Date()) {
         const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
         this.send({
             trading_times: date.toString(dateStr)
@@ -190,6 +190,7 @@ export default class LiveApi {
 
 
     /////
+    
 
     authorize(token) {
         this.send({
@@ -210,7 +211,7 @@ export default class LiveApi {
         });
     }
 
-    getPortfolio(subscribeToUpdates) {
+    getPortfolio(subscribeToUpdates = false) {
         this.send({
             portfolio: 1,
             spawn: +subscribeToUpdates
