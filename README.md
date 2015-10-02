@@ -25,7 +25,7 @@ send(data)
 ## Unauthenticated Calls
 
 ```
-getMarketHistory(marketHistoryOptions)
+getTickHistory(marketHistoryOptions)
 ```
 
 [Documentation for Tick History API Call](https://developers.binary.com/api/#ticks)

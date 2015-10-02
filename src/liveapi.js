@@ -82,10 +82,10 @@ export default class LiveApi {
     /////
 
 
-    getMarketHistory(marketHistoryOptions = {}) {
+    getTickHistory(tickHistoryOptions = {}) {
         this.send({
-            ticks: symbol,
-            ...marketHistoryOptions
+            ticks: tickHistoryOptions.symbol,
+            ...tickHistoryOptions
         });
     }
 
@@ -116,7 +116,7 @@ export default class LiveApi {
     getTradingTimes(date = new Date()) {
         const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
         this.send({
-            trading_times: date.toString(dateStr)
+            trading_times: dateStr
         });
     }
 
@@ -190,7 +190,7 @@ export default class LiveApi {
 
 
     /////
-    
+
 
     authorize(token) {
         this.send({
