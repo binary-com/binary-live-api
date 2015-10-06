@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "JS library to consume Binary.com WebSocket API",
   "main": "lib/index.js",
   "devDependencies": {
@@ -13,6 +13,7 @@
   },
   "scripts": {
     "clean": "rimraf lib dist",
+    "start": "babel src --out-dir lib --watch",
     "build": "babel src --out-dir lib",
     "build:umd": "webpack src/index.js dist/library-boilerplate.js && NODE_ENV=production webpack src/index.js dist/library-boilerplate.min.js",
     "lint": "eslint src test demo",

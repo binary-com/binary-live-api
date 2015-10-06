@@ -9,7 +9,13 @@ function tickHistoryDemo() {
     api.events.on('history', function(response) {
         console.log(response.data);
     });
-    api.getMarketHistory({symbol: 'frxUSDJPY', end: 'latest', count: 10});
+    api.getTickHistory({symbol: 'frxUSDJPY', end: 'latest', count: 10});
+}
+
+function tickHistoryPromiseDemo() {
+    api.getTickHistory({symbol: 'frxUSDJPY', end: 'latest', count: 10}).then(function(response) {
+        console.log(response.data);
+    });
 }
 
 function forgetDemo() {
@@ -30,6 +36,10 @@ function pingDemo() {
     api.ping();
 }
 
+function pingPromiseDemo() {
+    api.ping().then(response => console.log);
+}
+
 function openPositionsDemo() {
     api.events.on('portfolio', function(response) {
         console.log(response.data);
@@ -44,5 +54,4 @@ function tradingTimesDemo() {
     api.getTradingTimes();
 }
 
-
-tradingTimesDemo();
+tickHistoryPromiseDemo();

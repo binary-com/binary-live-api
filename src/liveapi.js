@@ -14,6 +14,7 @@ export default class LiveApi {
         this.status = LiveApi.Status.Unknown;
         this.bufferedSends = [];
         this.bufferedExecutes = [];
+        this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
 
@@ -54,20 +55,31 @@ export default class LiveApi {
 
     onMessage(message) {
         const json = JSON.parse(message.data);
-        this.events.emit(json.msg_type, {
+        const response = {
             type: json.msg_type,
             data: json[json.msg_type],
             echo: json.echo_req
-        });
+        };
+        this.events.emit(json.msg_type, response);
+
+        const promise = this.unresolvedPromises[json.echo_req.uid];
+        if (promise) {
+            delete this.unresolvedPromises[json.echo_req.uid];
+            promise.resolve(response);
+        }
     }
 
     send(data) {
-        data.uid = Math.random() * 1e17;
+        data.uid = (Math.random() * 1e17).toString();
         if (this.isReady()) {
             this.socket.send(JSON.stringify(data));
         } else {
             this.bufferedSends.push(data);
         }
+        var promise = new Promise((resolve, reject) => {
+            this.unresolvedPromises[data.uid] = { resolve, reject };
+        });
+        return promise;
     }
 
     execute(func) {
@@ -83,52 +95,52 @@ export default class LiveApi {
 
 
     getTickHistory(tickHistoryOptions = {}) {
-        this.send({
+        return this.send({
             ticks: tickHistoryOptions.symbol,
             ...tickHistoryOptions
         });
     }
 
     getActiveSymbolsBrief() {
-        this.send({
+        return this.send({
             active_symbols: 'brief'
         });
     }
 
     getActiveSymbolsFull() {
-        this.send({
+        return this.send({
             active_symbols: 'full'
         });
     }
 
     getContractsForSymbol(symbol) {
-        this.send({
+        return this.send({
             contracts_for: symbol
         });
     }
 
     getPayoutCurrencies() {
-        this.send({
+        return this.send({
             payout_currencies: 1
         });
     }
 
     getTradingTimes(date = new Date()) {
         const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-        this.send({
+        return this.send({
             trading_times: dateStr
         });
     }
 
     ping() {
-        this.send({
+        return this.send({
             ping: 1
         });
     }
 
 
     getServerTime() {
-        this.send({
+        return this.send({
             time: 1
         });
     }
@@ -138,7 +150,7 @@ export default class LiveApi {
 
 
     subscribeToTick(symbol) {
-        this.send({
+        return this.send({
             ticks: symbol
         });
     }
@@ -148,14 +160,14 @@ export default class LiveApi {
     }
 
     getLatestPriceForContractProposal(contractProposal) {
-        this.send({
+        return this.send({
             proposal: 1,
             ...contractProposal
         });
     }
 
     unsubscribeFromTick(symbol) {
-        this.send({
+        return this.send({
             forget: symbol
         });
     }
@@ -165,25 +177,25 @@ export default class LiveApi {
     }
 
     unsubscribeFromAllTicks() {
-        this.send({
+        return this.send({
             forget_all: "ticks"
         });
     }
 
     unsubscribeFromAllProposals() {
-        this.send({
+        return this.send({
             forget_all: "proposal"
         });
     }
 
     unsubscribeFromAllPortfolios() {
-        this.send({
+        return this.send({
             forget_all: "portfolio"
         });
     }
 
     unsubscribeFromAlProposals() {
-        this.send({
+        return this.send({
             forget_all: "proposal_open_contract"
         });
     }
@@ -193,47 +205,47 @@ export default class LiveApi {
 
 
     authorize(token) {
-        this.send({
+        return this.send({
             authorize: token
         });
     }
 
     getBalance() {
-        this.send({
+        return this.send({
             balance: 1
         });
     }
 
     getStatement(statementOptions = {}) {
-        this.send({
+        return this.send({
             statement: 1,
             ...statementOptions
         });
     }
 
     getPortfolio(subscribeToUpdates = false) {
-        this.send({
+        return this.send({
             portfolio: 1,
             spawn: +subscribeToUpdates
         });
     }
 
     getPriceForOpenContract(contractId) {
-        this.send({
+        return this.send({
             proposal_open_contract: 1,
             fmd_id: contractId
         });
     }
 
     buyContract(contractId, price) {
-        this.send({
+        return this.send({
             buy: contractId,
             price: price
         });
     }
 
     sellContract(contractId, price) {
-        this.send({
+        return this.send({
             sell: contractId,
             price: price
         });
