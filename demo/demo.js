@@ -2,8 +2,8 @@ import { LiveApi } from '../lib/';
 
 var api = new LiveApi();
 
-api.authorize('3wXTOFIMNvhIs5UpARelBFQHzRhd2k2tQoxIK1VarnFOeAmd');
-
+const token = '3wXTOFIMNvhIs5UpARelBFQHzRhd2k2tQoxIK1VarnFOeAmd';
+api.authorize(token).then(() =>{ console.log('Authorized!') }, () => { console.log('Not Authorized')});
 
 function tickHistoryDemo() {
     api.events.on('history', function(response) {
@@ -37,7 +37,9 @@ function pingDemo() {
 }
 
 function pingPromiseDemo() {
-    api.ping().then(response => console.log);
+    api.ping().then(response => {
+        console.log(response)
+    });
 }
 
 function openPositionsDemo() {
@@ -55,3 +57,4 @@ function tradingTimesDemo() {
 }
 
 tickHistoryPromiseDemo();
+pingPromiseDemo();

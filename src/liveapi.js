@@ -58,26 +58,32 @@ export default class LiveApi {
         const response = {
             type: json.msg_type,
             data: json[json.msg_type],
-            echo: json.echo_req
+            echo: json.echo_req,
+            error: json.error
         };
         this.events.emit(json.msg_type, response);
 
-        const promise = this.unresolvedPromises[json.echo_req.uid];
+        const promise = this.unresolvedPromises[json.echo_req.passthrough.uid];
         if (promise) {
-            delete this.unresolvedPromises[json.echo_req.uid];
-            promise.resolve(response);
+            delete this.unresolvedPromises[json.echo_req.passthrough.uid];
+            if (!response.error) {
+                promise.resolve(response);
+            } else {
+                promise.reject(response.error);
+            }
         }
     }
 
     send(data) {
-        data.uid = (Math.random() * 1e17).toString();
+        const uid = (Math.random() * 1e17).toString();
+        data.passthrough = { uid };
         if (this.isReady()) {
             this.socket.send(JSON.stringify(data));
         } else {
             this.bufferedSends.push(data);
         }
         var promise = new Promise((resolve, reject) => {
-            this.unresolvedPromises[data.uid] = { resolve, reject };
+            this.unresolvedPromises[uid] = { resolve, reject };
         });
         return promise;
     }
@@ -150,7 +156,7 @@ export default class LiveApi {
 
 
     subscribeToTick(symbol) {
-        return this.send({
+        this.send({
             ticks: symbol
         });
     }

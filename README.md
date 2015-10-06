@@ -173,3 +173,12 @@ sellContract(contractId, price)
 ```
 
 [Documentation for 'Sell Contract' API Call](https://developers.binary.com/api/#sell)
+
+
+## Calls support Promise
+
+```
+getPortfolio().then(response) {
+    console.log(response);
+}
+```
