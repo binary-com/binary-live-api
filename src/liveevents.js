@@ -1,13 +1,11 @@
 export default class LiveEvents {
 
     constructor() {
-        this.messageHandlers = {
-            '*': []
-        };
+        this.messageHandlers = {};
     }
 
     emitSingle(msgType, msgData) {
-        this.messageHandlers[msgType].forEach(handler => {
+        (this.messageHandlers[msgType] || []).forEach(handler => {
             handler(msgData);
         });
     }
@@ -19,10 +17,6 @@ export default class LiveEvents {
     }
 
     emit(msgType, msgData) {
-        if (!this.messageHandlers[msgType]) {
-            return;
-        }
-        console.log('emitting', msgType);
         this.emitSingle(msgType, msgData);
         this.emitWildcard(msgData);
     }

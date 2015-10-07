@@ -63,8 +63,4 @@ api.events.on('*', function(response) {
 console.log(api.events.messageHandlers);
 
 // tickHistoryPromiseDemo();
-// pingPromiseDemo();
-
-pingDemo();
-
-api.sendRaw({ yolo: 'wtf'});
+pingPromiseDemo();
