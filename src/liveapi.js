@@ -25,6 +25,10 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
 
+        this.connect();
+    }
+
+    connect() {
         this.socket = new WebSocket(apiUrl);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
@@ -54,6 +58,10 @@ export default class LiveApi {
     }
 
     onClose() {
+        setTimeout(function() {
+            this.connect();
+            this.resubscribe();
+        }, 1000);
     }
 
     onError(error) {
