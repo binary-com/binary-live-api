@@ -13,7 +13,7 @@ function tickHistoryDemo() {
 }
 
 function tickHistoryPromiseDemo() {
-    api.getTickHistory({symbol: 'frxUSDJPY', end: 'latest', count: 10}).then(function(response) {
+    api.getTickHistory('frxUSDJPY', {end: 'latest', count: 10}).then(function(response) {
         console.log(response.data);
     });
 }

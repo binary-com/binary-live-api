@@ -25,7 +25,7 @@ send(data)
 ## Unauthenticated Calls
 
 ```
-getTickHistory(marketHistoryOptions)
+getTickHistory(symbol, tickHistoryOptions)
 ```
 
 [Documentation for Tick History API Call](https://developers.binary.com/api/#ticks)
@@ -88,7 +88,7 @@ subscribeToTicks(arrayOfSymbols)
 [Documentation for 'Tick Stream' API Call](https://developers.binary.com/api/#tick)
 
 ```
-getLatestPriceForContractProposal(contractProposal)
+getPriceForContractProposal(contractProposal)
 ```
 
 [Documentation for 'Price Proposal' API Call](https://developers.binary.com/api/#proposal)

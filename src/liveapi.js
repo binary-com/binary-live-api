@@ -2,6 +2,12 @@ import LiveEvents from './LiveEvents';
 
 const apiUrl = 'wss://ws.binary.com/websockets/v2';
 
+const noSubscriptions = () => ({
+    ticks: {},
+    portfolio: false,
+    priceProposal: null,
+});
+
 export default class LiveApi {
 
     static Status = {
@@ -10,8 +16,9 @@ export default class LiveApi {
     };
 
     constructor() {
-
         this.status = LiveApi.Status.Unknown;
+        this.subscriptions = noSubscriptions();
+
         this.bufferedSends = [];
         this.bufferedExecutes = [];
         this.unresolvedPromises = {};
@@ -96,13 +103,26 @@ export default class LiveApi {
         }
     }
 
+    resubscribe() {
+        const { ticks, portfolio } = this.subscriptions;
+
+        this.subscribeToTicks(Object.keys(ticks));
+
+        if (portfolio) {
+            this.getPortfolio(true);
+        }
+
+        if (priceProposal) {
+            this.getPriceForContractProposal(priceProposal);
+        }
+    }
 
     /////
 
 
-    getTickHistory(tickHistoryOptions = {}) {
+    getTickHistory(symbol, tickHistoryOptions = {}) {
         return this.send({
-            ticks: tickHistoryOptions.symbol,
+            ticks: symbol,
             ...tickHistoryOptions
         });
     }
@@ -156,6 +176,8 @@ export default class LiveApi {
 
 
     subscribeToTick(symbol) {
+        this.subscriptions.ticks[symbol] = true;
+
         this.send({
             ticks: symbol
         });
@@ -165,7 +187,7 @@ export default class LiveApi {
         symbols.forEach(this.subscribeToTick.bind(this));
     }
 
-    getLatestPriceForContractProposal(contractProposal) {
+    getPriceForContractProposal(contractProposal) {
         return this.send({
             proposal: 1,
             ...contractProposal
@@ -173,6 +195,8 @@ export default class LiveApi {
     }
 
     unsubscribeFromTick(symbol) {
+        delete this.subscriptions.ticks[symbol];
+
         return this.send({
             forget: symbol
         });
@@ -183,24 +207,32 @@ export default class LiveApi {
     }
 
     unsubscribeFromAllTicks() {
+        this.subscriptions.ticks[symbol] = {};
+
         return this.send({
             forget_all: "ticks"
         });
     }
 
     unsubscribeFromAllProposals() {
+        this.subscriptions.priceProposal = null;
+
         return this.send({
             forget_all: "proposal"
         });
     }
 
     unsubscribeFromAllPortfolios() {
+        this.subscriptions.portfolio = false;
+
         return this.send({
             forget_all: "portfolio"
         });
     }
 
     unsubscribeFromAlProposals() {
+        this.subscriptions = noSubscriptions();
+
         return this.send({
             forget_all: "proposal_open_contract"
         });
@@ -230,6 +262,9 @@ export default class LiveApi {
     }
 
     getPortfolio(subscribeToUpdates = false) {
+        if (subscribeToUpdates) {
+            this.subscriptions.portfolio = true;
+        }
         return this.send({
             portfolio: 1,
             spawn: +subscribeToUpdates
