@@ -7,7 +7,6 @@ export default class LiveEvents {
     }
 
     emitSingle(msgType, msgData) {
-
         this.messageHandlers[msgType].forEach(handler => {
             handler(msgData);
         });
@@ -20,17 +19,19 @@ export default class LiveEvents {
     }
 
     emit(msgType, msgData) {
-
-        if (!this.messageHandlers[msgType]) return;
-
+        if (!this.messageHandlers[msgType]) {
+            return;
+        }
+        console.log('emitting', msgType);
         this.emitSingle(msgType, msgData);
         this.emitWildcard(msgData);
     }
 
     on(msgType, callback) {
-
-        if (!this.messageHandlers[msgType]) this.messageHandlers[msgType] = [];
-
-        this.messageHandlers[msgType].push(callback);
+        if (!this.messageHandlers[msgType]) {
+            this.messageHandlers[msgType] = [callback];
+        } else {
+            this.messageHandlers[msgType].push(callback);
+        }
     }
 }

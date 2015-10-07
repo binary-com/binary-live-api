@@ -56,5 +56,13 @@ function tradingTimesDemo() {
     api.getTradingTimes();
 }
 
-tickHistoryPromiseDemo();
-pingPromiseDemo();
+api.events.on('*', function(response) {
+    console.log('all', response.data);
+});
+
+console.log(api.events.messageHandlers);
+
+// tickHistoryPromiseDemo();
+// pingPromiseDemo();
+
+pingDemo();

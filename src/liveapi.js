@@ -61,7 +61,7 @@ export default class LiveApi {
         setTimeout(function() {
             this.connect();
             this.resubscribe();
-        }, 1000);
+        }.bind(this), 1000);
     }
 
     onError(error) {
@@ -89,18 +89,21 @@ export default class LiveApi {
         }
     }
 
-    send(data) {
-        const uid = (Math.random() * 1e17).toString();
-        data.passthrough = { uid };
+    sendRaw(data) {
         if (this.isReady()) {
             this.socket.send(JSON.stringify(data));
         } else {
             this.bufferedSends.push(data);
         }
         var promise = new Promise((resolve, reject) => {
-            this.unresolvedPromises[uid] = { resolve, reject };
+            this.unresolvedPromises[data.uid] = { resolve, reject };
         });
         return promise;
+    }
+
+    send(data) {
+        data.passthrough = { uid: (Math.random() * 1e17).toString() };
+        return this.sendRaw(data);
     }
 
     execute(func) {
@@ -112,7 +115,7 @@ export default class LiveApi {
     }
 
     resubscribe() {
-        const { ticks, portfolio } = this.subscriptions;
+        const { ticks, portfolio, priceProposal } = this.subscriptions;
 
         this.subscribeToTicks(Object.keys(ticks));
 
