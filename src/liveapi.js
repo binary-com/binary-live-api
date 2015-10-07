@@ -78,6 +78,10 @@ export default class LiveApi {
         };
         this.events.emit(json.msg_type, response);
 
+        if (!json.echo_req.passthrough || !json.echo_req.passthrough.uid) {
+            return;
+        }
+
         const promise = this.unresolvedPromises[json.echo_req.passthrough.uid];
         if (promise) {
             delete this.unresolvedPromises[json.echo_req.passthrough.uid];

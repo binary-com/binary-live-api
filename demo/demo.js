@@ -66,3 +66,5 @@ console.log(api.events.messageHandlers);
 // pingPromiseDemo();
 
 pingDemo();
+
+api.sendRaw({ yolo: 'wtf'});
