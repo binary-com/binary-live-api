@@ -57,7 +57,7 @@ function tradingTimesDemo() {
 }
 
 api.events.on('*', function(response) {
-    console.log('all', response.data);
+    console.log('all', response);
 });
 
 console.log(api.events.messageHandlers);
