@@ -5,13 +5,15 @@ export default class LiveEvents {
     }
 
     emitSingle(msgType, msgData) {
-        (this.messageHandlers[msgType] || []).forEach(handler => {
+        const handlers = this.messageHandlers[msgType] || [];
+        handlers.forEach(handler => {
             handler(msgData);
         });
     }
 
     emitWildcard(msgData) {
-        this.messageHandlers['*'].forEach(handler => {
+        const handlers = this.messageHandlers['*'] || [];
+        handlers.forEach(handler => {
             handler(msgData);
         });
     }
