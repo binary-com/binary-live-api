@@ -162,7 +162,7 @@ export default class LiveApi {
     }
 
     getTradingTimes(date = new Date()) {
-        const dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         return this.send({
             trading_times: dateStr
         });
