@@ -2,6 +2,9 @@
 
 This library is a high-level abstraction over the [Binary.com Websockets API](https://developers.binary.com)
 
+
+## Usage in the Browser
+
 ```
 var api = new LiveApi();
 api.authorize('yourtoken');
@@ -11,6 +14,29 @@ api.events.on('portfolio', function(data) {
 });
 ```
 
+## Usage From Node
+
+Install a WebSockets library like 'ws'
+
+```
+npm init
+npm install ws --save
+npm install binary-live-api --save
+```
+
+Require the library and then pass it to LiveApi's constructor.
+
+```
+var ws = require('ws');
+var LiveApi = require('binary-live-api').LiveApi;
+
+var api = new LiveApi(ws);
+api.authorize('yourtoken');
+api.getPortfolio();
+api.events.on('portfolio', function(data) {
+    // do stuff with portfolio data
+});
+```
 
 ## Utility Functions
 

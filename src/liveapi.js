@@ -28,7 +28,7 @@ export default class LiveApi {
         this.connect(WebSocket || window.WebSocket);
     }
 
-    connect() {
+    connect(WebSocket) {
         this.socket = new WebSocket(apiUrl);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;

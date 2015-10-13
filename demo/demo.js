@@ -7,14 +7,14 @@ api.authorize(token).then(() =>{ console.log('Authorized!') }, () => { console.l
 
 function tickHistoryDemo() {
     api.events.on('history', function(response) {
-        console.log(response.data);
+        console.log(response);
     });
     api.getTickHistory({symbol: 'frxUSDJPY', end: 'latest', count: 10});
 }
 
 function tickHistoryPromiseDemo() {
     api.getTickHistory('frxUSDJPY', {end: 'latest', count: 10}).then(function(response) {
-        console.log(response.data);
+        console.log(response);
     });
 }
 
@@ -24,14 +24,14 @@ function forgetDemo() {
 
 function tickStreamDemo() {
     api.events.on('tick', function(response) {
-        console.log(response.data);
+        console.log(response);
     });
     api.subscribeToTick('frxUSDJPY');
 }
 
 function pingDemo() {
     api.events.on('ping', function(response) {
-        console.log(response.data);
+        console.log(response);
     });
     api.ping();
 }
@@ -44,14 +44,14 @@ function pingPromiseDemo() {
 
 function openPositionsDemo() {
     api.events.on('portfolio', function(response) {
-        console.log(response.data);
+        console.log(response);
     });
     api.getPortfolio();
 }
 
 function tradingTimesDemo() {
     api.events.on('trading_times', function(response) {
-        console.log(response.data);
+        console.log(response);
     });
     api.getTradingTimes();
 }
