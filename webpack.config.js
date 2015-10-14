@@ -23,7 +23,8 @@ if (is_production) {
 
 module.exports = {
     entry: [
-        'babel/polyfill'
+        'babel/polyfill',
+        './src/index'
     ],
     module: {
         loaders: [{
