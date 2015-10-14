@@ -101,7 +101,8 @@ export default class LiveApi {
     }
 
     send(data) {
-        data.passthrough = { uid: (Math.random() * 1e17).toString() };
+        data.passthrough = data.passthrough || { };
+        data.passthrough.uid =  (Math.random() * 1e17).toString();
         return this.sendRaw(data);
     }
 
