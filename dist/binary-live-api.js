@@ -5132,7 +5132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _LiveEvents2 = _interopRequireDefault(_LiveEvents);
 
-	var apiUrl = 'wss://ws.binary.com/websockets/v2';
+	var apiUrl = 'wss://www.binary.com/websockets/v2';
 
 	var noSubscriptions = function noSubscriptions() {
 	    return {
@@ -5152,7 +5152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true
 	    }]);
 
-	    function LiveApi(WebSocket) {
+	    function LiveApi(replacementForWebSocket) {
 	        _classCallCheck(this, LiveApi);
 
 	        this.status = LiveApi.Status.Unknown;
@@ -5164,10 +5164,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.events = new _LiveEvents2['default']();
 
-	        this.connect(WebSocket || window.WebSocket);
+	        if (replacementForWebSocket) {
+	            WebSocket = replacementForWebSocket;
+	        }
+
+	        this.connect();
 	    }
 
-	    LiveApi.prototype.connect = function connect(WebSocket) {
+	    LiveApi.prototype.connect = function connect() {
 	        this.socket = new WebSocket(apiUrl);
 	        this.socket.onopen = this.onOpen.bind(this);
 	        this.socket.onclose = this.onClose.bind(this);

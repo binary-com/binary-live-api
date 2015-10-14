@@ -15,7 +15,7 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor(WebSocket) {
+    constructor(replacementForWebSocket) {
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
 
@@ -25,10 +25,14 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
 
-        this.connect(WebSocket || window.WebSocket);
+        if (replacementForWebSocket) {
+            WebSocket = replacementForWebSocket;
+        }
+
+        this.connect();
     }
 
-    connect(WebSocket) {
+    connect() {
         this.socket = new WebSocket(apiUrl);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
