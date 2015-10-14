@@ -1,6 +1,6 @@
 import LiveEvents from './LiveEvents';
 
-const apiUrl = 'wss://ws.binary.com/websockets/v2';
+const apiUrl = 'wss://www.binary.com/websockets/v2';
 
 const noSubscriptions = () => ({
     ticks: {},
