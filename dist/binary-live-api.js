@@ -5132,6 +5132,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _LiveEvents2 = _interopRequireDefault(_LiveEvents);
 
+	var WebSocket = typeof window !== 'undefined' && window.WebSocket;
+
 	var apiUrl = 'wss://www.binary.com/websockets/v2';
 
 	var noSubscriptions = function noSubscriptions() {

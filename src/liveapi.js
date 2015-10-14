@@ -1,5 +1,7 @@
 import LiveEvents from './LiveEvents';
 
+let WebSocket = typeof window !== 'undefined' && window.WebSocket;
+
 const apiUrl = 'wss://www.binary.com/websockets/v2';
 
 const noSubscriptions = () => ({

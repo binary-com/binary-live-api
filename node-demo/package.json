@@ -10,7 +10,7 @@
   "author": "Boris Yankov <borisyankov@gmail.com> (https://github.com/borisyankov)",
   "license": "ISC",
   "dependencies": {
-    "binary-live-api": "^5.0.3",
+    "binary-live-api": "*",
     "ws": "^0.8.0"
   }
 }
