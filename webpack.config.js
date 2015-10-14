@@ -9,7 +9,8 @@ var plugins = [
     })
 ];
 
-if (process.env.NODE_ENV === 'production') {
+var is_production =  process.env.NODE_ENV === 'production';
+if (is_production) {
     plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             compressor: {
@@ -33,7 +34,9 @@ module.exports = {
     },
     output: {
         library: 'binary-live-api',
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
+        path: 'dist',
+        filename: is_production ? 'binary-live-api.min.js' : 'binary-live-api.js'
     },
     plugins: plugins,
     resolve: {
