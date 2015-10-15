@@ -5321,6 +5321,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 
+	    LiveApi.prototype.getAssetIndex = function getAssetIndex() {
+	        return this.send({
+	            asset_index: 1
+	        });
+	    };
+
 	    LiveApi.prototype.ping = function ping() {
 	        return this.send({
 	            ping: 1

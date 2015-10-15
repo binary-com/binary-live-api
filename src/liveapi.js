@@ -175,6 +175,12 @@ export default class LiveApi {
         });
     }
 
+    getAssetIndex() {
+        return this.send({
+            asset_index: 1
+        });
+    }
+
     ping() {
         return this.send({
             ping: 1
