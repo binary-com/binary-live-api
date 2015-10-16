@@ -230,7 +230,7 @@ export default class LiveApi {
     }
 
     unsubscribeFromAllTicks() {
-        this.subscriptions.ticks[symbol] = {};
+        this.subscriptions.ticks = {};
 
         return this.send({
             forget_all: "ticks"

@@ -5372,7 +5372,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    LiveApi.prototype.unsubscribeFromAllTicks = function unsubscribeFromAllTicks() {
-	        this.subscriptions.ticks[symbol] = {};
+	        this.subscriptions.ticks = {};
 
 	        return this.send({
 	            forget_all: "ticks"
