@@ -284,6 +284,13 @@ export default class LiveApi {
         });
     }
 
+    getProfitTable(profitTableOptions = {}) {
+        return this.send({
+            profit_table: 1,
+            ...profitTableOptions
+        });
+    }
+
     getPortfolio(subscribeToUpdates = false) {
         if (subscribeToUpdates) {
             this.subscriptions.portfolio = true;

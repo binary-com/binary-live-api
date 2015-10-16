@@ -5425,6 +5425,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, statementOptions));
 	    };
 
+	    LiveApi.prototype.getProfitTable = function getProfitTable() {
+	        var profitTableOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	        return this.send(_extends({
+	            profit_table: 1
+	        }, profitTableOptions));
+	    };
+
 	    LiveApi.prototype.getPortfolio = function getPortfolio() {
 	        var subscribeToUpdates = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
