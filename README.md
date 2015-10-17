@@ -114,10 +114,17 @@ subscribeToTicks(arrayOfSymbols)
 [Documentation for 'Tick Stream' API Call](https://developers.binary.com/api/#tick)
 
 ```
-getPriceForContractProposal(contractProposal)
+subscribeToPriceForContractProposal(contractProposal)
 ```
 
 [Documentation for 'Price Proposal' API Call](https://developers.binary.com/api/#proposal)
+
+```
+subscribeToOpenContract(contractId)
+subscribeToAllOpenContracts()
+```
+
+[Documentation for 'Price Proposal - Open Contract' API Call](https://developers.binary.com/api/#proposal_open_contract)
 
 ```
 unsubscribeFromTick(symbol)
@@ -177,16 +184,10 @@ getStatement(statementOptions = {})
 [Documentation for 'Statement' API Call](https://developers.binary.com/api/#statement)
 
 ```
-getPortfolio(subscribeToUpdates)
+getPortfolio()
 ```
 
 [Documentation for 'Portfolio' API Call](https://developers.binary.com/api/#portfolio)
-
-```
-getPriceForOpenContract(contractId)
-```
-
-[Documentation for 'Price Proposal - Open Contract' API Call](https://developers.binary.com/api/#proposal_open_contract)
 
 ```
 buyContract(contractId, price)

@@ -5347,10 +5347,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        symbols.forEach(this.subscribeToTick.bind(this));
 	    };
 
-	    LiveApi.prototype.getPriceForContractProposal = function getPriceForContractProposal(contractProposal) {
+	    LiveApi.prototype.subscribeToPriceForContractProposal = function subscribeToPriceForContractProposal(contractProposal) {
 	        return this.send(_extends({
 	            proposal: 1
 	        }, contractProposal));
+	    };
+
+	    LiveApi.prototype.subscribeToOpenContract = function subscribeToOpenContract(contractId) {
+	        return this.send({
+	            proposal_open_contract: 1,
+	            fmd_id: contractId
+	        });
+	    };
+
+	    LiveApi.prototype.subscribeToAllOpenContracts = function subscribeToAllOpenContracts() {
+	        return this.send({
+	            proposal_open_contract: 1
+	        });
 	    };
 
 	    LiveApi.prototype.unsubscribeFromTick = function unsubscribeFromTick(symbol) {
@@ -5430,13 +5443,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    LiveApi.prototype.getPortfolio = function getPortfolio() {
 	        return this.send({
 	            portfolio: 1
-	        });
-	    };
-
-	    LiveApi.prototype.getPriceForOpenContract = function getPriceForOpenContract(contractId) {
-	        return this.send({
-	            proposal_open_contract: 1,
-	            fmd_id: contractId
 	        });
 	    };
 

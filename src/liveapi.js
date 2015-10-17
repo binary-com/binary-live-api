@@ -205,10 +205,23 @@ export default class LiveApi {
         symbols.forEach(this.subscribeToTick.bind(this));
     }
 
-    getPriceForContractProposal(contractProposal) {
+    subscribeToPriceForContractProposal(contractProposal) {
         return this.send({
             proposal: 1,
             ...contractProposal
+        });
+    }
+
+    subscribeToOpenContract(contractId) {
+        return this.send({
+            proposal_open_contract: 1,
+            fmd_id: contractId
+        });
+    }
+
+    subscribeToAllOpenContracts() {
+        return this.send({
+            proposal_open_contract: 1
         });
     }
 
@@ -289,13 +302,6 @@ export default class LiveApi {
     getPortfolio() {
         return this.send({
             portfolio: 1
-        });
-    }
-
-    getPriceForOpenContract(contractId) {
-        return this.send({
-            proposal_open_contract: 1,
-            fmd_id: contractId
         });
     }
 
