@@ -6,7 +6,6 @@ const apiUrl = 'wss://www.binary.com/websockets/v2';
 
 const noSubscriptions = () => ({
     ticks: {},
-    portfolio: false,
     priceProposal: null,
 });
 
@@ -121,13 +120,9 @@ export default class LiveApi {
     }
 
     resubscribe() {
-        const { ticks, portfolio, priceProposal } = this.subscriptions;
+        const { ticks, priceProposal } = this.subscriptions;
 
         this.subscribeToTicks(Object.keys(ticks));
-
-        if (portfolio) {
-            this.getPortfolio(true);
-        }
 
         if (priceProposal) {
             this.getPriceForContractProposal(priceProposal);
@@ -291,13 +286,9 @@ export default class LiveApi {
         });
     }
 
-    getPortfolio(subscribeToUpdates = false) {
-        if (subscribeToUpdates) {
-            this.subscriptions.portfolio = true;
-        }
+    getPortfolio() {
         return this.send({
-            portfolio: 1,
-            spawn: +subscribeToUpdates
+            portfolio: 1
         });
     }
 

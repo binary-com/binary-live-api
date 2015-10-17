@@ -5139,7 +5139,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var noSubscriptions = function noSubscriptions() {
 	    return {
 	        ticks: {},
-	        portfolio: false,
 	        priceProposal: null
 	    };
 	};
@@ -5264,14 +5263,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    LiveApi.prototype.resubscribe = function resubscribe() {
 	        var _subscriptions = this.subscriptions;
 	        var ticks = _subscriptions.ticks;
-	        var portfolio = _subscriptions.portfolio;
 	        var priceProposal = _subscriptions.priceProposal;
 
 	        this.subscribeToTicks(Object.keys(ticks));
-
-	        if (portfolio) {
-	            this.getPortfolio(true);
-	        }
 
 	        if (priceProposal) {
 	            this.getPriceForContractProposal(priceProposal);
@@ -5434,14 +5428,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    LiveApi.prototype.getPortfolio = function getPortfolio() {
-	        var subscribeToUpdates = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-	        if (subscribeToUpdates) {
-	            this.subscriptions.portfolio = true;
-	        }
 	        return this.send({
-	            portfolio: 1,
-	            spawn: +subscribeToUpdates
+	            portfolio: 1
 	        });
 	    };
 
