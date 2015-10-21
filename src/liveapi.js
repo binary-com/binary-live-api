@@ -2,7 +2,7 @@ import LiveEvents from './LiveEvents';
 
 let WebSocket = typeof window !== 'undefined' && window.WebSocket;
 
-const apiUrl = 'wss://www.binary.com/websockets/v2';
+const apiUrl = 'wss://www.binary.com/websockets/v3';
 
 const noSubscriptions = () => ({
     ticks: {},
@@ -125,7 +125,7 @@ export default class LiveApi {
         this.subscribeToTicks(Object.keys(ticks));
 
         if (priceProposal) {
-            this.getPriceForContractProposal(priceProposal);
+            this.subscribeToPriceForContractProposal(priceProposal);
         }
     }
 
@@ -221,7 +221,7 @@ export default class LiveApi {
 
     subscribeToAllOpenContracts() {
         return this.send({
-            proposal_open_contract: 1
+            proposal_open_contract: 1,
         });
     }
 
