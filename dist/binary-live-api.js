@@ -5134,8 +5134,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var WebSocket = typeof window !== 'undefined' && window.WebSocket;
 
-	var apiUrl = 'wss://www.binary.com/websockets/v2';
-
 	var noSubscriptions = function noSubscriptions() {
 	    return {
 	        ticks: {},
@@ -5153,7 +5151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true
 	    }]);
 
-	    function LiveApi(replacementForWebSocket) {
+	    function LiveApi(options) {
 	        _classCallCheck(this, LiveApi);
 
 	        this.status = LiveApi.Status.Unknown;
@@ -5165,14 +5163,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.events = new _LiveEvents2['default']();
 
-	        if (replacementForWebSocket) {
-	            WebSocket = replacementForWebSocket;
+	        if (options.websocket) {
+	            WebSocket = options.websocket;
 	        }
 
-	        this.connect();
+	        this.connect(options.apiUrl || 'wss://www.binary.com/websockets/v3');
 	    }
 
-	    LiveApi.prototype.connect = function connect() {
+	    LiveApi.prototype.connect = function connect(apiUrl) {
 	        this.socket = new WebSocket(apiUrl);
 	        this.socket.onopen = this.onOpen.bind(this);
 	        this.socket.onclose = this.onClose.bind(this);
@@ -5268,7 +5266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.subscribeToTicks(Object.keys(ticks));
 
 	        if (priceProposal) {
-	            this.getPriceForContractProposal(priceProposal);
+	            this.subscribeToPriceForContractProposal(priceProposal);
 	        }
 	    };
 

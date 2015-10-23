@@ -2,8 +2,6 @@ import LiveEvents from './LiveEvents';
 
 let WebSocket = typeof window !== 'undefined' && window.WebSocket;
 
-const apiUrl = 'wss://www.binary.com/websockets/v3';
-
 const noSubscriptions = () => ({
     ticks: {},
     priceProposal: null,
@@ -16,7 +14,7 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor(replacementForWebSocket) {
+    constructor(options) {
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
 
@@ -26,14 +24,14 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
 
-        if (replacementForWebSocket) {
-            WebSocket = replacementForWebSocket;
+        if (options.websocket) {
+            WebSocket = options.websocket;
         }
 
-        this.connect();
+        this.connect(options.apiUrl || 'wss://www.binary.com/websockets/v3');
     }
 
-    connect() {
+    connect(apiUrl) {
         this.socket = new WebSocket(apiUrl);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;

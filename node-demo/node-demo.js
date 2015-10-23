@@ -1,7 +1,7 @@
 var ws = require('ws');
 var LiveApi = require('binary-live-api').LiveApi;
 
-var api = new LiveApi(ws);
+var api = new LiveApi({ websocket: ws });
 
 function pingWithEventHandlers() {
     api.events.on('ping', function(response) {
