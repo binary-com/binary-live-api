@@ -3,5 +3,5 @@ node_modules
 .DS_Store
 lib
 coverage
-demo/dist
-node-demo/dist
+demos/node/dist
+demos/advanced/dist

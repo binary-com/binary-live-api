@@ -14,7 +14,7 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor(options) {
+    constructor(options = {}) {
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
 
