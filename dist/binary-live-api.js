@@ -5151,11 +5151,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        enumerable: true
 	    }]);
 
-	    function LiveApi() {
-	        var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    function LiveApi(_ref) {
+	        var _ref$apiUrl = _ref.apiUrl;
+	        var apiUrl = _ref$apiUrl === undefined ? 'wss://www.binary.com/websockets/v3' : _ref$apiUrl;
+	        var websocket = _ref.websocket;
 
 	        _classCallCheck(this, LiveApi);
 
+	        this.apiUrl = apiUrl;
 	        this.status = LiveApi.Status.Unknown;
 	        this.subscriptions = noSubscriptions();
 
@@ -5165,15 +5168,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.events = new _LiveEvents2['default']();
 
-	        if (options.websocket) {
+	        if (websocket) {
 	            WebSocket = options.websocket;
 	        }
 
-	        this.connect(options.apiUrl || 'wss://www.binary.com/websockets/v3');
+	        this.connect(this.apiUrl || 'wss://www.binary.com/websockets/v3');
 	    }
 
-	    LiveApi.prototype.connect = function connect(apiUrl) {
-	        this.socket = new WebSocket(apiUrl);
+	    LiveApi.prototype.connect = function connect() {
+	        this.socket = new WebSocket(this.apiUrl);
 	        this.socket.onopen = this.onOpen.bind(this);
 	        this.socket.onclose = this.onClose.bind(this);
 	        this.socket.onerror = this.onError.bind(this);
@@ -5241,7 +5244,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.bufferedSends.push(data);
 	        }
 	        var promise = new Promise(function (resolve, reject) {
-	            _this.unresolvedPromises[data.passthrough.uid] = { resolve: resolve, reject: reject };
+	            if (data.passthrough) {
+	                _this.unresolvedPromises[data.passthrough.uid] = { resolve: resolve, reject: reject };
+	            }
 	        });
 	        return promise;
 	    };

@@ -14,7 +14,8 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor(options = {}) {
+    constructor({apiUrl = 'wss://www.binary.com/websockets/v3', websocket} = {}) {
+        this.apiUrl = apiUrl;
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
 
@@ -24,15 +25,15 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
 
-        if (options.websocket) {
+        if (websocket) {
             WebSocket = options.websocket;
         }
 
-        this.connect(options.apiUrl || 'wss://www.binary.com/websockets/v3');
+        this.connect(this.apiUrl || 'wss://www.binary.com/websockets/v3');
     }
 
-    connect(apiUrl) {
-        this.socket = new WebSocket(apiUrl);
+    connect() {
+        this.socket = new WebSocket(this.apiUrl);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
@@ -98,14 +99,16 @@ export default class LiveApi {
             this.bufferedSends.push(data);
         }
         var promise = new Promise((resolve, reject) => {
-            this.unresolvedPromises[data.passthrough.uid] = { resolve, reject };
+            if (data.passthrough) {
+                this.unresolvedPromises[data.passthrough.uid] = { resolve, reject };
+            }
         });
         return promise;
     }
 
     send(data) {
         data.passthrough = data.passthrough || { };
-        data.passthrough.uid =  (Math.random() * 1e17).toString();
+        data.passthrough.uid = (Math.random() * 1e17).toString();
         return this.sendRaw(data);
     }
 
