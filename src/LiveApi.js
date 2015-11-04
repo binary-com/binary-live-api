@@ -15,6 +15,7 @@ export default class LiveApi {
     };
 
     constructor({apiUrl = 'wss://www.binary.com/websockets/v3', websocket} = {}) {
+        // options is arguments
         var options = arguments[0];
         this.apiUrl = apiUrl;
         this.status = LiveApi.Status.Unknown;
