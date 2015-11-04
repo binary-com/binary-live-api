@@ -69,7 +69,15 @@ export default class LiveApi {
     }
 
     onError(error) {
-        console.log(error);
+        // for process manager like pm2.
+        // It's necessary to print error with console.error.
+        // It will make error readable on error.log
+        console.error(error);
+        
+        // And also make process exiting to respawn.
+        if (typeof process !== "undefined") {
+            process.exit();
+        }
     }
 
     onMessage(message) {
