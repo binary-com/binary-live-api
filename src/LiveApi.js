@@ -15,6 +15,7 @@ export default class LiveApi {
     };
 
     constructor({apiUrl = 'wss://www.binary.com/websockets/v3', websocket} = {}) {
+        var options = arguments[0];
         this.apiUrl = apiUrl;
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
@@ -69,7 +70,15 @@ export default class LiveApi {
     }
 
     onError(error) {
-        console.log(error);
+        // for process manager like pm2.
++        // It's necessary to print error with console.error.
++        // It will make error readable on error.log
++        console.error(error);
++        
++        // And also make process exiting to respawn.
++        if (typeof process !== "undefined") {
++            process.exit();
++        }
     }
 
     onMessage(message) {
