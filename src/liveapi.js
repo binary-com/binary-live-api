@@ -193,6 +193,12 @@ export default class LiveApi {
     /////
 
 
+    subscribeToBalance() {
+        return this.send({
+            balance: 1
+        });
+    }
+
     subscribeToTick(symbol) {
         this.subscriptions.ticks[symbol] = true;
 
@@ -276,12 +282,6 @@ export default class LiveApi {
     authorize(token) {
         return this.send({
             authorize: token
-        });
-    }
-
-    getBalance() {
-        return this.send({
-            balance: 1
         });
     }
 
