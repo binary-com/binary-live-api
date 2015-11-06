@@ -129,15 +129,7 @@ export default class LiveApi {
         }
     }
 
-    /////
-
-
-    getTickHistory(symbol, tickHistoryOptions = {}) {
-        return this.send({
-            ticks: symbol,
-            ...tickHistoryOptions
-        });
-    }
+    ///// Unauthenticated Calls
 
     getActiveSymbolsBrief() {
         return this.send({
@@ -151,15 +143,71 @@ export default class LiveApi {
         });
     }
 
+    getAssetIndex() {
+        return this.send({
+            asset_index: 1
+        });
+    }
+
     getContractsForSymbol(symbol) {
         return this.send({
             contracts_for: symbol
         });
     }
 
+    getLandingCompany(landingCompany) {
+        return this.send({
+            landing_company: landingCompany
+        });
+    }
+
+    getLandingCompanyDetails(landingCompany) {
+        return this.send({
+            landing_company_details: landingCompany
+        });
+    }
+
+    createVirtualAccount(options) {
+        return this.send({
+            new_account_virtual: 1,
+            ...options
+        });
+    }
+
     getPayoutCurrencies() {
         return this.send({
             payout_currencies: 1
+        });
+    }
+
+    ping() {
+        return this.send({
+            ping: 1
+        });
+    }
+
+    getServerTime() {
+        return this.send({
+            time: 1
+        });
+    }
+
+    getResidences() {
+        return this.send({
+            residence_list: 1
+        });
+    }
+
+    getStatesForCountry(countryCode) {
+        return this.send({
+            states_list: countryCode
+        });
+    }
+
+    getTickHistory(symbol, options = {}) {
+        return this.send({
+            ticks_history: symbol,
+            ...options
         });
     }
 
@@ -170,34 +218,14 @@ export default class LiveApi {
         });
     }
 
-    getAssetIndex() {
+    verifyEmail(email) {
         return this.send({
-            asset_index: 1
-        });
-    }
-
-    ping() {
-        return this.send({
-            ping: 1
+            verify_email: email
         });
     }
 
 
-    getServerTime() {
-        return this.send({
-            time: 1
-        });
-    }
-
-
-    /////
-
-
-    subscribeToBalance() {
-        return this.send({
-            balance: 1
-        });
-    }
+    ///// Unathenticated Streams
 
     subscribeToTick(symbol) {
         this.subscriptions.ticks[symbol] = true;
@@ -211,10 +239,16 @@ export default class LiveApi {
         symbols.forEach(this.subscribeToTick.bind(this));
     }
 
-    subscribeToPriceForContractProposal(contractProposal) {
+    subscribeToPriceForContractProposal(options) {
         return this.send({
             proposal: 1,
-            ...contractProposal
+            ...options
+        });
+    }
+
+    subscribeToBalance() {
+        return this.send({
+            balance: 1
         });
     }
 
@@ -276,7 +310,7 @@ export default class LiveApi {
     }
 
 
-    /////
+    ///// Authenticated Calls (no side effects)
 
 
     authorize(token) {
@@ -285,17 +319,28 @@ export default class LiveApi {
         });
     }
 
-    getStatement(statementOptions = {}) {
+    getAccountLimits() {
         return this.send({
-            statement: 1,
-            ...statementOptions
+            get_limits: 1
         });
     }
 
-    getProfitTable(profitTableOptions = {}) {
+    getAccountSettings() {
         return this.send({
-            profit_table: 1,
-            ...profitTableOptions
+            get_settings: 1
+        });
+    }
+
+    getAccountStatus() {
+        return this.send({
+            get_account_status: 1
+        });
+    }
+
+    getStatement(statementOptions = {}) {
+        return this.send({
+            statement: 1,
+            ...options
         });
     }
 
@@ -304,6 +349,15 @@ export default class LiveApi {
             portfolio: 1
         });
     }
+
+    getProfitTable(profitTableOptions = {}) {
+        return this.send({
+            profit_table: 1,
+            ...options
+        });
+    }
+
+    ///// Authenticated Calls (with side effects)
 
     buyContract(contractId, price) {
         return this.send({
@@ -316,6 +370,13 @@ export default class LiveApi {
         return this.send({
             sell: contractId,
             price: price
+        });
+    }
+
+    setAccountSettings(options) {
+        return this.send({
+            set_settings: 1,
+            ...options
         });
     }
 }

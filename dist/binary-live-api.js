@@ -5272,15 +5272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    };
 
-	    /////
-
-	    LiveApi.prototype.getTickHistory = function getTickHistory(symbol) {
-	        var tickHistoryOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-	        return this.send(_extends({
-	            ticks: symbol
-	        }, tickHistoryOptions));
-	    };
+	    ///// Unauthenticated Calls
 
 	    LiveApi.prototype.getActiveSymbolsBrief = function getActiveSymbolsBrief() {
 	        return this.send({
@@ -5294,30 +5286,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 
+	    LiveApi.prototype.getAssetIndex = function getAssetIndex() {
+	        return this.send({
+	            asset_index: 1
+	        });
+	    };
+
 	    LiveApi.prototype.getContractsForSymbol = function getContractsForSymbol(symbol) {
 	        return this.send({
 	            contracts_for: symbol
 	        });
 	    };
 
+	    LiveApi.prototype.getLandingCompany = function getLandingCompany(landingCompany) {
+	        return this.send({
+	            landing_company: landingCompany
+	        });
+	    };
+
+	    LiveApi.prototype.getLandingCompanyDetails = function getLandingCompanyDetails(landingCompany) {
+	        return this.send({
+	            landing_company_details: landingCompany
+	        });
+	    };
+
+	    LiveApi.prototype.createVirtualAccount = function createVirtualAccount(options) {
+	        return this.send(_extends({
+	            new_account_virtual: 1
+	        }, options));
+	    };
+
 	    LiveApi.prototype.getPayoutCurrencies = function getPayoutCurrencies() {
 	        return this.send({
 	            payout_currencies: 1
-	        });
-	    };
-
-	    LiveApi.prototype.getTradingTimes = function getTradingTimes() {
-	        var date = arguments.length <= 0 || arguments[0] === undefined ? new Date() : arguments[0];
-
-	        var dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-	        return this.send({
-	            trading_times: dateStr
-	        });
-	    };
-
-	    LiveApi.prototype.getAssetIndex = function getAssetIndex() {
-	        return this.send({
-	            asset_index: 1
 	        });
 	    };
 
@@ -5333,7 +5334,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 
-	    /////
+	    LiveApi.prototype.getResidences = function getResidences() {
+	        return this.send({
+	            residence_list: 1
+	        });
+	    };
+
+	    LiveApi.prototype.getStatesForCountry = function getStatesForCountry(countryCode) {
+	        return this.send({
+	            states_list: countryCode
+	        });
+	    };
+
+	    LiveApi.prototype.getTickHistory = function getTickHistory(symbol) {
+	        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	        return this.send(_extends({
+	            ticks_history: symbol
+	        }, options));
+	    };
+
+	    LiveApi.prototype.getTradingTimes = function getTradingTimes() {
+	        var date = arguments.length <= 0 || arguments[0] === undefined ? new Date() : arguments[0];
+
+	        var dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+	        return this.send({
+	            trading_times: dateStr
+	        });
+	    };
+
+	    LiveApi.prototype.verifyEmail = function verifyEmail(email) {
+	        return this.send({
+	            verify_email: email
+	        });
+	    };
+
+	    ///// Unathenticated Streams
 
 	    LiveApi.prototype.subscribeToTick = function subscribeToTick(symbol) {
 	        this.subscriptions.ticks[symbol] = true;
@@ -5347,10 +5383,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        symbols.forEach(this.subscribeToTick.bind(this));
 	    };
 
-	    LiveApi.prototype.subscribeToPriceForContractProposal = function subscribeToPriceForContractProposal(contractProposal) {
+	    LiveApi.prototype.subscribeToPriceForContractProposal = function subscribeToPriceForContractProposal(options) {
 	        return this.send(_extends({
 	            proposal: 1
-	        }, contractProposal));
+	        }, options));
+	    };
+
+	    LiveApi.prototype.subscribeToBalance = function subscribeToBalance() {
+	        return this.send({
+	            balance: 1
+	        });
 	    };
 
 	    LiveApi.prototype.subscribeToOpenContract = function subscribeToOpenContract(contractId) {
@@ -5410,7 +5452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 
-	    /////
+	    ///// Authenticated Calls (no side effects)
 
 	    LiveApi.prototype.authorize = function authorize(token) {
 	        return this.send({
@@ -5418,9 +5460,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	    };
 
-	    LiveApi.prototype.getBalance = function getBalance() {
+	    LiveApi.prototype.getAccountLimits = function getAccountLimits() {
 	        return this.send({
-	            balance: 1
+	            get_limits: 1
+	        });
+	    };
+
+	    LiveApi.prototype.getAccountSettings = function getAccountSettings() {
+	        return this.send({
+	            get_settings: 1
+	        });
+	    };
+
+	    LiveApi.prototype.getAccountStatus = function getAccountStatus() {
+	        return this.send({
+	            get_account_status: 1
 	        });
 	    };
 
@@ -5429,15 +5483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return this.send(_extends({
 	            statement: 1
-	        }, statementOptions));
-	    };
-
-	    LiveApi.prototype.getProfitTable = function getProfitTable() {
-	        var profitTableOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	        return this.send(_extends({
-	            profit_table: 1
-	        }, profitTableOptions));
+	        }, options));
 	    };
 
 	    LiveApi.prototype.getPortfolio = function getPortfolio() {
@@ -5445,6 +5491,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            portfolio: 1
 	        });
 	    };
+
+	    LiveApi.prototype.getProfitTable = function getProfitTable() {
+	        var profitTableOptions = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	        return this.send(_extends({
+	            profit_table: 1
+	        }, options));
+	    };
+
+	    ///// Authenticated Calls (with side effects)
 
 	    LiveApi.prototype.buyContract = function buyContract(contractId, price) {
 	        return this.send({
@@ -5458,6 +5514,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            sell: contractId,
 	            price: price
 	        });
+	    };
+
+	    LiveApi.prototype.setAccountSettings = function setAccountSettings(options) {
+	        return this.send(_extends({
+	            set_settings: 1
+	        }, options));
 	    };
 
 	    return LiveApi;
