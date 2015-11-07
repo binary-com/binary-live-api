@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "6.6.3",
+  "version": "8.0.0",
   "description": "JS library to consume Binary.com WebSocket API",
   "main": "lib/index.js",
   "devDependencies": {
@@ -19,7 +19,8 @@
     "lint": "eslint src test demo",
     "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive",
     "test:watch": "NODE_ENV=test mocha --compilers js:babel/register --recursive --watch",
-    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha -- --recursive"
+    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha -- --recursive",
+    "prepublish": "babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
