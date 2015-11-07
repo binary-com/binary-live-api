@@ -337,7 +337,7 @@ export default class LiveApi {
         });
     }
 
-    getStatement(statementOptions = {}) {
+    getStatement(options = {}) {
         return this.send({
             statement: 1,
             ...options
@@ -350,7 +350,7 @@ export default class LiveApi {
         });
     }
 
-    getProfitTable(profitTableOptions = {}) {
+    getProfitTable(options = {}) {
         return this.send({
             profit_table: 1,
             ...options
