@@ -384,6 +384,13 @@ export default class LiveApi {
         });
     }
 
+    createRealAccount(options) {
+        return this.send({
+            new_account_real: 1,
+            ...options
+        });
+    }
+
     setAccountSettings(options) {
         return this.send({
             set_settings: 1,
