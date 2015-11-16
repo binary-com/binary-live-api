@@ -348,6 +348,12 @@ export default class LiveApi {
         });
     }
 
+    getSelfExclusion() {
+        return this.send({
+            get_self_exclusion: 1
+        });
+    }
+
     getStatement(options = {}) {
         return this.send({
             statement: 1,
@@ -387,6 +393,13 @@ export default class LiveApi {
     createRealAccount(options) {
         return this.send({
             new_account_real: 1,
+            ...options
+        });
+    }
+
+    setSelfExclusion(options) {
+        return this.send({
+            set_self_exclusion: 1,
             ...options
         });
     }
