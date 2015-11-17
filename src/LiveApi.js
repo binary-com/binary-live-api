@@ -203,6 +203,12 @@ export default class LiveApi {
         });
     }
 
+    getPaymentAgentsForCountry(countryCode) {
+        return this.send({
+            paymentagent_list: countryCode
+        });
+    }
+
     getResidences() {
         return this.send({
             residence_list: 1
