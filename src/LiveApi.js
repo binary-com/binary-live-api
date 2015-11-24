@@ -40,6 +40,15 @@ export default class LiveApi {
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
         this.socket.onmessage = ::this.onMessage;
+
+        if (this.token) {
+            this.authorize(this.token);
+        }
+    }
+
+    disconnect() {
+        this.token = '';
+        this.socket.close();
     }
 
     isReady() {
@@ -331,6 +340,7 @@ export default class LiveApi {
 
 
     authorize(token) {
+        this.token = token;
         return this.send({
             authorize: token
         });
