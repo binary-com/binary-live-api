@@ -1,26 +1,27 @@
 {
   "name": "binary-live-api",
-  "version": "8.4.0",
+  "version": "9.0.1",
   "description": "JS library to consume Binary.com WebSocket API",
-  "main": "lib/index.js",
+  "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "babel": "*",
-    "babel-core": "*",
-    "babel-eslint": "*",
-    "babel-loader": "*",
+    "babel": "^6.1.18",
+    "babel-core": "^6.1.18",
+    "babel-eslint": "^5.0.0-beta2",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.18",
+    "eslint": "^1.10.2",
+    "eslint-loader": "^1.1.1",
     "rimraf": "^2.4.2",
     "webpack": "*"
   },
   "scripts": {
     "clean": "rimraf lib dist",
-    "start": "babel src --out-dir lib --watch",
-    "build": "babel src --out-dir lib",
-    "build:umd": "webpack src/index.js dist/library-boilerplate.js && NODE_ENV=production webpack src/index.js dist/library-boilerplate.min.js",
-    "lint": "eslint src test demo",
-    "test": "NODE_ENV=test mocha --compilers js:babel/register --recursive",
-    "test:watch": "NODE_ENV=test mocha --compilers js:babel/register --recursive --watch",
-    "test:cov": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha -- --recursive",
-    "prepublish": "babel src --out-dir lib"
+    "start": "webpack --watch",
+    "build": "webpack",
+    "lint": "eslint src",
+    "prepublish": "webpack"
   },
   "repository": {
     "type": "git",
@@ -31,5 +32,12 @@
   "bugs": {
     "url": "https://github.com/binary-com/binary-live-api/issues"
   },
-  "homepage": "https://github.com/binary-com/binary-live-api#readme"
+  "homepage": "https://github.com/binary-com/binary-live-api#readme",
+  "babel": {
+    "presets": [
+      "react",
+      "es2015",
+      "stage-0"
+    ]
+  }
 }

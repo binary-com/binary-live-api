@@ -262,7 +262,11 @@ export default class LiveApi {
     }
 
     subscribeToTicks(symbols) {
-        symbols.forEach(this.subscribeToTick.bind(this));
+        this.subscriptions.ticks = symbols;
+
+        this.send({
+            ticks: symbols
+        });
     }
 
     subscribeToPriceForContractProposal(options) {
@@ -409,6 +413,41 @@ export default class LiveApi {
     createRealAccount(options) {
         return this.send({
             new_account_real: 1,
+            ...options
+        });
+    }
+
+    createRealAccount(options) {
+        return this.send({
+            new_account_real: 1,
+            ...options
+        });
+    }
+
+    createRealAccountMaltaInvest(options) {
+        return this.send({
+            new_account_maltainvest: 1,
+            ...options
+        });
+    }
+
+    createRealAccountMaltaInvest(options) {
+        return this.send({
+            new_account_maltainvest: 1,
+            ...options
+        });
+    }
+
+    withdrawToPaymentAgent(options) {
+        return this.send({
+            paymentagent_withdraw: 1,
+            ...options
+        });
+    }
+
+    paymentAgentTransfer(options) {
+        return this.send({
+            paymentagent_transfer: 1,
             ...options
         });
     }

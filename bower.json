@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "8.4.0",
+  "version": "9.0.1",
   "homepage": "https://github.com/binary-com/binary-live-api",
   "authors": [
     "Boris Yankov <boris@binary.com>"
@@ -22,6 +22,5 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
   ]
 }
