@@ -14,7 +14,7 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor({apiUrl = 'wss://www.binary.com/websockets/v3', language = 'en', websocket} = {}) {
+    constructor({apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket} = {}) {
         // options is arguments
         var options = arguments[0];
         this.apiUrl = apiUrl;
@@ -36,7 +36,7 @@ export default class LiveApi {
     }
 
     connect() {
-        this.socket = new WebSocket(this.apiUrl + '&l=' + this.language);
+        this.socket = new WebSocket(this.apiUrl + '?l=' + this.language);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
