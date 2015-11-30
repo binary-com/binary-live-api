@@ -14,10 +14,11 @@ export default class LiveApi {
         Connected: 'connected'
     };
 
-    constructor({apiUrl = 'wss://www.binary.com/websockets/v3', websocket} = {}) {
+    constructor({apiUrl = 'wss://www.binary.com/websockets/v3', language = 'en', websocket} = {}) {
         // options is arguments
         var options = arguments[0];
         this.apiUrl = apiUrl;
+        this.language = language;
         this.status = LiveApi.Status.Unknown;
         this.subscriptions = noSubscriptions();
 
@@ -31,11 +32,11 @@ export default class LiveApi {
             WebSocket = options.websocket;
         }
 
-        this.connect(this.apiUrl || 'wss://www.binary.com/websockets/v3');
+        this.connect();
     }
 
     connect() {
-        this.socket = new WebSocket(this.apiUrl);
+        this.socket = new WebSocket(this.apiUrl + '&l=' + this.language);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
