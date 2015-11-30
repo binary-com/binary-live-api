@@ -5169,7 +5169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            WebSocket = options.websocket;
 	        }
 
-	        this.connect(options.apiUrl || 'wss://www.binary.com/websockets/v3');
+	        this.connect(options.apiUrl || 'wss://ws.binaryws.com/websockets/v3');
 	    }
 
 	    LiveApi.prototype.connect = function connect(apiUrl) {
