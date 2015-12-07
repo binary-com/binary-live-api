@@ -49,7 +49,14 @@ export default class LiveApi {
 
     disconnect() {
         this.token = '';
+        this.socket.onclose = undefined;
         this.socket.close();
+    }
+
+    changeLanguage(ln) {
+        this.disconnect();
+        this.language = ln;
+        this.connect();
     }
 
     isReady() {
