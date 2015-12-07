@@ -54,7 +54,11 @@ export default class LiveApi {
     }
 
     changeLanguage(ln) {
-        this.disconnect();
+        if (ln === this.language) {
+            return;
+        }
+        this.socket.onclose = undefined;
+        this.socket.close();
         this.language = ln;
         this.connect();
     }
