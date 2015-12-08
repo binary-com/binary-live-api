@@ -11,12 +11,12 @@ export default class LiveApi {
 
     static Status = {
         Unknown: 'unknown',
-        Connected: 'connected'
+        Connected: 'connected',
     };
 
-    constructor({apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket} = {}) {
+    constructor({ apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket } = {}) {
         // options is arguments
-        var options = arguments[0];
+        const options = arguments[0];
         this.apiUrl = apiUrl;
         this.language = language;
         this.status = LiveApi.Status.Unknown;
@@ -85,20 +85,20 @@ export default class LiveApi {
     }
 
     onClose() {
-        setTimeout(function() {
+        setTimeout(() => {
             this.connect();
             this.resubscribe();
-        }.bind(this), 1000);
+        }, 1000);
     }
 
     onError(error) {
         // for process manager like pm2.
         // It's necessary to print error with console.error.
         // It will make error readable on error.log
-        console.error(error);
+        window.console.error(error);
 
         // And also make process exiting to respawn.
-        if (typeof process !== "undefined") {
+        if (typeof process === 'function') {
             process.exit();
         }
     }
@@ -129,7 +129,7 @@ export default class LiveApi {
         } else {
             this.bufferedSends.push(data);
         }
-        var promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             if (data.passthrough) {
                 this.unresolvedPromises[data.passthrough.uid] = { resolve, reject };
             }
@@ -161,115 +161,115 @@ export default class LiveApi {
         }
     }
 
-    ///// Unauthenticated Calls
+    // Unauthenticated Calls
 
     getActiveSymbolsBrief() {
         return this.send({
-            active_symbols: 'brief'
+            active_symbols: 'brief',
         });
     }
 
     getActiveSymbolsFull() {
         return this.send({
-            active_symbols: 'full'
+            active_symbols: 'full',
         });
     }
 
     getAssetIndex() {
         return this.send({
-            asset_index: 1
+            asset_index: 1,
         });
     }
 
     getContractsForSymbol(symbol) {
         return this.send({
-            contracts_for: symbol
+            contracts_for: symbol,
         });
     }
 
     getLandingCompany(landingCompany) {
         return this.send({
-            landing_company: landingCompany
+            landing_company: landingCompany,
         });
     }
 
     getLandingCompanyDetails(landingCompany) {
         return this.send({
-            landing_company_details: landingCompany
+            landing_company_details: landingCompany,
         });
     }
 
     createVirtualAccount(options) {
         return this.send({
             new_account_virtual: 1,
-            ...options
+            ...options,
         });
     }
 
     getPayoutCurrencies() {
         return this.send({
-            payout_currencies: 1
+            payout_currencies: 1,
         });
     }
 
     ping() {
         return this.send({
-            ping: 1
+            ping: 1,
         });
     }
 
     getServerTime() {
         return this.send({
-            time: 1
+            time: 1,
         });
     }
 
     getPaymentAgentsForCountry(countryCode) {
         return this.send({
-            paymentagent_list: countryCode
+            paymentagent_list: countryCode,
         });
     }
 
     getResidences() {
         return this.send({
-            residence_list: 1
+            residence_list: 1,
         });
     }
 
     getStatesForCountry(countryCode) {
         return this.send({
-            states_list: countryCode
+            states_list: countryCode,
         });
     }
 
     getTickHistory(symbol, options = {}) {
         return this.send({
             ticks_history: symbol,
-            ...options
+            ...options,
         });
     }
 
     getTradingTimes(date = new Date()) {
         const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         return this.send({
-            trading_times: dateStr
+            trading_times: dateStr,
         });
     }
 
     verifyEmail(email) {
         return this.send({
-            verify_email: email
+            verify_email: email,
         });
     }
 
 
-    ///// Unathenticated Streams
+    // Unathenticated Streams
 
     subscribeToTick(symbol) {
         this.subscriptions.ticks[symbol] = true;
 
         this.send({
-            ticks: symbol
+            ticks: symbol,
         });
     }
 
@@ -277,27 +277,27 @@ export default class LiveApi {
         this.subscriptions.ticks = symbols;
 
         this.send({
-            ticks: symbols
+            ticks: symbols,
         });
     }
 
     subscribeToPriceForContractProposal(options) {
         return this.send({
             proposal: 1,
-            ...options
+            ...options,
         });
     }
 
     subscribeToBalance() {
         return this.send({
-            balance: 1
+            balance: 1,
         });
     }
 
     subscribeToOpenContract(contractId) {
         return this.send({
             proposal_open_contract: 1,
-            fmd_id: contractId
+            fmd_id: contractId,
         });
     }
 
@@ -311,7 +311,7 @@ export default class LiveApi {
         delete this.subscriptions.ticks[symbol];
 
         return this.send({
-            forget: symbol
+            forget: symbol,
         });
     }
 
@@ -323,7 +323,7 @@ export default class LiveApi {
         this.subscriptions.ticks = {};
 
         return this.send({
-            forget_all: "ticks"
+            forget_all: 'ticks',
         });
     }
 
@@ -331,7 +331,7 @@ export default class LiveApi {
         this.subscriptions.priceProposal = null;
 
         return this.send({
-            forget_all: "proposal"
+            forget_all: 'proposal',
         });
     }
 
@@ -339,7 +339,7 @@ export default class LiveApi {
         this.subscriptions.portfolio = false;
 
         return this.send({
-            forget_all: "portfolio"
+            forget_all: 'portfolio',
         });
     }
 
@@ -347,134 +347,134 @@ export default class LiveApi {
         this.subscriptions = noSubscriptions();
 
         return this.send({
-            forget_all: "proposal_open_contract"
+            forget_all: 'proposal_open_contract',
         });
     }
 
 
-    ///// Authenticated Calls (no side effects)
+    // Authenticated Calls (no side effects)
 
 
     authorize(token) {
         this.token = token;
         return this.send({
-            authorize: token
+            authorize: token,
         });
     }
 
     getAccountLimits() {
         return this.send({
-            get_limits: 1
+            get_limits: 1,
         });
     }
 
     getAccountSettings() {
         return this.send({
-            get_settings: 1
+            get_settings: 1,
         });
     }
 
     getAccountStatus() {
         return this.send({
-            get_account_status: 1
+            get_account_status: 1,
         });
     }
 
     getSelfExclusion() {
         return this.send({
-            get_self_exclusion: 1
+            get_self_exclusion: 1,
         });
     }
 
     getStatement(options = {}) {
         return this.send({
             statement: 1,
-            ...options
+            ...options,
         });
     }
 
     getPortfolio() {
         return this.send({
-            portfolio: 1
+            portfolio: 1,
         });
     }
 
     getProfitTable(options = {}) {
         return this.send({
             profit_table: 1,
-            ...options
+            ...options,
         });
     }
 
-    ///// Authenticated Calls (with side effects)
+    // Authenticated Calls (with side effects)
 
     buyContract(contractId, price) {
         return this.send({
             buy: contractId,
-            price: price
+            price: price,
         });
     }
 
     sellContract(contractId, price) {
         return this.send({
             sell: contractId,
-            price: price
+            price: price,
         });
     }
 
     createRealAccount(options) {
         return this.send({
             new_account_real: 1,
-            ...options
+            ...options,
         });
     }
 
     createRealAccount(options) {
         return this.send({
             new_account_real: 1,
-            ...options
+            ...options,
         });
     }
 
     createRealAccountMaltaInvest(options) {
         return this.send({
             new_account_maltainvest: 1,
-            ...options
+            ...options,
         });
     }
 
     createRealAccountMaltaInvest(options) {
         return this.send({
             new_account_maltainvest: 1,
-            ...options
+            ...options,
         });
     }
 
     withdrawToPaymentAgent(options) {
         return this.send({
             paymentagent_withdraw: 1,
-            ...options
+            ...options,
         });
     }
 
     paymentAgentTransfer(options) {
         return this.send({
             paymentagent_transfer: 1,
-            ...options
+            ...options,
         });
     }
 
     setSelfExclusion(options) {
         return this.send({
             set_self_exclusion: 1,
-            ...options
+            ...options,
         });
     }
 
     setAccountSettings(options) {
         return this.send({
             set_settings: 1,
-            ...options
+            ...options,
         });
     }
 }
