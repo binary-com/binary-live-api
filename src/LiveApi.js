@@ -108,13 +108,14 @@ export default class LiveApi {
 
         this.events.emit(json.msg_type, json);
 
-        if (!json.echo_req.passthrough || !json.echo_req.passthrough.uid) {
+        if (!json.req_id) {
             return;
         }
 
-        const promise = this.unresolvedPromises[json.echo_req.passthrough.uid];
+        const reqId = json.req_id.toString();
+        const promise = this.unresolvedPromises[reqId];
         if (promise) {
-            delete this.unresolvedPromises[json.echo_req.passthrough.uid];
+            delete this.unresolvedPromises[reqId];
             if (!json.error) {
                 promise.resolve(json);
             } else {
@@ -123,24 +124,23 @@ export default class LiveApi {
         }
     }
 
-    sendRaw(data) {
+    sendRaw(json) {
         if (this.isReady()) {
-            this.socket.send(JSON.stringify(data));
+            this.socket.send(JSON.stringify(json));
         } else {
-            this.bufferedSends.push(data);
+            this.bufferedSends.push(json);
         }
+
+        const reqId = json.req_id.toString();
         const promise = new Promise((resolve, reject) => {
-            if (data.passthrough) {
-                this.unresolvedPromises[data.passthrough.uid] = { resolve, reject };
-            }
+            this.unresolvedPromises[reqId] = { resolve, reject };
         });
         return promise;
     }
 
-    send(data) {
-        data.passthrough = data.passthrough || { };
-        data.passthrough.uid = (Math.random() * 1e17).toString();
-        return this.sendRaw(data);
+    send(json) {
+        json.req_id = Math.floor((Math.random() * 1e15));
+        return this.sendRaw(json);
     }
 
     execute(func) {

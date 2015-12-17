@@ -12,14 +12,6 @@ module.exports = {
                 'NODE_ENV': JSON.stringify('production'),
             },
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false,
-            },
-            output: {
-                comments: false,
-            },
-        }),
     ],
     module: {
         loaders: [{

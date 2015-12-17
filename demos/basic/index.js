@@ -1,5 +1,4 @@
-var LiveApi = require('./binary-live-api').LiveApi;
-
+var LiveApi = window['binary-live-api'].LiveApi;
 var api = new LiveApi();
 
 function pingWithEventHandlers() {
@@ -15,4 +14,5 @@ function pingWithPromises() {
     });
 }
 
-pingWithEventHandlers();
+// pingWithEventHandlers();
+pingWithPromises();
