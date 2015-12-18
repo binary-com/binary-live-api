@@ -429,20 +429,6 @@ export default class LiveApi {
         });
     }
 
-    createRealAccount(options) {
-        return this.send({
-            new_account_real: 1,
-            ...options,
-        });
-    }
-
-    createRealAccountMaltaInvest(options) {
-        return this.send({
-            new_account_maltainvest: 1,
-            ...options,
-        });
-    }
-
     createRealAccountMaltaInvest(options) {
         return this.send({
             new_account_maltainvest: 1,
