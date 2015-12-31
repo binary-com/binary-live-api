@@ -103,15 +103,7 @@ export default class LiveApi {
         }
     }
 
-    onMessage(message) {
-        const json = JSON.parse(message.data);
-
-        this.events.emit(json.msg_type, json);
-
-        if (!json.req_id) {
-            return;
-        }
-
+    resolvePromiseForResponse(json) {
         const reqId = json.req_id.toString();
         const promise = this.unresolvedPromises[reqId];
         if (promise) {
@@ -124,6 +116,24 @@ export default class LiveApi {
         }
     }
 
+    onMessage(message) {
+        const json = JSON.parse(message.data);
+
+        this.events.emit(json.msg_type, json);
+
+        if (json.req_id) {
+            return this.resolvePromiseForResponse(json);
+        }
+    }
+
+    generatePromiseForRequest(json) {
+        const reqId = json.req_id.toString();
+
+        return new Promise((resolve, reject) => {
+            this.unresolvedPromises[reqId] = { resolve, reject };
+        });
+    }
+
     sendRaw(json) {
         if (this.isReady()) {
             this.socket.send(JSON.stringify(json));
@@ -131,11 +141,9 @@ export default class LiveApi {
             this.bufferedSends.push(json);
         }
 
-        const reqId = json.req_id.toString();
-        const promise = new Promise((resolve, reject) => {
-            this.unresolvedPromises[reqId] = { resolve, reject };
-        });
-        return promise;
+        if (json.req_id) {
+            return this.generatePromiseForRequest(json);
+        }
     }
 
     send(json) {
@@ -417,14 +425,14 @@ export default class LiveApi {
     buyContract(contractId, price) {
         return this.send({
             buy: contractId,
-            price: price,
+            price,
         });
     }
 
     sellContract(contractId, price) {
         return this.send({
             sell: contractId,
-            price: price,
+            price,
         });
     }
 
