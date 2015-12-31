@@ -335,6 +335,12 @@ export default class LiveApi {
         });
     }
 
+    unsubscribeByID(id) {
+        return this.send({
+            forget: id,
+        });
+    }
+
     unsubscribeFromAllPortfolios() {
         this.subscriptions.portfolio = false;
 
