@@ -299,6 +299,7 @@ export default class LiveApi {
     subscribeToBalance() {
         return this.send({
             balance: 1,
+            subscribe: 1,
         });
     }
 
