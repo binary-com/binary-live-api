@@ -264,6 +264,13 @@ export default class LiveApi {
         });
     }
 
+    getPriceProposalForContract(options) {
+        return this.send({
+            proposal: 1,
+            ...options,
+        });
+    }
+
     verifyEmail(email) {
         return this.send({
             verify_email: email,
@@ -292,6 +299,7 @@ export default class LiveApi {
     subscribeToPriceForContractProposal(options) {
         return this.send({
             proposal: 1,
+            subscribe: 1,
             ...options,
         });
     }
