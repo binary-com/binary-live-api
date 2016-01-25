@@ -4,7 +4,7 @@
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "babel": "^6.3.26",
+    "babel": "^6.4.5",
     "babel-core": "^6.3.26",
     "babel-eslint": "^5.0.0-beta6",
     "babel-loader": "^6.2.0",
@@ -41,7 +41,6 @@
   "homepage": "https://github.com/binary-com/binary-live-api#readme",
   "babel": {
     "presets": [
-      "react",
       "es2015",
       "stage-0"
     ]
