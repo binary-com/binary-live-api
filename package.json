@@ -15,12 +15,15 @@
     "eslint-config-airbnb": "^2.1.1",
     "eslint-loader": "^1.2.0",
     "eslint-plugin-react": "^3.13.1",
+    "expect": "^1.13.4",
+    "mocha": "^2.3.4",
     "rimraf": "^2.5.0",
     "webpack": "*"
   },
   "scripts": {
     "clean": "rimraf lib dist",
-    "test": "webpack --config webpack.config.js",
+    "test2": "webpack --config webpack.config.js",
+    "test": "mocha --compilers js:babel-core/register ./test/*.js",
     "start": "webpack --watch",
     "build": "webpack",
     "lint": "eslint src",
