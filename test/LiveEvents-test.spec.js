@@ -3,8 +3,8 @@ import LiveEvents from '../src/LiveEvents';
 
 describe('LiveEvents', () => {
     it('should create new object', () => {
-        const actual = new LiveEvents();
-        expect(actual).toExist();
+        const liveEvents = new LiveEvents();
+        expect(liveEvents).toExist();
     });
 
     it('should be able to subscribe to events', () => {

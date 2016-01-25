@@ -1,9 +1,21 @@
 import expect from 'expect';
-import { add } from '../src';
+import LiveApi from '../src/LiveApi';
 
-describe('add', () => {
-    it('should add 2 and 2', () => {
-        const actual = 2 + 2;
-        expect(actual).toEqual(4);
+const MockWebSocket = () => {};
+
+describe('LiveApi', () => {
+    it('should be able to be created', () => {
+        const liveApi = new LiveApi({ websocket: MockWebSocket });
+        expect(liveApi).toExist();
+    });
+
+    it('should be able to be connected to', () => {
+        const liveApi = new LiveApi({ websocket: MockWebSocket });
+        expect(() => liveApi.connect()).toNotThrow();
+    });
+
+    it('should be able to authorize with a token', () => {
+        const liveApi = new LiveApi({ websocket: MockWebSocket });
+        expect(() => liveApi.authorize('token')).toNotThrow();
     });
 });
