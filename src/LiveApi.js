@@ -119,7 +119,9 @@ export default class LiveApi {
     onMessage(message) {
         const json = JSON.parse(message.data);
 
-        this.events.emit(json.msg_type, json);
+        if (!json.error) {
+            this.events.emit(json.msg_type, json);
+        }
 
         if (json.req_id) {
             return this.resolvePromiseForResponse(json);
