@@ -314,6 +314,7 @@ export default class LiveApi {
     subscribeToOpenContract(contractId) {
         return this.send({
             proposal_open_contract: 1,
+            subscribe: 1,
             fmd_id: contractId,
         });
     }
@@ -321,6 +322,7 @@ export default class LiveApi {
     subscribeToAllOpenContracts() {
         return this.send({
             proposal_open_contract: 1,
+            subscribe: 1,
         });
     }
 
