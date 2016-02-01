@@ -61,6 +61,7 @@ export default class LiveApi {
         this.socket.close();
         this.language = ln;
         this.connect();
+        this.resubscribe();
     }
 
     isReady() {
