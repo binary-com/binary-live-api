@@ -3,8 +3,6 @@ import LiveEvents from './LiveEvents';
 const MockWebSocket = () => {};
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
-console.log('WEBSOCKET', typeof window !== 'undefined', WebSocket);
-
 const noSubscriptions = () => ({
     ticks: {},
     priceProposal: null,
