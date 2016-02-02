@@ -169,7 +169,7 @@ export default class LiveApi {
     resubscribe() {
         const { ticks, priceProposal } = this.subscriptions;
 
-        this.subscribeToTicks(Object.keys(ticks));
+        this.subscribeToTicks(ticks);
 
         if (priceProposal) {
             this.subscribeToPriceForContractProposal(priceProposal);
