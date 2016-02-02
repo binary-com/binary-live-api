@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "12.0.5",
+  "version": "12.0.6",
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
@@ -13,6 +13,7 @@
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^4.0.0",
     "eslint-loader": "^1.2.0",
+    "eslint-plugin-react": "^3.16.1",
     "expect": "^1.13.4",
     "mocha": "^2.3.4",
     "rimraf": "^2.5.1",

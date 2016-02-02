@@ -1,6 +1,9 @@
 import LiveEvents from './LiveEvents';
 
-let WebSocket = typeof window !== 'undefined' && window.WebSocket;
+const MockWebSocket = () => {};
+let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
+
+console.log('WEBSOCKET', typeof window !== 'undefined', WebSocket);
 
 const noSubscriptions = () => ({
     ticks: {},
@@ -36,7 +39,7 @@ export default class LiveApi {
     }
 
     connect() {
-        this.socket = new WebSocket(this.apiUrl + '?l=' + this.language);
+        this.socket = new WebSocket(`${this.apiUrl}?l=${this.language}`);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
@@ -150,8 +153,11 @@ export default class LiveApi {
     }
 
     send(json) {
-        json.req_id = Math.floor((Math.random() * 1e15));
-        return this.sendRaw(json);
+        const reqId = Math.floor((Math.random() * 1e15));
+        return this.sendRaw({
+            req_id: reqId,
+            ...json,
+        });
     }
 
     execute(func) {
