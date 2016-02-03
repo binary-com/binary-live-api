@@ -296,7 +296,7 @@ export default class LiveApi {
     }
 
     subscribeToTicks(symbols) {
-        this.subscriptions.ticks = symbols;
+        symbols.forEach(s => this.subscriptions.ticks[s] = true);
 
         this.send({
             ticks: symbols,
