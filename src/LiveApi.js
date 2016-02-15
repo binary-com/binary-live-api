@@ -418,7 +418,7 @@ export default class LiveApi {
         });
     }
 
-    getCashierLockStatus(){
+    getCashierLockStatus() {
         return this.send({
             cashier_password: 1,
         });
@@ -495,7 +495,7 @@ export default class LiveApi {
         });
     }
 
-    setCashierLock(options){
+    setCashierLock(options) {
         return this.send({
             cashier_password: 1,
             ...options,
