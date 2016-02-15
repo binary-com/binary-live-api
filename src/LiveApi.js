@@ -113,7 +113,9 @@ export default class LiveApi {
             if (!json.error) {
                 promise.resolve(json);
             } else {
-                promise.reject(json.error);
+                const err = json.error;
+                err.request = json.echo_req;
+                promise.reject(err);
             }
         }
     }
