@@ -418,6 +418,12 @@ export default class LiveApi {
         });
     }
 
+    getCashierLockStatus() {
+        return this.send({
+            cashier_password: 1,
+        });
+    }
+
     getStatement(options = {}) {
         return this.send({
             statement: 1,
@@ -485,6 +491,13 @@ export default class LiveApi {
     setSelfExclusion(options) {
         return this.send({
             set_self_exclusion: 1,
+            ...options,
+        });
+    }
+
+    setCashierLock(options) {
+        return this.send({
+            cashier_password: 1,
             ...options,
         });
     }
