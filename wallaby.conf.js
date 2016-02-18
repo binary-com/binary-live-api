@@ -1,22 +1,22 @@
-module.exports = function(wallaby) {
+module.exports = function (wallaby) {
     return {
         files: [
-            'src/*.js*'
+            'src/*.js*',
         ],
         tests: [
-            'test/*.spec.js'
+            'test/*.spec.js',
         ],
         env: {
-            type: 'node'
+            type: 'node',
         },
         testFramework: 'mocha',
         compilers: {
             '**/*': wallaby.compilers.babel({
-                "presets": [
-                    "es2015",
-                    "stage-0"
-                ]
-            })
-        }
+                presets: [
+                    'es2015',
+                    'stage-0',
+                ],
+            }),
+        },
     };
 };
