@@ -278,9 +278,10 @@ export default class LiveApi {
         });
     }
 
-    verifyEmail(email) {
+    verifyEmail(email, type) {
         return this.send({
             verify_email: email,
+            type: type,
         });
     }
 
