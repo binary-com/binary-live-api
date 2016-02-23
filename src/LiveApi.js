@@ -496,6 +496,12 @@ export default class LiveApi {
         });
     }
 
+    topUpVirtualAccount() {
+        return this.send({
+            "topup_virtual": 1,
+        });
+    }
+
     setCashierLock(options) {
         return this.send({
             cashier_password: 1,
