@@ -498,7 +498,7 @@ export default class LiveApi {
 
     topUpVirtualAccount() {
         return this.send({
-            "topup_virtual": 1,
+            topup_virtual: 1,
         });
     }
 
