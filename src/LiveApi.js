@@ -8,6 +8,10 @@ const noSubscriptions = () => ({
     priceProposal: null,
 });
 
+const shouldIgnoreError = error =>
+    error.message.includes('You are already subscribed to') ||
+        error.message.includes('Input validation failed: forget');
+
 export default class LiveApi {
 
     static Status = {
@@ -113,7 +117,7 @@ export default class LiveApi {
             if (!json.error) {
                 promise.resolve(json);
             } else {
-                promise.reject(json.error);
+                if (!shouldIgnoreError(json.error)) promise.reject(json.error);
             }
         }
     }
