@@ -123,4 +123,7 @@ export const verifyEmail = (email, type) => ({
     type,
 });
 
-// TODO: website_status
+export const getWebsiteStatus => ({
+    "website_status": 1,
+});
+
