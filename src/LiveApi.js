@@ -17,7 +17,6 @@ export default class LiveApi {
     };
 
     constructor({ apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket } = {}) {
-        // options is arguments
         this.apiUrl = apiUrl;
         this.language = language;
 
@@ -33,9 +32,12 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
         this.subscriptions = new LiveSubscriptions();
-        this.call = calls;
 
         this.connect();
+
+        Object.keys(calls).forEach(callName => {
+            this[callName] = (...params) => this.send(calls[callName](...params));
+        });
     }
 
     connect() {

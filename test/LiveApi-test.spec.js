@@ -14,6 +14,6 @@ describe('LiveApi', () => {
 
     it('should be able to authorize with a token', () => {
         const liveApi = new LiveApi();
-        expect(() => liveApi.call.authorize('token')).to.not.throw();
+        expect(() => liveApi.authorize('token')).to.not.throw();
     });
 });
