@@ -21,7 +21,6 @@ export default class LiveApi {
 
     constructor({ apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket } = {}) {
         // options is arguments
-        const options = arguments[0];
         this.apiUrl = apiUrl;
         this.language = language;
         this.status = LiveApi.Status.Unknown;
@@ -34,7 +33,7 @@ export default class LiveApi {
         this.events = new LiveEvents();
 
         if (websocket) {
-            WebSocket = options.websocket;
+            WebSocket = websocket;
         }
 
         this.connect();
@@ -110,16 +109,27 @@ export default class LiveApi {
     }
 
     resolvePromiseForResponse(json) {
+        if (!json.req_id) {
+            return Promise.resolve();
+        }
+
         const reqId = json.req_id.toString();
         const promise = this.unresolvedPromises[reqId];
-        if (promise) {
-            delete this.unresolvedPromises[reqId];
-            if (!json.error) {
-                promise.resolve(json);
-            } else {
-                if (!shouldIgnoreError(json.error)) promise.reject(json.error);
-            }
+
+        if (!promise) {
+            Promise.resolve();
         }
+
+        delete this.unresolvedPromises[reqId];
+        if (!json.error) {
+            return promise.resolve(json);
+        }
+
+        if (!shouldIgnoreError(json.error)) {
+            return promise.reject(json.error);
+        }
+
+        return Promise.resolve();
     }
 
     onMessage(message) {
@@ -129,9 +139,7 @@ export default class LiveApi {
             this.events.emit(json.msg_type, json);
         }
 
-        if (json.req_id) {
-            return this.resolvePromiseForResponse(json);
-        }
+        return this.resolvePromiseForResponse(json);
     }
 
     generatePromiseForRequest(json) {
@@ -178,352 +186,5 @@ export default class LiveApi {
         if (priceProposal) {
             this.subscribeToPriceForContractProposal(priceProposal);
         }
-    }
-
-    // Unauthenticated Calls
-
-    getActiveSymbolsBrief() {
-        return this.send({
-            active_symbols: 'brief',
-        });
-    }
-
-    getActiveSymbolsFull() {
-        return this.send({
-            active_symbols: 'full',
-        });
-    }
-
-    getAssetIndex() {
-        return this.send({
-            asset_index: 1,
-        });
-    }
-
-    getContractsForSymbol(symbol) {
-        return this.send({
-            contracts_for: symbol,
-        });
-    }
-
-    getLandingCompany(landingCompany) {
-        return this.send({
-            landing_company: landingCompany,
-        });
-    }
-
-    getLandingCompanyDetails(landingCompany) {
-        return this.send({
-            landing_company_details: landingCompany,
-        });
-    }
-
-    createVirtualAccount(options) {
-        return this.send({
-            new_account_virtual: 1,
-            ...options,
-        });
-    }
-
-    getPayoutCurrencies() {
-        return this.send({
-            payout_currencies: 1,
-        });
-    }
-
-    ping() {
-        return this.send({
-            ping: 1,
-        });
-    }
-
-    getServerTime() {
-        return this.send({
-            time: 1,
-        });
-    }
-
-    getPaymentAgentsForCountry(countryCode) {
-        return this.send({
-            paymentagent_list: countryCode,
-        });
-    }
-
-    getResidences() {
-        return this.send({
-            residence_list: 1,
-        });
-    }
-
-    getStatesForCountry(countryCode) {
-        return this.send({
-            states_list: countryCode,
-        });
-    }
-
-    getTickHistory(symbol, options = {}) {
-        return this.send({
-            ticks_history: symbol,
-            ...options,
-        });
-    }
-
-    getTradingTimes(date = new Date()) {
-        const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-        return this.send({
-            trading_times: dateStr,
-        });
-    }
-
-    getPriceProposalForContract(options) {
-        return this.send({
-            proposal: 1,
-            ...options,
-        });
-    }
-
-    verifyEmail(email, type) {
-        return this.send({
-            verify_email: email,
-            type: type,
-        });
-    }
-
-
-    // Unathenticated Streams
-
-    subscribeToTick(symbol) {
-        this.subscriptions.ticks[symbol] = true;
-
-        this.send({
-            ticks: symbol,
-        });
-    }
-
-    subscribeToTicks(symbols) {
-        symbols.forEach(s => this.subscriptions.ticks[s] = true);
-
-        this.send({
-            ticks: symbols,
-        });
-    }
-
-    subscribeToPriceForContractProposal(options) {
-        return this.send({
-            proposal: 1,
-            subscribe: 1,
-            ...options,
-        });
-    }
-
-    subscribeToBalance() {
-        return this.send({
-            balance: 1,
-            subscribe: 1,
-        });
-    }
-
-    subscribeToOpenContract(contractId) {
-        return this.send({
-            proposal_open_contract: 1,
-            subscribe: 1,
-            fmd_id: contractId,
-        });
-    }
-
-    subscribeToAllOpenContracts() {
-        return this.send({
-            proposal_open_contract: 1,
-            subscribe: 1,
-        });
-    }
-
-    unsubscribeFromTick(symbol) {
-        delete this.subscriptions.ticks[symbol];
-
-        return this.send({
-            forget: symbol,
-        });
-    }
-
-    unsubscribeFromTicks(symbols) {
-        symbols.forEach(this.unsubscribeFromTick);
-    }
-
-    unsubscribeFromAllTicks() {
-        this.subscriptions.ticks = {};
-
-        return this.send({
-            forget_all: 'ticks',
-        });
-    }
-
-    unsubscribeFromAllProposals() {
-        this.subscriptions.priceProposal = null;
-
-        return this.send({
-            forget_all: 'proposal',
-        });
-    }
-
-    unsubscribeByID(id) {
-        return this.send({
-            forget: id,
-        });
-    }
-
-    unsubscribeFromAllPortfolios() {
-        this.subscriptions.portfolio = false;
-
-        return this.send({
-            forget_all: 'portfolio',
-        });
-    }
-
-    unsubscribeFromAlProposals() {
-        this.subscriptions = noSubscriptions();
-
-        return this.send({
-            forget_all: 'proposal_open_contract',
-        });
-    }
-
-
-    // Authenticated Calls (no side effects)
-
-
-    authorize(token) {
-        this.token = token;
-        return this.send({
-            authorize: token,
-        });
-    }
-
-    getAccountLimits() {
-        return this.send({
-            get_limits: 1,
-        });
-    }
-
-    getAccountSettings() {
-        return this.send({
-            get_settings: 1,
-        });
-    }
-
-    getAccountStatus() {
-        return this.send({
-            get_account_status: 1,
-        });
-    }
-
-    getSelfExclusion() {
-        return this.send({
-            get_self_exclusion: 1,
-        });
-    }
-
-    getCashierLockStatus() {
-        return this.send({
-            cashier_password: 1,
-        });
-    }
-
-    getStatement(options = {}) {
-        return this.send({
-            statement: 1,
-            ...options,
-        });
-    }
-
-    getPortfolio() {
-        return this.send({
-            portfolio: 1,
-        });
-    }
-
-    getProfitTable(options = {}) {
-        return this.send({
-            profit_table: 1,
-            ...options,
-        });
-    }
-
-    // Authenticated Calls (with side effects)
-
-    buyContract(contractId, price) {
-        return this.send({
-            buy: contractId,
-            price,
-        });
-    }
-
-    sellContract(contractId, price) {
-        return this.send({
-            sell: contractId,
-            price,
-        });
-    }
-
-    createRealAccount(options) {
-        return this.send({
-            new_account_real: 1,
-            ...options,
-        });
-    }
-
-    createRealAccountMaltaInvest(options) {
-        return this.send({
-            new_account_maltainvest: 1,
-            ...options,
-        });
-    }
-
-    withdrawToPaymentAgent(options) {
-        return this.send({
-            paymentagent_withdraw: 1,
-            ...options,
-        });
-    }
-
-    paymentAgentTransfer(options) {
-        return this.send({
-            paymentagent_transfer: 1,
-            ...options,
-        });
-    }
-
-    setSelfExclusion(options) {
-        return this.send({
-            set_self_exclusion: 1,
-            ...options,
-        });
-    }
-
-    topUpVirtualAccount() {
-        return this.send({
-            topup_virtual: 1,
-        });
-    }
-
-    setCashierLock(options) {
-        return this.send({
-            cashier_password: 1,
-            ...options,
-        });
-    }
-
-    changePassword(options) {
-        return this.send({
-            change_password: 1,
-            ...options,
-        });
-    }
-
-    setAccountSettings(options) {
-        return this.send({
-            set_settings: 1,
-            ...options,
-        });
     }
 }
