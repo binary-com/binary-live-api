@@ -19,7 +19,6 @@ export const getContractsForSymbol = symbol => ({
 });
 
 export const unsubscribeFromTick = symbol => ({
-    // TODO: delete this.subscriptions.ticks[symbol];
     forget: symbol,
 });
 
@@ -31,22 +30,18 @@ export const unsubscribeByID = id => ({
 });
 
 export const unsubscribeFromAllTicks = () => ({
-    // TODO: this.subscriptions.ticks = {};
     forget_all: 'ticks',
 });
 
 export const unsubscribeFromAllProposals = () => ({
-    // TODO: this.subscriptions.priceProposal = null;
     forget_all: 'proposal',
 });
 
 export const unsubscribeFromAllPortfolios = () => ({
-    // TODO: this.subscriptions.portfolio = false;
     forget_all: 'portfolio',
 });
 
 export const unsubscribeFromAlProposals = () => ({
-    // TODO: this.subscriptions = noSubscriptions();
     forget_all: 'proposal_open_contract',
 });
 
@@ -95,12 +90,10 @@ export const getStatesForCountry = countryCode => ({
 });
 
 export const subscribeToTick = symbol => ({
-    // TODO: this.subscriptions.ticks[symbol] = true;
     ticks: symbol,
 });
 
 export const subscribeToTicks = symbols => ({
-    // TODO: symbols.forEach(s => this.subscriptions.ticks[s] = true);
     ticks: symbols,
 });
 
