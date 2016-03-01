@@ -1,12 +1,34 @@
-// TODO: api_token
+export const deleteApiToken = (token) => ({
+    "api_token": "1",
+    "delete_token": token,
+});
 
-// TODO: app_register
+export const getApiTokens => ({
+    "api_token": "1",
+});
 
-// TODO: app_list
+export const createApiToken = (token, scopes) => ({
+    "api_token": "1",
+    "new_token": token,
+    "new_token_scopes": scopes,
+});
 
-// TODO: app_get
+export const registerApplication = (options) => ({
+    "app_register": 1,
+    ...options,
+});
 
-// TODO: app_delete
+export const getAllAppList => ({
+    "app_list": 1,
+});
+
+export const getAppslistById = appid => ({
+    "app_get": appid,
+});
+
+export const deleteApplication = appid => ({
+    "app_delete": appid,
+});
 
 export const createRealAccountMaltaInvest = (options) => ({
     new_account_maltainvest: 1,
@@ -18,7 +40,9 @@ export const createRealAccount = (options) => ({
     ...options,
 });
 
-// TODO: set_account_currency
+export const setAccountCurrency = currency => ({
+    "set_account_currency": currency,
+});
 
 export const setSelfExclusion = (options) => ({
     set_self_exclusion: 1,
@@ -30,4 +54,6 @@ export const setAccountSettings = options => ({
     ...options,
 });
 
-// TODO: tnc_approval
+export const setTnCApproval => ({
+    "tnc_approval": 1,
+});
