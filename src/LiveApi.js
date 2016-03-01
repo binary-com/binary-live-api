@@ -1,12 +1,9 @@
 import LiveEvents from './LiveEvents';
+import LiveSubscriptions from './LiveSubscriptions';
+import * as calls from './calls';
 
 const MockWebSocket = () => {};
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
-
-const noSubscriptions = () => ({
-    ticks: {},
-    priceProposal: null,
-});
 
 const shouldIgnoreError = error =>
     error.message.includes('You are already subscribed to') ||
@@ -23,18 +20,20 @@ export default class LiveApi {
         // options is arguments
         this.apiUrl = apiUrl;
         this.language = language;
+
+        if (websocket) {
+            WebSocket = websocket;
+        }
+
         this.status = LiveApi.Status.Unknown;
-        this.subscriptions = noSubscriptions();
 
         this.bufferedSends = [];
         this.bufferedExecutes = [];
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
-
-        if (websocket) {
-            WebSocket = websocket;
-        }
+        this.subscriptions = new LiveSubscriptions();
+        this.call = calls;
 
         this.connect();
     }
@@ -181,10 +180,10 @@ export default class LiveApi {
     resubscribe() {
         const { ticks, priceProposal } = this.subscriptions;
 
-        this.subscribeToTicks(Object.keys(ticks));
+        this.call.subscribeToTicks(Object.keys(ticks));
 
         if (priceProposal) {
-            this.subscribeToPriceForContractProposal(priceProposal);
+            this.call.subscribeToPriceForContractProposal(priceProposal);
         }
     }
 }

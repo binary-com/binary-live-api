@@ -1,20 +1,20 @@
-import expect from 'expect';
+import { expect } from 'chai';
 import LiveEvents from '../src/LiveEvents';
 
 describe('LiveEvents', () => {
     it('should create new object', () => {
         const liveEvents = new LiveEvents();
-        expect(liveEvents).toExist();
+        expect(liveEvents).to.be.ok;
     });
 
     it('should be able to subscribe to events', () => {
         const liveEvents = new LiveEvents();
-        expect(() => liveEvents.on('message', () => {})).toNotThrow();
+        expect(() => liveEvents.on('message', () => {})).to.not.throw();
     });
 
     it('should be able to emit events', () => {
         const liveEvents = new LiveEvents();
-        expect(() => liveEvents.emit('message', {})).toNotThrow();
+        expect(() => liveEvents.emit('message', {})).to.not.throw();
     });
 
     it('should be able to receive emitted events', (done) => {
@@ -34,7 +34,7 @@ describe('LiveEvents', () => {
         let handleCount = 0;
         const handler = () => {
             handleCount++;
-            if (handleCount == 3) done();
+            if (handleCount === 3) done();
         }
         liveEvents.on('message', handler);
         liveEvents.on('message', handler);

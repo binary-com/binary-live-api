@@ -11,11 +11,10 @@ export const getAssetIndex = () => ({
 });
 
 export const authorize = token => ({
-    // TODO: this.token = token;
     authorize: token,
 });
 
-export const getContractsForSymbol = (symbol) => ({
+export const getContractsForSymbol = symbol => ({
     contracts_for: symbol,
 });
 
@@ -24,7 +23,7 @@ export const unsubscribeFromTick = symbol => ({
     forget: symbol,
 });
 
-export const unsubscribeFromTicks = (symbols) =>
+export const unsubscribeFromTicks = symbols =>
     symbols.forEach(this.unsubscribeFromTick);
 
 export const unsubscribeByID = id => ({
@@ -51,15 +50,15 @@ export const unsubscribeFromAlProposals = () => ({
     forget_all: 'proposal_open_contract',
 });
 
-export const getLandingCompany = (landingCompany) => ({
+export const getLandingCompany = landingCompany => ({
     landing_company: landingCompany,
 });
 
-export const getLandingCompanyDetails = (landingCompany) => ({
+export const getLandingCompanyDetails = landingCompany => ({
     landing_company_details: landingCompany,
 });
 
-export const createVirtualAccount = (options) => ({
+export const createVirtualAccount = options => ({
     new_account_virtual: 1,
     ...options,
 });
@@ -68,7 +67,7 @@ export const ping = () => ({
     ping: 1,
 });
 
-export const getPaymentAgentsForCountry = (countryCode) => ({
+export const getPaymentAgentsForCountry = countryCode => ({
     paymentagent_list: countryCode,
 });
 
@@ -76,7 +75,7 @@ export const getPayoutCurrencies = () => ({
     payout_currencies: 1,
 });
 
-export const getPriceProposalForContract = (options) => ({
+export const getPriceProposalForContract = options => ({
     proposal: 1,
     ...options,
 });
@@ -91,7 +90,7 @@ export const getResidences = () => ({
     residence_list: 1,
 });
 
-export const getStatesForCountry = (countryCode) => ({
+export const getStatesForCountry = countryCode => ({
     states_list: countryCode,
 });
 
@@ -123,7 +122,6 @@ export const verifyEmail = (email, type) => ({
     type,
 });
 
-export const getWebsiteStatus => ({
-    "website_status": 1,
+export const getWebsiteStatus = () => ({
+    website_status: 1,
 });
-

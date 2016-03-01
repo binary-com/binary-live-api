@@ -8,6 +8,7 @@
   "rules": {
     "indent": [0, 4],
     "no-empty-label": 0,
+    "no-unused-expressions": 0,
     "space-before-keywords": 0,
     "space-after-keywords": 0,
     "space-return-throw-case": 0,

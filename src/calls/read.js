@@ -48,4 +48,7 @@ export const subscribeToAllOpenContracts = () => ({
     subscribe: 1,
 });
 
-// TODO: transactions
+export const subscribeToTransactions = () => ({
+    transaction: 1,
+    subscribe: 1,
+});
