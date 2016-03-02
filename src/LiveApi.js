@@ -118,7 +118,7 @@ export default class LiveApi {
         const promise = this.unresolvedPromises[reqId];
 
         if (!promise) {
-            Promise.resolve();
+            return Promise.resolve();
         }
 
         delete this.unresolvedPromises[reqId];
@@ -182,10 +182,10 @@ export default class LiveApi {
     resubscribe() {
         const { ticks, priceProposal } = this.subscriptions;
 
-        this.call.subscribeToTicks(Object.keys(ticks));
+        this.subscribeToTicks(Object.keys(ticks));
 
         if (priceProposal) {
-            this.call.subscribeToPriceForContractProposal(priceProposal);
+            this.subscribeToPriceForContractProposal(priceProposal);
         }
     }
 }

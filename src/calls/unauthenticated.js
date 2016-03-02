@@ -97,7 +97,7 @@ export const subscribeToTicks = symbols => ({
     ticks: symbols,
 });
 
-export const getTickHistory = (symbol, options = {}) => ({
+export const getTickHistory = (symbol, options) => ({
     ticks_history: symbol,
     ...options,
 });
@@ -106,7 +106,7 @@ export const getServerTime = () => ({
     time: 1,
 });
 
-export const getTradingTimes = (date = new Date()) => ({
+export const getTradingTimes = date => ({
     trading_times: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
 });
 
