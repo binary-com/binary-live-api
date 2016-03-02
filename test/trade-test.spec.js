@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 import LiveApi from '../src/LiveApi';
+import ws from 'ws';
 
-describe('trade', () => {
+describe('trade', function () {
+    this.timeout(5000);
     let liveApi;
 
     beforeEach(() => {
-        liveApi = new LiveApi();
+        liveApi = new LiveApi({ websocket: ws });
     });
 
     it('can buy contract', () => {

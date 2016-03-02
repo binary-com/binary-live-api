@@ -99,7 +99,7 @@ export const subscribeToTicks = symbols => ({
 
 export const getTickHistory = (symbol, options) => ({
     ticks_history: symbol,
-    ...options,
+    ...(options || { end: 'latest' }),
 });
 
 export const getServerTime = () => ({
