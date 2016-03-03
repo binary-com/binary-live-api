@@ -102,6 +102,21 @@ export const getTickHistory = (symbol, options) => ({
     ...(options || { end: 'latest' }),
 });
 
+export const getCandles = (symbol, options) => ({
+    ticks_history: symbol,
+    style: 'candles',
+    ...(options || { end: 'latest' }),
+});
+
+export const getCandlesForLastNDays = (symbol, ndays) => ({
+    ticks_history: symbol,
+    style: 'candles',
+    start: Math.floor(Date.now() / 1000) - (ndays - 1) * 60 * 60 * 24,
+    end: 'latest',
+    granularity: 60 * 60 * 24,
+    count: 30,
+});
+
 export const getServerTime = () => ({
     time: 1,
 });

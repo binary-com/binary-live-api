@@ -14,14 +14,4 @@ function pingWithPromises() {
     });
 }
 
-api.getStatesForCountry('in').then(function(response) {
-    console.log(response);
-});
-
-api.getTradingTimes(new Date()).then(function(response) {
-    console.log(response);
-});
-
-
-// pingWithEventHandlers();
-pingWithPromises();
+api.getCandlesForLastNDays('R_50', 30);
