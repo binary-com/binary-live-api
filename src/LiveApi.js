@@ -1,5 +1,6 @@
 import LiveEvents from './LiveEvents';
 import LiveSubscriptions from './LiveSubscriptions';
+import LiveError from './LiveError';
 import * as calls from './calls';
 
 const MockWebSocket = () => {};
@@ -127,7 +128,7 @@ export default class LiveApi {
         }
 
         if (!shouldIgnoreError(json.error)) {
-            return promise.reject(json.error);
+            return promise.reject(new LiveError(json.error));
         }
 
         return Promise.resolve();

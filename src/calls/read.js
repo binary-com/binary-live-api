@@ -18,7 +18,7 @@ export const logOut = () => ({
     logout: 1,
 });
 
-export const getStatement = (options = {}) => ({
+export const getStatement = (options) => ({
     statement: 1,
     ...options,
 });
@@ -27,7 +27,7 @@ export const getPortfolio = () => ({
     portfolio: 1,
 });
 
-export const getProfitTable = (options = {}) => ({
+export const getProfitTable = (options) => ({
     profit_table: 1,
     ...options,
 });
