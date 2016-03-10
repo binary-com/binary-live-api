@@ -18,6 +18,6 @@ export const paymentAgentTransfer = options => ({
 });
 
 export const transferBetweenAccounts = options => ({
-    paymentagent_transfer: 1,
+    transfer_between_accounts: 1,
     ...options,
 });

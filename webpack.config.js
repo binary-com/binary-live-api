@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const polyfill = require('babel-polyfill');
 
 module.exports = {
     devtool: 'source-map',
@@ -18,7 +19,13 @@ module.exports = {
             test: /\.js$/,
             loader: 'babel-loader',
             include: path.join(__dirname, 'src'),
-        }, /* {
+        },{
+            test:/\.js$/,
+            loader: 'babel-polyfill',
+            include: path.join(__dirname, 'src'),
+        }
+         
+         /* {
             test: /\.js$/,
             loader: 'eslint-loader',
             include: path.join(__dirname, 'src'),
