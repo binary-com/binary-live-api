@@ -40,7 +40,7 @@ export const subscribeToBalance = () => ({
 export const subscribeToOpenContract = contractId => ({
     proposal_open_contract: 1,
     subscribe: 1,
-    fmd_id: contractId,
+    contract_id: contractId,
 });
 
 export const subscribeToAllOpenContracts = () => ({
