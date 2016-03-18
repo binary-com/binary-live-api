@@ -139,6 +139,8 @@ export default class LiveApi {
 
         if (!json.error) {
             this.events.emit(json.msg_type, json);
+        } else {
+            this.events.emit('error', json);
         }
 
         return this.resolvePromiseForResponse(json);
