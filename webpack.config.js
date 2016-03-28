@@ -18,13 +18,11 @@ module.exports = {
             test: /\.js$/,
             loader: 'babel-loader',
             include: path.join(__dirname, 'src'),
-        },
-
-         /* {
+        }, {
             test: /\.js$/,
             loader: 'eslint-loader',
             include: path.join(__dirname, 'src'),
-        } */],
+        }],
     },
     output: {
         library: 'binary-live-api',

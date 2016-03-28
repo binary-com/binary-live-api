@@ -9,6 +9,8 @@ describe('LiveApi', () => {
 
     it('can be connected to', () => {
         const liveApi = new LiveApi();
-        expect(() => liveApi.connect()).to.not.throw();
+        expect(() =>
+            liveApi.connect()
+        ).to.not.throw();
     });
 });
