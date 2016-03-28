@@ -17,7 +17,7 @@ describe('read', function() {
     });
 
     it('should be able to get account limit', ()=> {
-    	expect( ()=> 
+    	expect( ()=>
     		liveApi.getAccountLimits()).to.not.throw()
     });
 
@@ -39,10 +39,10 @@ describe('read', function() {
 	});
 
     it('should be able to call the function getAccountSettings without error', () => {
-    	expect( ()=> 
+    	expect( ()=>
     		liveApi.getAccountSettings()).to.not.throw()
     });
-	
+
 	it('should be able to return account settings from a api response', async (done) => {
 
 		return await liveApi.authorize(token).then(
@@ -105,29 +105,20 @@ describe('read', function() {
   						);
 	});
 
-	it('should be able to call logout function without issue', () => {
-		expect( () => 
-			liveApi.logOut()).to.not.throw();
+	it('should be able to call logout function', () => {
+		expect(() =>
+			liveApi.logOut()
+		).to.not.throw();
 	});
 
 	it('should be able to sign user out of his account', async () => {
-
-		return await liveApi.authorize(token).then(
-		 				()=> liveApi.logOut()
-		 				.then(
-  							(response) => {
-  								expect(response).to.not.have.property('error');
-  								done();
-  							}, (err) => {
-  								console.log('error at logout', err);
-  								expect(err).to.equal(null);
-  								done();
-  							})
-  						);
+		await liveApi.authorize(token);
+		const response = await liveApi.logOut();
+		expect(response).to.not.have.property('error');
 	});
 
 	it('it should be able to call getStatement function without an issue', ()=> {
-		expect( () => 
+		expect( () =>
 			liveApi.getStatement({
 			statement: 1,
   			description: 1,
@@ -159,7 +150,7 @@ describe('read', function() {
 	});
 
 	it('should be able to return profitTable from the server', async () => {
-		
+
 		return await liveApi.authorize(token).then(
 		 				()=> liveApi.getProfitTable({description:1}).then(
 		 					null, (err) => {
@@ -168,7 +159,7 @@ describe('read', function() {
 		 						done();
 		 					})
 		 				);
-		
+
 	});
 
 	it('should be able to call subscribeToOpenContract without an issue', () => {
