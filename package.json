@@ -26,7 +26,7 @@
   "scripts": {
     "clean": "rimraf lib dist",
     "test2": "webpack --config webpack.config.js",
-    "test": "mocha --compilers js:babel-core/register ./test/*.js",
+    "test": "mocha --compilers js:babel-core/register -t 10000 ./test/*.js",
     "start": "webpack --watch",
     "build": "webpack",
     "lint": "eslint src",

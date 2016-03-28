@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import LiveApi from '../src/LiveApi';
 import ws from 'ws';
 
-describe('trade', function () {
-    this.timeout(5000);
+describe('trade', () => {
     let liveApi;
 
     beforeEach(() => {

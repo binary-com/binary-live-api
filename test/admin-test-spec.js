@@ -6,11 +6,8 @@ import LiveApi from '../src/LiveApi';
 import ws from 'ws';
 
 
-describe('admin', function() {
-
-	this.timeout(10000);
+describe('admin', () => {
     let liveApi;
-    let token;
 
     beforeEach(() => {
         liveApi = new LiveApi({ websocket: ws });
@@ -36,7 +33,7 @@ describe('admin', function() {
 
 	it('should be able to call the function registerApplication with no error', () => {
 		expect(() =>
-			liveApi.registerApplication({name: 'AppName', link: 'Applink'})
+			liveApi.registerApplication({ name: 'AppName', link: 'Applink' })
 		).to.not.throw();
 	});
 
@@ -60,15 +57,15 @@ describe('admin', function() {
 
 	it('it should be able to call the function createRealAccountMaltaInvest without error', () => {
 		expect(() =>
-			liveApi.createRealAccountMaltaInvest({name: 'name', username: 'username'})
+			liveApi.createRealAccountMaltaInvest({ name: 'name', username: 'username' })
 		).to.not.throw();
 	});
 
-	it('should be able to call createRealAccount function with no error', () =>{
-		expect(() =>
-			liveApi.createRealAccount({name: 'name', username: 'username'})
-		).to.not.throw();
-	});
+	it.skip('should be able to call createRealAccount function with no error', () =>
+		expect(
+			liveApi.createRealAccount({ name: 'name', username: 'username' })
+		).to.eventually.not.throw()
+	);
 
 	it('should be able to call the function setAccountCurrency with no error', () => {
 		expect(() =>
@@ -78,13 +75,13 @@ describe('admin', function() {
 
 	it('should be able to call the function setSelfExclusion without error', () => {
 		expect(() =>
-			liveApi.setSelfExclusion({balance: 300, limit: 30})
+			liveApi.setSelfExclusion({ balance: 300, limit: 30 })
 		).to.not.throw();
 	});
 
 	it('should be able to call setAccountSettings without throwing error', () => {
 		expect(() =>
-			liveApi.setAccountSettings({option1: 'option1', option2: 'option2'})
+			liveApi.setAccountSettings({ option1: 'option1', option2: 'option2' })
 		).to.not.throw();
 	});
 
@@ -93,5 +90,4 @@ describe('admin', function() {
 			liveApi.setTnCApproval()
 		).to.not.throw();
 	});
-
 });
