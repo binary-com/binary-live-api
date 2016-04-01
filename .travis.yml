@@ -4,4 +4,7 @@ node_js:
 notifications:
     email: false
 before_install: npm install
-install: npm test
+install: npm run test:full
+cache:
+    directories:
+        - node_modules
