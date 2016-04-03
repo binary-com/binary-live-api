@@ -1,6 +1,6 @@
 import describe from 'mocha.parallel';
 import { expect } from 'chai';
-import LiveEvents from '../src/LiveEvents';
+import LiveEvents from '../LiveEvents';
 
 describe('LiveEvents', () => {
     let liveEvents;

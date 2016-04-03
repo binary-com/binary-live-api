@@ -1,6 +1,10 @@
 const getInitialState = () => ({
-    ticks: {},
-    proposals: {},
+    token: '',
+    balance: true,
+    portfolio: false,
+    transactions: false,
+    ticks: new Set(),
+    proposals: new Set(),
 });
 
 export default class LiveSubscriptions {
@@ -10,7 +14,23 @@ export default class LiveSubscriptions {
     }
 
     resubscribe() {
-        //
+        const { token, portfolio, ticks, proposals } = this.state;
+
+        if (token) {
+            this.authorize(token);
+        }
+
+        if (portfolio) {
+            this.subscribeToAllOpenContracts();
+        }
+
+        this.subscribeToTicks(Object.keys(ticks));
+
+        if (proposals) {
+            proposals.forEach(proposal =>
+                this.subscribeToPriceForContractProposal(proposal)
+            );
+        }
     }
 }
 
@@ -20,30 +40,54 @@ export const authorize = token => {
     state.token = token;
 };
 
-export const unsubscribeFromTick = symbol => {
-    delete state.ticks[symbol];
+export const subscribeToBalance = () => {
+    state.balance = true;
 };
 
-export const unsubscribeFromAllTicks = () => {
-    state.ticks = {};
+export const unsubscribeFromBalance = () => {
+    state.balance = false;
 };
 
-export const unsubscribeFromAllProposals = () => {
-    state.priceProposal = null;
+// export const subscribeToOpenContract = contractId => {
+//     state.portfolio.add(contractId);
+// };
+
+export const subscribeToAllOpenContracts = () => {
+    state.portfolio = true;
 };
 
-export const unsubscribeFromAllPortfolios = () => {
+export const unsubscribeFromAllOpenContracts = () => {
     state.portfolio = false;
 };
 
-export const unsubscribeFromAlProposals = () => {
-    state = getInitialState();
+export const subscribeToTransactions = () => {
+    state.transactions = true;
+};
+
+export const unsubscribeFromTransactions = () => {
+    state.transactions = false;
 };
 
 export const subscribeToTick = symbol => {
-    state.ticks[symbol] = true;
+    state.ticks.add(symbol);
 };
 
 export const subscribeToTicks = symbols => {
-    symbols.forEach(s => { state.ticks[s] = true; });
+    state.ticks.add(...symbols);
+};
+
+export const unsubscribeFromTick = symbol => {
+    state.ticks.delete(symbol);
+};
+
+export const unsubscribeFromAllTicks = () => {
+    state.ticks.clear();
+};
+
+export const subscribeToPriceForContractProposal = options => {
+    state.proposals.add(options);
+};
+
+export const unsubscribeFromAllProposals = () => {
+    state.proposals.clear();
 };

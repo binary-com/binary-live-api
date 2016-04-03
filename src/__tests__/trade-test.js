@@ -1,6 +1,6 @@
 import describe from 'mocha.parallel';
 import { expect } from 'chai';
-import LiveApi from '../src/LiveApi';
+import LiveApi from '../LiveApi';
 import ws from 'ws';
 
 describe('trade', () => {

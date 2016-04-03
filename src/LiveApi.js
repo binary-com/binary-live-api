@@ -48,9 +48,8 @@ export default class LiveApi {
         this.socket.onerror = ::this.onError;
         this.socket.onmessage = ::this.onMessage;
 
-        if (this.token) {
-            this.authorize(this.token);
-        }
+        // TODO: if previous subscriptions redo this!
+        // this.resubscribe();
     }
 
     disconnect() {
@@ -67,7 +66,6 @@ export default class LiveApi {
         this.socket.close();
         this.language = ln;
         this.connect();
-        this.resubscribe();
     }
 
     isReady() {
@@ -180,16 +178,6 @@ export default class LiveApi {
             func();
         } else {
             this.bufferedExecutes.push(func);
-        }
-    }
-
-    resubscribe() {
-        const { ticks, priceProposal } = this.subscriptions;
-
-        this.subscribeToTicks(Object.keys(ticks));
-
-        if (priceProposal) {
-            this.subscribeToPriceForContractProposal(priceProposal);
         }
     }
 }

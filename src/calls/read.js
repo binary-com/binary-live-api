@@ -37,6 +37,11 @@ export const subscribeToBalance = () => ({
     subscribe: 1,
 });
 
+export const unsubscribeFromBalance = () => ({
+    balance: 1,
+    subscribe: 0,
+});
+
 export const subscribeToOpenContract = contractId => ({
     proposal_open_contract: 1,
     subscribe: 1,
@@ -48,7 +53,17 @@ export const subscribeToAllOpenContracts = () => ({
     subscribe: 1,
 });
 
+export const unsubscribeFromAllOpenContracts = () => ({
+    proposal_open_contract: 1,
+    subscribe: 0,
+});
+
 export const subscribeToTransactions = () => ({
     transaction: 1,
     subscribe: 1,
+});
+
+export const unsubscribeFromTransactions = () => ({
+    transaction: 1,
+    subscribe: 0,
 });

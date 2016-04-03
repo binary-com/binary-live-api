@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 import 'babel-polyfill';
 
-import LiveApi from '../src/LiveApi';
+import LiveApi from '../LiveApi';
 import ws from 'ws';
 
 describe('read', () => {
