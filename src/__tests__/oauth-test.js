@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 import 'babel-polyfill';
 
-import { oauthUrl, parseOAuthResponse } from '../oauth';
+import { oauthUrl, parseOAuthResponse } from '../OAuth';
 
 describe('OAuth', () => {
     let appId = 'id-ud5PPOTeBcEnkam7ArXIc4AO9e9gw';
