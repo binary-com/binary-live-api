@@ -6,7 +6,7 @@
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.4",
-    "babel-eslint": "^6.0.0",
+    "babel-eslint": "^6.0.2",
     "babel-istanbul": "^0.7.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-async-to-generator": "^6.7.4",
@@ -15,6 +15,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
+    "eslint": "^2.6.0",
     "coveralls": "^2.11.9",
     "eslint": "^2.5.1",
     "eslint-config-airbnb": "^6.2.0",
@@ -29,7 +30,6 @@
   },
   "scripts": {
     "clean": "rimraf lib dist",
-    "test2": "webpack --config webpack.config.js",
     "test:eslint": "webpack --config webpack.config.js",
     "test": "mocha --compilers js:babel-core/register -t 10000 **/__tests__/*.js",
     "test:coverage": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha -- --opts mocha.opts",
@@ -51,6 +51,10 @@
   },
   "homepage": "https://github.com/binary-com/binary-live-api#readme",
   "babel": {
+    "presets": [
+      "es2015",
+      "stage-0"
+    ],
     "plugins": [
       "transform-async-to-generator"
     ]
