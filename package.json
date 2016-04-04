@@ -30,8 +30,9 @@
   },
   "scripts": {
     "clean": "rimraf lib dist",
+    "test": "mocha --compilers js:babel-core/register -t 10000 **/__tests__/*.js -R progress",
     "test:eslint": "webpack --config webpack.config.js",
-    "test": "mocha --compilers js:babel-core/register -t 10000 **/__tests__/*.js",
+    "test": "mocha --compilers js:babel-core/register -- --opts mocha.opts",
     "test:coverage": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha -- --opts mocha.opts",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "webpack --watch",

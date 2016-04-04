@@ -1,1 +1,1 @@
---timeout 15000 ./src/**/__tests__/*.js
+--timeout 10000 ./src/**/__tests__/*.js
