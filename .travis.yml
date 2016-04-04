@@ -5,6 +5,3 @@ notifications:
     email: false
 before_install: npm install
 install: npm run test:full
-cache:
-    directories:
-        - node_modules
