@@ -1,7 +1,7 @@
 import LiveEvents from './LiveEvents';
-import LiveSubscriptions from './LiveSubscriptions';
 import LiveError from './LiveError';
 import * as calls from './calls';
+import * as stateful from './stateful';
 
 const MockWebSocket = () => {};
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
@@ -32,12 +32,20 @@ export default class LiveApi {
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
-        this.subscriptions = new LiveSubscriptions();
+
+        this.bindCallsAndStateMutators();
 
         this.connect();
+    }
 
+    bindCallsAndStateMutators() {
         Object.keys(calls).forEach(callName => {
-            this[callName] = (...params) => this.send(calls[callName](...params));
+            this[callName] = (...params) => {
+                if (stateful[callName]) {
+                    stateful[callName](...params);
+                }
+                return this.send(calls[callName](...params));
+            };
         });
     }
 
@@ -48,14 +56,41 @@ export default class LiveApi {
         this.socket.onerror = ::this.onError;
         this.socket.onmessage = ::this.onMessage;
 
-        // TODO: if previous subscriptions redo this!
-        // this.resubscribe();
+        this.resubscribe();
     }
 
     disconnect() {
         this.token = '';
         this.socket.onclose = undefined;
         this.socket.close();
+    }
+
+    resubscribe() {
+        const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
+
+        if (token) {
+            this.authorize(token);
+        }
+
+        if (balance) {
+            this.subscribeToBalance();
+        }
+
+        if (transactions) {
+            this.subscribeToTransactions();
+        }
+
+        if (portfolio) {
+            this.subscribeToAllOpenContracts();
+        }
+
+        ticks.forEach(tick =>
+            this.subscribeToTick(tick)
+        );
+
+        proposals.forEach(proposal =>
+            this.subscribeToPriceForContractProposal(proposal)
+        );
     }
 
     changeLanguage(ln) {

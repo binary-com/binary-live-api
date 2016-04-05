@@ -1,40 +1,19 @@
 const getInitialState = () => ({
     token: '',
-    balance: true,
+    balance: false,
     portfolio: false,
     transactions: false,
     ticks: new Set(),
     proposals: new Set(),
 });
 
-export default class LiveSubscriptions {
+let state = getInitialState();
 
-    constructor() {
-        this.state = getInitialState();
-    }
+export const resetState = () => {
+    state = getInitialState();
+};
 
-    resubscribe() {
-        const { token, portfolio, ticks, proposals } = this.state;
-
-        if (token) {
-            this.authorize(token);
-        }
-
-        if (portfolio) {
-            this.subscribeToAllOpenContracts();
-        }
-
-        this.subscribeToTicks(Object.keys(ticks));
-
-        if (proposals) {
-            proposals.forEach(proposal =>
-                this.subscribeToPriceForContractProposal(proposal)
-            );
-        }
-    }
-}
-
-let state = {};
+export const getState = () => state;
 
 export const authorize = token => {
     state.token = token;

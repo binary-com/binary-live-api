@@ -1,8 +1,8 @@
-import { LiveApi } from '../lib/';
+var LiveApi = window['binary-live-api'].LiveApi;
 
 var api = new LiveApi();
 
-const token = '3wXTOFIMNvhIs5UpARelBFQHzRhd2k2tQoxIK1VarnFOeAmd';
+const token = '8PgmMxKGP0ARsRs';
 api.authorize(token).then(() =>{ console.log('Authorized!') }, () => { console.log('Not Authorized')});
 
 function tickHistoryDemo() {
