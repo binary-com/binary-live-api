@@ -3,5 +3,5 @@ node_js:
     - 5.0
 notifications:
     email: false
-before_install: npm install
+before_install: npm install 
 install: npm run test:full
