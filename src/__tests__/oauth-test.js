@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 import 'babel-polyfill';
 
-import { oauthUrl, parseOAuthResponse } from '../OAuth';
+import { oauthUrl, oauthUrlWithLanguage, parseOAuthResponse } from '../OAuth';
 
 describe('OAuth', () => {
     let appId = 'id-ud5PPOTeBcEnkam7ArXIc4AO9e9gw';
@@ -14,9 +14,10 @@ describe('OAuth', () => {
         expect(url).to.contain('binary.com');
     });
 
-    it('should be able to get the OAuth url with language', () => {
-        const url = oauthUrl(appId, 'RU');
+    it.only('should be able to get the OAuth url with language', () => {
+        const url = oauthUrlWithLanguage(appId, 'RU');
         expect(url).to.contain('binary.com');
+        expect(url).to.contain('RU');
     });
 
     it('should be able to parse the simplest response url', () => {
