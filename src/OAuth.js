@@ -6,7 +6,7 @@ export const oauthUrlWithLanguage = (appId, langCode) =>
 
 export const parseOAuthResponse = responseUrl => {
     const matcher = /acct\d=(\w+)&token\d=([\w-]+)/g;
-    const urlParts = responseUrl.split('/redirect#');
+    const urlParts = responseUrl.split('/redirect?');
     if (urlParts.length !== 2) throw new Error('Not a valid url');
 
     const params = urlParts[1].split(matcher);
