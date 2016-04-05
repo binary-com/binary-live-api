@@ -2,9 +2,8 @@ import describe from 'mocha.parallel';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
-
-import LiveApi from '../LiveApi';
 import ws from 'ws';
+import LiveApi from '../LiveApi';
 
 
 describe('admin', () => {

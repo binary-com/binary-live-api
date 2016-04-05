@@ -14,7 +14,7 @@ describe('OAuth', () => {
         expect(url).to.contain('binary.com');
     });
 
-    it.only('should be able to get the OAuth url with language', () => {
+    it('should be able to get the OAuth url with language', () => {
         const url = oauthUrlWithLanguage(appId, 'RU');
         expect(url).to.contain('binary.com');
         expect(url).to.contain('RU');
