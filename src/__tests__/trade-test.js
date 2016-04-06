@@ -1,4 +1,3 @@
-import describe from 'mocha.parallel';
 import { expect } from 'chai';
 import LiveApi from '../LiveApi';
 import ws from 'ws';
