@@ -59,6 +59,18 @@ describe('unauthenticated', () => {
         ).to.eventually.have.property('tick')
     );
 
+    it('can subscribe to multiple ticks updates', () =>
+        expect(
+            liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100'])
+        ).to.not.throw
+    );
+
+    it('can unsubscribe from all tick updates', () =>
+        expect(
+            liveApi.unsubscribeFromAllTicks()
+        ).to.not.throw
+    );
+
     it('can get tick history with no parameters', () =>
         expect(
             liveApi.getTickHistory('R_100')
@@ -97,5 +109,11 @@ describe('unauthenticated', () => {
                 symbol: 'R_100',
             })
         ).to.eventually.have.property('proposal')
+    );
+
+    it('can unsubscribe from all price proposal updates', () =>
+        expect(
+            liveApi.unsubscribeFromAllProposals()
+        ).to.not.throw
     );
 });
