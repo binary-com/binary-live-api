@@ -103,6 +103,42 @@ describe('read', () => {
 		expect(response).to.have.property('profit_table');
 	});
 
+    it('should be able to subscribe to balance updates', () => {
+        expect(() =>
+            liveApi.subscribeToBalance()
+        ).to.not.throw();
+    });
+
+    it('should be able to unsubscribe from balance updates', () => {
+        expect(() =>
+            liveApi.unsubscribeFromBalance()
+        ).to.not.throw();
+    });
+
+    it('should be able to subscribe to open contract updates', () => {
+        expect(() =>
+            liveApi.subscribeToAllOpenContracts()
+        ).to.not.throw();
+    });
+
+    it('should be able to unsubscribe from open contract updates', () => {
+        expect(() =>
+            liveApi.unsubscribeFromAllOpenContracts()
+        ).to.not.throw();
+    });
+
+    it('should be able to subscribe to transaction updates', () => {
+        expect(() =>
+            liveApi.subscribeToTransactions()
+        ).to.not.throw();
+    });
+
+    it('should be able to unsubscribe from transaction updates', () => {
+        expect(() =>
+            liveApi.unsubscribeFromTransactions()
+        ).to.not.throw();
+    });
+
 	it('should be able to call subscribeToOpenContract without an issue', () => {
 		expect(() =>
 			liveApi.subscribeToOpenContract()
