@@ -132,7 +132,6 @@ export default class LiveApi {
     onClose() {
         setTimeout(() => {
             this.connect();
-            this.resubscribe();
         }, 1000);
     }
 
