@@ -130,9 +130,7 @@ export default class LiveApi {
     }
 
     onClose() {
-        setTimeout(() => {
-            this.connect();
-        }, 1000);
+        this.connect();
     }
 
     onError(error) {
