@@ -73,18 +73,6 @@ export default class LiveApi {
             this.authorize(token);
         }
 
-        if (balance) {
-            this.subscribeToBalance();
-        }
-
-        if (transactions) {
-            this.subscribeToTransactions();
-        }
-
-        if (portfolio) {
-            this.subscribeToAllOpenContracts();
-        }
-
         ticks.forEach(tick =>
             this.subscribeToTick(tick)
         );
@@ -92,6 +80,23 @@ export default class LiveApi {
         proposals.forEach(proposal =>
             this.subscribeToPriceForContractProposal(proposal)
         );
+
+        const delayedCallAfterAuthSuccess = () => {
+            if (balance) {
+                this.subscribeToBalance();
+            }
+
+            if (transactions) {
+                this.subscribeToTransactions();
+            }
+
+            if (portfolio) {
+                this.subscribeToAllOpenContracts();
+            }
+
+            this.onAuth = undefined;
+        };
+        this.onAuth = delayedCallAfterAuthSuccess;
     }
 
     changeLanguage(ln) {
@@ -126,10 +131,7 @@ export default class LiveApi {
     }
 
     onClose() {
-        setTimeout(() => {
-            this.connect();
-            this.resubscribe();
-        }, 1000);
+        this.connect();
     }
 
     onError(error) {
@@ -172,6 +174,9 @@ export default class LiveApi {
         const json = JSON.parse(message.data);
 
         if (!json.error) {
+            if (json.msg_type === 'authorize' && this.onAuth) {
+                this.onAuth();
+            }
             this.events.emit(json.msg_type, json);
         } else {
             this.events.emit('error', json);

@@ -1,6 +1,7 @@
 export default class LiveError extends Error {
     constructor(errorObj) {
         super();
+
         this.message = errorObj.message;
         this.stack = (new Error()).stack;
         this.error = errorObj;
