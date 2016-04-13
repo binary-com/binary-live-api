@@ -9,6 +9,7 @@
     "react"
   ],
   "rules": {
+    "camelcase": 0,
     "no-empty-label": 0,
     "no-confusing-arrow": 0,
     "space-before-keywords": [0, 'always'],
