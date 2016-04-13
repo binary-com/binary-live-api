@@ -3,6 +3,7 @@ import LiveError from './LiveError';
 import * as calls from './calls';
 import * as stateful from './stateful';
 
+const defaultApiUrl = 'wss://ws.binaryws.com/websockets/v3';
 const MockWebSocket = () => {};
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
@@ -17,7 +18,7 @@ export default class LiveApi {
         Connected: 'connected',
     };
 
-    constructor({ apiUrl = 'wss://ws.binaryws.com/websockets/v3', language = 'en', websocket } = {}) {
+    constructor({ apiUrl = defaultApiUrl, language = 'en', websocket, connection } = {}) {
         this.apiUrl = apiUrl;
         this.language = language;
 
@@ -35,7 +36,7 @@ export default class LiveApi {
 
         this.bindCallsAndStateMutators();
 
-        this.connect();
+        this.connect(connection);
     }
 
     bindCallsAndStateMutators() {
@@ -49,8 +50,8 @@ export default class LiveApi {
         });
     }
 
-    connect() {
-        this.socket = new WebSocket(`${this.apiUrl}?l=${this.language}`);
+    connect(connection) {
+        this.socket = connection || new WebSocket(`${this.apiUrl}?l=${this.language}`);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
