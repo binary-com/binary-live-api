@@ -55,8 +55,6 @@ export default class LiveApi {
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
         this.socket.onmessage = ::this.onMessage;
-
-        this.resubscribe();
     }
 
     disconnect() {
@@ -106,6 +104,7 @@ export default class LiveApi {
         this.socket.close();
         this.language = ln;
         this.connect();
+        this.resubscribe();
     }
 
     isReady() {
@@ -131,6 +130,7 @@ export default class LiveApi {
 
     onClose() {
         this.connect();
+        this.resubscribe();
     }
 
     onError(error) {
