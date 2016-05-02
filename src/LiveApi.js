@@ -51,10 +51,8 @@ export default class LiveApi {
         });
 
         Object.keys(customCalls).forEach(callName => {
-            this[callName] = (...params) => {
-                const boundedCustomCall = customCalls[callName].bind(this);
-                return boundedCustomCall[callName](...params);      // seems to be a good place to do some simple cache
-            };
+            this[callName] = (...params) =>
+                customCalls[callName](this, ...params);      // seems to be a good place to do some simple cache
         });
     }
 

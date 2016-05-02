@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
-
+import 'babel-polyfill';
 import LiveApi from '../LiveApi';
 import ws from 'ws';
 
@@ -13,8 +13,8 @@ describe("custom", () => {
     });
 
     it("getDataForContract", async () => {
-        const auth = await liveApi.authorize();
+        const auth = await liveApi.authorize(token);
         const ticks = await liveApi.getDataForContract('8686424368');
-        expect(ticks).length.to.equal(10);
+        expect(ticks).to.have.lengthOf(151);
     });
 });

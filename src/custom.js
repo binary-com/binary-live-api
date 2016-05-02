@@ -2,6 +2,7 @@ import nowEpoch from 'binary-utils/lib/nowAsEpoch';
 import durationToSecs from 'binary-utils/lib/durationToSecs';
 
 export const getDataForContract = (
+    api,
     contractID,
     durationType = 'all',
     durationCount,
@@ -22,7 +23,7 @@ export const getDataForContract = (
                 }
             });
             granularity = Math.min(86400, granularity);
-            return this.getTickHistory(symbol,
+            return api.getTickHistory(symbol,
                 {
                     start,
                     end,
@@ -33,7 +34,7 @@ export const getDataForContract = (
                 }
             ).then(r => ohlcDataToTicks(r.candles));
         }
-        return this.getTickHistory(symbol,
+        return api.getTickHistory(symbol,
             {
                 start,
                 end,
@@ -50,7 +51,7 @@ export const getDataForContract = (
         });
     };
     const getAllData = () =>
-        this.subscribeToOpenContract(contractID)
+        api.subscribeToOpenContract(contractID)
             .then(r => {
                 const contract = r.proposal_open_contract;
                 const symbol = contract.underlying;
@@ -68,17 +69,17 @@ export const getDataForContract = (
             default: return 'd';
         }
     };
-    return this.subscribeToOpenContract(contractID)
+    
+    if (durationType === 'all') {
+        return getAllData(style, granularity);
+    }
+
+    return api.subscribeToOpenContract(contractID)
         .then(r => {
             const contract = r.proposal_open_contract;
             const symbol = contract.underlying;
             const purchaseT = contract.purchase_time;
             const sellT = contract.sell_time;
-
-            if (durationType === 'all') {
-                return getAllData(style, granularity);
-            }
-
             const end = contract.sell_spot ? sellT : nowEpoch();
             const durationUnit = hcUnitConverter(durationType);
             const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));

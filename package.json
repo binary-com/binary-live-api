@@ -57,7 +57,7 @@
       "transform-async-to-generator"
     ]
   },
-  "peerDependencies": {
+  "dependencies": {
     "binary-utils": "^2.1.2"
   }
 }
