@@ -54,7 +54,7 @@ export default class LiveApi {
             this[callName] = (...params) => {
                 const boundedCustomCall = customCalls[callName].bind(this);
                 return boundedCustomCall[callName](...params);      // seems to be a good place to do some simple cache
-            }
+            };
         });
     }
 
@@ -227,87 +227,5 @@ export default class LiveApi {
         } else {
             this.bufferedExecutes.push(func);
         }
-    }
-
-    // Custom call for high level data retrieval
-    getDataForContract(contractID, durationType = 'all', durationCount, style = 'ticks', granularity = 60) {
-        const granularities = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
-        const ohlcDataToTicks = candles => candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
-        const autoAdjustGetData = (symbol, start, end) => {
-            const secs = end - start;
-            const ticksCount = secs / 2;
-            let style = 'ticks';
-            if (ticksCount >= 5000) {
-                style = 'candles';
-                const idealGranularity = secs / 4999;
-                let granularity = 60;
-                granularities.forEach((g, i) => {
-                    if (idealGranularity > g && idealGranularity <= granularities[i + 1]) {
-                        granularity = granularities[i + 1];
-                    }
-                });
-                granularity = Math.min(86400, granularity);
-                return this.getTickHistory(symbol,
-                    {
-                        start,
-                        end,
-                        adjust_start_time: 1,
-                        count: 4999,
-                        style,
-                        granularity,
-                    }
-                ).then(r => ohlcDataToTicks(r.candles));
-            }
-            return this.getTickHistory(symbol,
-                {
-                    start,
-                    end,
-                    adjust_start_time: 1,
-                    count: 4999,
-                    style,
-                }
-            ).then(r => {
-                const ticks = r.history.times.map((t, idx) => {
-                    const quote = r.history.prices[idx];
-                    return { epoch: +t, quote: +quote };
-                });
-                return ticks;
-            });
-        };
-        const getAllData = (contractID, style = 'ticks', granularity = 60) =>
-            this.subscribeToOpenContract(contractID)
-                .then(r => {
-                    const contract = r.proposal_open_contract;
-                    const symbol = contract.underlying;
-                    const start = contract.purchase_time;
-                    const sellT = contract.sell_time;
-                    const end = contract.sell_spot ? sellT: nowEpoch();
-                    return autoAdjustGetData(symbol, start, end);
-                });
-        const hcUnitConverter = type => {
-            switch (type) {
-                case 'second': return 's';
-                case 'minute': return 'm';
-                case 'hour': return 'h';
-                case 'day': return 'd';
-                default: return 'd';
-            }
-        };
-        this.subscribeToOpenContract(contractID)
-            .then(r => {
-                const contract = r.proposal_open_contract;
-                const symbol = contract.underlying;
-                const purchaseT = contract.purchase_time;
-                const sellT = contract.sell_time;
-
-                if (durationType === 'all') {
-                    return getAllData(contractID, style, granularity);
-                }
-
-                const end = contract.sell_spot ? sellT: nowEpoch();
-                const durationUnit = hcUnitConverter(durationType);
-                const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
-                return autoAdjustGetData(symbol, start, end);
-            });
     }
 }

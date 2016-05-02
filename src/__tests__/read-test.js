@@ -47,7 +47,7 @@ describe('read', () => {
 	it('should be able to get account status in a response from a server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getAccountStatus();
-		expect(response.get_account_status).to.contains('active');
+		expect(response.get_account_status).to.contains('authenticated');
 	});
 
 	it('should be able to call getSelfExclusion without an issue', () => {

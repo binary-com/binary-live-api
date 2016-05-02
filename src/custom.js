@@ -1,3 +1,6 @@
+import nowEpoch from 'binary-utils/lib/nowAsEpoch';
+import durationToSecs from 'binary-utils/lib/durationToSecs';
+
 export const getDataForContract = (
     contractID,
     durationType = 'all',
@@ -10,11 +13,9 @@ export const getDataForContract = (
     const autoAdjustGetData = (symbol, start, end) => {
         const secs = end - start;
         const ticksCount = secs / 2;
-        let style = 'ticks';
         if (ticksCount >= 5000) {
             style = 'candles';
             const idealGranularity = secs / 4999;
-            let granularity = 60;
             granularities.forEach((g, i) => {
                 if (idealGranularity > g && idealGranularity <= granularities[i + 1]) {
                     granularity = granularities[i + 1];
@@ -48,14 +49,14 @@ export const getDataForContract = (
             return ticks;
         });
     };
-    const getAllData = (contractID, style = 'ticks', granularity = 60) =>
+    const getAllData = () =>
         this.subscribeToOpenContract(contractID)
             .then(r => {
                 const contract = r.proposal_open_contract;
                 const symbol = contract.underlying;
                 const start = contract.purchase_time;
                 const sellT = contract.sell_time;
-                const end = contract.sell_spot ? sellT: nowEpoch();
+                const end = contract.sell_spot ? sellT : nowEpoch();
                 return autoAdjustGetData(symbol, start, end);
             });
     const hcUnitConverter = type => {
@@ -75,10 +76,10 @@ export const getDataForContract = (
             const sellT = contract.sell_time;
 
             if (durationType === 'all') {
-                return getAllData(contractID, style, granularity);
+                return getAllData(style, granularity);
             }
 
-            const end = contract.sell_spot ? sellT: nowEpoch();
+            const end = contract.sell_spot ? sellT : nowEpoch();
             const durationUnit = hcUnitConverter(durationType);
             const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
             return autoAdjustGetData(symbol, start, end);
