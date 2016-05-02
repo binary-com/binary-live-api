@@ -2,6 +2,7 @@ import LiveEvents from './LiveEvents';
 import LiveError from './LiveError';
 import * as calls from './calls';
 import * as stateful from './stateful';
+import * as customCalls from './custom';
 
 const defaultApiUrl = 'wss://ws.binaryws.com/websockets/v3';
 const MockWebSocket = () => {};
@@ -47,6 +48,11 @@ export default class LiveApi {
                 }
                 return this.send(calls[callName](...params));
             };
+        });
+
+        Object.keys(customCalls).forEach(callName => {
+            this[callName] = (...params) =>
+                customCalls[callName](this, ...params);      // seems to be a good place to do some simple cache
         });
     }
 

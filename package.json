@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "18.0.0",
+  "version": "18.1.0",
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
@@ -56,5 +56,8 @@
     "plugins": [
       "transform-async-to-generator"
     ]
+  },
+  "dependencies": {
+    "binary-utils": "^2.1.2"
   }
 }
