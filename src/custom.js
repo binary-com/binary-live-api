@@ -53,7 +53,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
     });
 };
 
-export const getDataForSymbol = (api, symbol, durationType = 'all', durationCount = 1) => {
+export const getDataForSymbol = (api, symbol, durationCount = 1, durationType = 'all') => {
     const durationUnit = hcUnitConverter(durationType);
     const end = nowEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
@@ -63,8 +63,8 @@ export const getDataForSymbol = (api, symbol, durationType = 'all', durationCoun
 export const getDataForContract = (
     api,
     contractID,
-    durationType = 'all',
     durationCount,
+    durationType = 'all',
     style = 'ticks',
     granularity = 60
 ) => {
