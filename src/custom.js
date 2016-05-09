@@ -78,7 +78,7 @@ export const getDataForContract = (
                 const end = contract.sell_spot ? sellT : nowEpoch();
                 return autoAdjustGetData(api, symbol, start, end, style, granularity);
             });
-    
+
     if (durationType === 'all') {
         return getAllData();
     }
