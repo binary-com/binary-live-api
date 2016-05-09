@@ -17,4 +17,10 @@ describe("custom", () => {
         const ticks = await liveApi.getDataForContract('8686424368');
         expect(ticks).to.have.lengthOf(151);
     });
+
+    it('getDataForSymbol', async () => {
+        const auth = await liveApi.authorize(token);
+        const ticks = await liveApi.getDataForSymbol('R_100');
+        expect(ticks).to.have.length.above(1000);
+    });
 });
