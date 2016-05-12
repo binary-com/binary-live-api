@@ -48,6 +48,11 @@ export const subscribeToOpenContract = contractId => ({
     contract_id: contractId,
 });
 
+export const getContractInfo = contractId => ({
+    proposal_open_contract: 1,
+    contract_id: contractId,
+});
+
 export const subscribeToAllOpenContracts = () => ({
     proposal_open_contract: 1,
     subscribe: 1,

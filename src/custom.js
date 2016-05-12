@@ -69,7 +69,7 @@ export const getDataForContract = (
     granularity = 60,
 ) => {
     const getAllData = () =>
-        api.subscribeToOpenContract(contractID)
+        api.getContractInfo(contractID)
             .then(r => {
                 const contract = r.proposal_open_contract;
                 const symbol = contract.underlying;
@@ -90,7 +90,7 @@ export const getDataForContract = (
         return getAllData();
     }
 
-    return api.subscribeToOpenContract(contractID)
+    return api.getContractInfo(contractID)
         .then(r => {
             const contract = r.proposal_open_contract;
             const symbol = contract.underlying;
