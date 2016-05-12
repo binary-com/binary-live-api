@@ -66,15 +66,22 @@ export const getDataForContract = (
     durationCount,
     durationType = 'all',
     style = 'ticks',
-    granularity = 60
+    granularity = 60,
 ) => {
     const getAllData = () =>
         api.subscribeToOpenContract(contractID)
             .then(r => {
                 const contract = r.proposal_open_contract;
                 const symbol = contract.underlying;
-                const start = contract.purchase_time;
-                const sellT = contract.sell_time;
+                if (contract.tick_count) {
+                    const start = contract.purchase_time;
+                    const sellT = contract.sell_time;
+                    const end = contract.sell_spot ? sellT : nowEpoch();
+                    return autoAdjustGetData(api, symbol, start, end, style, granularity);
+                }
+
+                const start = contract.purchase_time - (5 * 60);    // add 5 minutes buffer
+                const sellT = contract.sell_time + (5 * 60);
                 const end = contract.sell_spot ? sellT : nowEpoch();
                 return autoAdjustGetData(api, symbol, start, end, style, granularity);
             });

@@ -5,17 +5,25 @@ import 'babel-polyfill';
 import LiveApi from '../LiveApi';
 import ws from 'ws';
 
-describe("custom", () => {
+describe('custom', () => {
     let liveApi;
     const token = 'qdJ86Avvrsh0Le4';
     beforeEach(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 
-    it("getDataForContract", async () => {
-        const auth = await liveApi.authorize(token);
-        const ticks = await liveApi.getDataForContract('8686424368');
-        expect(ticks).to.have.lengthOf(151);
+    describe('getDataForContract', () => {
+        it('should get more extra ticks for non-tick-contract', async () => {
+            const auth = await liveApi.authorize(token);
+            const ticks = await liveApi.getDataForContract('8686424368');
+            expect(ticks).to.have.lengthOf(451);
+        });
+
+        it('should get exact number of ticks for tick-contract', async () => {
+            const auth = await liveApi.authorize(token);
+            const ticks = await liveApi.getDataForContract('8818581808');
+            expect(ticks).to.have.lengthOf(8);
+        });
     });
 
     it('getDataForSymbol', async () => {
