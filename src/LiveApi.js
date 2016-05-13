@@ -73,18 +73,6 @@ export default class LiveApi {
     resubscribe() {
         const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
 
-        if (token) {
-            this.authorize(token);
-        }
-
-        ticks.forEach(tick =>
-            this.subscribeToTick(tick)
-        );
-
-        proposals.forEach(proposal =>
-            this.subscribeToPriceForContractProposal(proposal)
-        );
-
         const delayedCallAfterAuthSuccess = () => {
             if (balance) {
                 this.subscribeToBalance();
@@ -101,6 +89,18 @@ export default class LiveApi {
             this.onAuth = undefined;
         };
         this.onAuth = delayedCallAfterAuthSuccess;
+
+        if (token) {
+            this.authorize(token);
+        }
+
+        ticks.forEach(tick =>
+            this.subscribeToTick(tick)
+        );
+
+        proposals.forEach(proposal =>
+            this.subscribeToPriceForContractProposal(proposal)
+        );
     }
 
     changeLanguage(ln) {
