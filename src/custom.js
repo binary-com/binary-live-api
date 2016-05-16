@@ -60,12 +60,12 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
  * @param durationCount
  * @param durationType
  */
-export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all') => {
+export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all') {
     const durationUnit = hcUnitConverter(durationType);
     const end = nowEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
     return autoAdjustGetData(api, symbol, start, end);
-};
+}
 
 /**
  * get data of contract
@@ -84,7 +84,7 @@ export function getDataForContract(
     durationType = 'all',
     style = 'ticks',
     granularity = 60,
-) => {
+) {
     const getAllData = () =>
         getContract()
             .then(r => {
@@ -118,4 +118,4 @@ export function getDataForContract(
             const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
             return autoAdjustGetData(api, symbol, start, end, style, granularity);
         });
-};
+}
