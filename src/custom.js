@@ -53,23 +53,40 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
     });
 };
 
-export const getDataForSymbol = (api, symbol, durationCount = 1, durationType = 'all') => {
+/**
+ *
+ * @param api
+ * @param symbol
+ * @param durationCount
+ * @param durationType
+ */
+export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all') {
     const durationUnit = hcUnitConverter(durationType);
     const end = nowEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
     return autoAdjustGetData(api, symbol, start, end);
-};
+}
 
-export const getDataForContract = (
+/**
+ * get data of contract
+ * @param api                      - will be injected by library
+ * @param getContract              - function that accept nothing and return a Promise containing contract
+ * @param durationCount            - number of duration
+ * @param durationType             - type of duration, check http://api.highcharts.com/highstock#rangeSelector.buttons
+ * @param style                    - one of ['ticks', 'candles'], check https://developers.binary.com/api/#ticks_history
+ * @param granularity              - default to 60, check https://developers.binary.com/api/#ticks_history
+ * @returns {*|Promise.<TResult>}
+ */
+export function getDataForContract(
     api,
-    contractID,
+    getContract,
     durationCount,
     durationType = 'all',
     style = 'ticks',
     granularity = 60,
-) => {
+) {
     const getAllData = () =>
-        api.getContractInfo(contractID)
+        getContract()
             .then(r => {
                 const contract = r.proposal_open_contract;
                 const symbol = contract.underlying;
@@ -90,7 +107,7 @@ export const getDataForContract = (
         return getAllData();
     }
 
-    return api.getContractInfo(contractID)
+    return getContract()
         .then(r => {
             const contract = r.proposal_open_contract;
             const symbol = contract.underlying;
@@ -101,4 +118,4 @@ export const getDataForContract = (
             const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
             return autoAdjustGetData(api, symbol, start, end, style, granularity);
         });
-};
+}
