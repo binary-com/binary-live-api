@@ -14,20 +14,22 @@ describe('custom', () => {
 
     describe('getDataForContract', () => {
         it('should get more extra ticks for non-tick-contract', async () => {
-            const auth = await liveApi.authorize(token);
-            const ticks = await liveApi.getDataForContract('8686424368');
+            await liveApi.authorize(token);
+            const nonTickContractID = '8686424368';
+            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(nonTickContractID));
             expect(ticks).to.have.lengthOf(451);
         });
 
         it('should get exact number of ticks for tick-contract', async () => {
-            const auth = await liveApi.authorize(token);
-            const ticks = await liveApi.getDataForContract('8818581808');
+            await liveApi.authorize(token);
+            const tickContractID = '8818581808';
+            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(tickContractID));
             expect(ticks).to.have.lengthOf(8);
         });
     });
 
     it('getDataForSymbol', async () => {
-        const auth = await liveApi.authorize(token);
+        await liveApi.authorize(token);
         const ticks = await liveApi.getDataForSymbol('R_100');
         expect(ticks).to.have.length.above(1000);
     });
