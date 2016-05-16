@@ -212,6 +212,9 @@ export default class LiveApi {
     }
 
     send(json) {
+        if (Object.keys(json).length === 0 && json.constructor === Object) {
+            return;
+        }
         const reqId = Math.floor((Math.random() * 1e15));
         return this.sendRaw({
             req_id: reqId,
