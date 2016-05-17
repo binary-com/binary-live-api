@@ -87,8 +87,7 @@ export function getDataForContract(
 ) {
     const getAllData = () =>
         getContract()
-            .then(r => {
-                const contract = r.proposal_open_contract;
+            .then(contract => {
                 const symbol = contract.underlying;
                 if (contract.tick_count) {
                     const start = contract.purchase_time;
