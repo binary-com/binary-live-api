@@ -16,14 +16,16 @@ describe('custom', () => {
         it('should get more extra ticks for non-tick-contract', async () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
-            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(nonTickContractID));
+            const ticks = await liveApi
+                .getDataForContract(() => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract));
             expect(ticks).to.have.lengthOf(451);
         });
 
         it('should get exact number of ticks for tick-contract', async () => {
             await liveApi.authorize(token);
             const tickContractID = '8818581808';
-            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(tickContractID));
+            const ticks = await liveApi
+                .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
             expect(ticks).to.have.lengthOf(8);
         });
     });
