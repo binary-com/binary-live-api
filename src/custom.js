@@ -16,8 +16,7 @@ const hcUnitConverter = type => {
 const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity = 60) => {
     const secs = end - start;
     const ticksCount = secs / 2;
-    if (ticksCount >= 5000) {
-        style = 'candles';
+    if (ticksCount >= 5000 || style === 'candles') {
         const idealGranularity = secs / 4999;
         granularities.forEach((g, i) => {
             if (idealGranularity > g && idealGranularity <= granularities[i + 1]) {
@@ -31,10 +30,10 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
                 end,
                 adjust_start_time: 1,
                 count: 4999,
-                style,
+                style: 'candles',
                 granularity,
             }
-        ).then(r => ohlcDataToTicks(r.candles));
+        ).then(r => style === 'ticks' ? ohlcDataToTicks(r.candles) : r.candles);
     }
     return api.getTickHistory(symbol,
         {
@@ -42,7 +41,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
             end,
             adjust_start_time: 1,
             count: 4999,
-            style,
+            style: 'ticks',
         }
     ).then(r => {
         const ticks = r.history.times.map((t, idx) => {
@@ -60,11 +59,11 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
  * @param durationCount
  * @param durationType
  */
-export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all') {
+export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all', style = 'ticks') {
     const durationUnit = hcUnitConverter(durationType);
     const end = nowEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
-    return autoAdjustGetData(api, symbol, start, end);
+    return autoAdjustGetData(api, symbol, start, end, style);
 }
 
 /**
@@ -73,7 +72,9 @@ export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 
  * @param getContract              - function that accept nothing and return a Promise containing contract
  * @param durationCount            - number of duration
  * @param durationType             - type of duration, check http://api.highcharts.com/highstock#rangeSelector.buttons
- * @param style                    - one of ['ticks', 'candles'], check https://developers.binary.com/api/#ticks_history
+ * @param style                    - one of ['ticks', 'candles'], this will affect the return data shape,
+ *                                   internally library might not always use this param when requesting, eg. when data is too large,
+ *                                   library will use `candles` instead of `ticks`, this is handle by library so user do not need to worry
  * @param granularity              - default to 60, check https://developers.binary.com/api/#ticks_history
  * @returns {*|Promise.<TResult>}
  */
@@ -87,8 +88,7 @@ export function getDataForContract(
 ) {
     const getAllData = () =>
         getContract()
-            .then(r => {
-                const contract = r.proposal_open_contract;
+            .then(contract => {
                 const symbol = contract.underlying;
                 if (contract.tick_count) {
                     const start = contract.purchase_time;

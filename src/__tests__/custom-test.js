@@ -16,21 +16,51 @@ describe('custom', () => {
         it('should get more extra ticks for non-tick-contract', async () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
-            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(nonTickContractID));
+            const ticks = await liveApi
+                .getDataForContract(() => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract));
             expect(ticks).to.have.lengthOf(451);
         });
 
         it('should get exact number of ticks for tick-contract', async () => {
             await liveApi.authorize(token);
             const tickContractID = '8818581808';
-            const ticks = await liveApi.getDataForContract(() => liveApi.getContractInfo(tickContractID));
+            const ticks = await liveApi
+                .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
             expect(ticks).to.have.lengthOf(8);
+        });
+        
+        it('should return candles if user request candles', async () => {
+            await liveApi.authorize(token);
+            const nonTickContractID = '8686424368';
+            const candles = await liveApi
+                .getDataForContract(
+                    () => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract),
+                    1,
+                    'all',
+                    'candles',
+                );
+            expect(candles).to.have.lengthOf(16);
+            expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
     });
 
-    it('getDataForSymbol', async () => {
-        await liveApi.authorize(token);
-        const ticks = await liveApi.getDataForSymbol('R_100');
-        expect(ticks).to.have.length.above(1000);
+    describe('getDataForSymbol', () => {
+        it('should get data for specified market', async () => {
+            await liveApi.authorize(token);
+            const ticks = await liveApi.getDataForSymbol('R_100');
+            expect(ticks).to.have.length.above(1000);
+        });
+
+        it('should get data for specified market using given duration params', async () => {
+            await liveApi.authorize(token);
+            const ticks = await liveApi.getDataForSymbol('R_100', 1, 'minute');
+            expect(ticks).to.have.length.above(29);
+        });
+
+        it('should get candles for specified market if requested candles', async () => {
+            await liveApi.authorize(token);
+            const ticks = await liveApi.getDataForSymbol('R_100', 1, 'hour', 'candles');
+            expect(ticks).to.have.length.above(59);
+        });
     });
 });
