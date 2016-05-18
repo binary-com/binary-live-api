@@ -108,8 +108,7 @@ export function getDataForContract(
     }
 
     return getContract()
-        .then(r => {
-            const contract = r.proposal_open_contract;
+        .then(contract => {
             const symbol = contract.underlying;
             const purchaseT = contract.purchase_time;
             const sellT = contract.sell_time;
