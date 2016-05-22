@@ -19,9 +19,10 @@ export default class LiveApi {
         Connected: 'connected',
     };
 
-    constructor({ apiUrl = defaultApiUrl, language = 'en', websocket, connection } = {}) {
+    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection } = {}) {
         this.apiUrl = apiUrl;
         this.language = language;
+        this.appId = appId;
 
         if (websocket) {
             WebSocket = websocket;
@@ -57,7 +58,9 @@ export default class LiveApi {
     }
 
     connect(connection) {
-        this.socket = connection || new WebSocket(`${this.apiUrl}?l=${this.language}`);
+        const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}`;
+
+        this.socket = connection || new WebSocket(urlPlusParams);
         this.socket.onopen = ::this.onOpen;
         this.socket.onclose = ::this.onClose;
         this.socket.onerror = ::this.onError;
@@ -141,10 +144,7 @@ export default class LiveApi {
     }
 
     onError(error) {
-        // for process manager like pm2.
-        // It's necessary to print error with console.error.
-        // It will make error readable on error.log
-        window.console.error(error);
+        console.error(error); // eslint-disable-line no-console
 
         // And also make process exiting to respawn.
         if (typeof process === 'function') {

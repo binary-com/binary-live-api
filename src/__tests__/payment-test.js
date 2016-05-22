@@ -40,7 +40,7 @@ describe('payment', () => {
             verification_code: 'Ag76JL9+B/g=',
         });
         expect(response.name).to.equal('Error');
-        expect(response.message).to.contains('Input validation failed: verification_code');
+        expect(response.message).to.contain('Input validation failed: verification_code');
     });
 
 	it('should be able to call withdrawToPaymentAgent function without an issue', () => {

@@ -11,7 +11,7 @@ describe('read', () => {
     let token = '4yFDEnFI3EpnZ7M';
 
     beforeEach(() => {
-        liveApi = new LiveApi({ websocket: ws });
+        liveApi = new LiveApi({ websocket: ws, appId: 1089 });
     });
 
     it('should be able to get account limit', async () => {
@@ -47,7 +47,7 @@ describe('read', () => {
 	it('should be able to get account status in a response from a server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getAccountStatus();
-		expect(response.get_account_status).to.contains('authenticated');
+		expect(response.get_account_status).to.have.any.keys('status');
 	});
 
 	it('should be able to call getSelfExclusion without an issue', () => {
