@@ -1,6 +1,8 @@
 import nowEpoch from 'binary-utils/lib/nowAsEpoch';
 import durationToSecs from 'binary-utils/lib/durationToSecs';
 
+const responseSizeLimit = 2000;
+
 const granularities = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
 const ohlcDataToTicks = candles => candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
 const hcUnitConverter = type => {
@@ -16,8 +18,8 @@ const hcUnitConverter = type => {
 const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity = 60) => {
     const secs = end - start;
     const ticksCount = secs / 2;
-    if (ticksCount >= 5000 || style === 'candles') {
-        const idealGranularity = secs / 4999;
+    if (ticksCount >= responseSizeLimit || style === 'candles') {
+        const idealGranularity = secs / responseSizeLimit;
         granularities.forEach((g, i) => {
             if (idealGranularity > g && idealGranularity <= granularities[i + 1]) {
                 granularity = granularities[i + 1];
@@ -29,7 +31,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
                 start,
                 end,
                 adjust_start_time: 1,
-                count: 4999,
+                count: responseSizeLimit,
                 style: 'candles',
                 granularity,
             }
@@ -40,7 +42,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
             start,
             end,
             adjust_start_time: 1,
-            count: 4999,
+            count: responseSizeLimit,
             style: 'ticks',
         }
     ).then(r => {
