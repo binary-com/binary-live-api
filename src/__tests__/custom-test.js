@@ -18,7 +18,7 @@ describe('custom', () => {
             const nonTickContractID = '8686424368';
             const ticks = await liveApi
                 .getDataForContract(() => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract));
-            expect(ticks).to.have.lengthOf(451);
+            expect(ticks).to.have.lengthOf(165);
         });
 
         it('should get exact number of ticks for tick-contract', async () => {
@@ -26,7 +26,7 @@ describe('custom', () => {
             const tickContractID = '8818581808';
             const ticks = await liveApi
                 .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
-            expect(ticks).to.have.lengthOf(8);
+            expect(ticks).to.have.lengthOf(7);
         });
         
         it('should return candles if user request candles', async () => {
@@ -39,7 +39,7 @@ describe('custom', () => {
                     'all',
                     'candles',
                 );
-            expect(candles).to.have.lengthOf(16);
+            expect(candles).to.have.lengthOf(6);
             expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
     });
