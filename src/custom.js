@@ -93,19 +93,23 @@ export function getDataForContract(
             .then(contract => {
                 const symbol = contract.underlying;
                 if (contract.tick_count) {
-                    const start = contract.purchase_time;
-                    const sellT = contract.exit_tick_time;
+                    const start = +(contract.purchase_time);
+                    const sellT = +(contract.exit_tick_time);
                     const end = contract.sell_spot ? sellT : nowEpoch();
                     return autoAdjustGetData(api, symbol, start, end, style, granularity);
                 }
 
                 const bufferSize = 0.05;
-                const contractStart = contract.purchase_time;
-                const contractEnd = contract.exit_tick_time;
-                const buffer = (contractEnd - contractStart) * bufferSize;
-                const start = Math.round(contractStart - buffer);    // add 5 minutes buffer
-                const sellT = Math.round(contractEnd + buffer);
+                const contractStart = +(contract.purchase_time);
+                const contractEnd = +(contract.exit_tick_time);
+                const buffer = Math.round((contractEnd - contractStart) * bufferSize);
+                const start = contractStart - buffer;    // add 5 minutes buffer
+                const sellT = contractEnd + buffer;
                 const end = contract.sell_spot ? sellT : nowEpoch();
+
+                console.log('b', buffer);
+                console.log('s', contractStart);
+                console.log('e', contractEnd);
                 return autoAdjustGetData(api, symbol, start, end, style, granularity);
             });
 
