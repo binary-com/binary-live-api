@@ -26,7 +26,7 @@ describe('custom', () => {
             const tickContractID = '8818581808';
             const ticks = await liveApi
                 .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
-            expect(ticks).to.have.lengthOf(7);
+            expect(ticks).to.have.lengthOf(11);
         });
         
         it('should return candles if user request candles', async () => {
