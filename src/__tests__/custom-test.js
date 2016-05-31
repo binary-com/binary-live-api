@@ -17,7 +17,9 @@ describe('custom', () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
             const ticks = await liveApi
-                .getDataForContract(() => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract));
+                .getDataForContract(() =>
+                    liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract)
+                );
             expect(ticks).to.have.lengthOf(165);
         });
 
@@ -26,7 +28,7 @@ describe('custom', () => {
             const tickContractID = '8818581808';
             const ticks = await liveApi
                 .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
-            expect(ticks).to.have.lengthOf(7);
+            expect(ticks).to.have.lengthOf(11);
         });
         
         it('should return candles if user request candles', async () => {
@@ -40,6 +42,25 @@ describe('custom', () => {
                     'candles',
                 );
             expect(candles).to.have.lengthOf(6);
+            expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
+        });
+
+        it('should return even if contract does not have end time', async () => {
+            await liveApi.authorize(token);
+            const nonTickContractID = '8686424368';
+            const candles = await liveApi
+                .getDataForContract(
+                    () => liveApi.getContractInfo(nonTickContractID).then(r => {
+                        const cloned = Object.assign({}, r.proposal_open_contract);
+                        delete cloned.exit_tick_time;
+                        delete cloned.date_expiry;
+                        return cloned;
+                    }),
+                    1,
+                    'all',
+                    'candles',
+                );
+            expect(candles).to.have.length.above(1000);
             expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
     });
