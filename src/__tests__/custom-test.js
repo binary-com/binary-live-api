@@ -17,7 +17,9 @@ describe('custom', () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
             const ticks = await liveApi
-                .getDataForContract(() => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract));
+                .getDataForContract(() =>
+                    liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract)
+                );
             expect(ticks).to.have.lengthOf(165);
         });
 

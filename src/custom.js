@@ -94,7 +94,7 @@ export function getDataForContract(
                 const symbol = contract.underlying;
                 if (contract.tick_count) {
                     const start = +(contract.purchase_time) - 5;
-                    const exitTime = +(contract.exit_tick_time) +5;
+                    const exitTime = +(contract.exit_tick_time) + 5;
                     const end = contract.sell_spot ? exitTime : nowEpoch();
                     return autoAdjustGetData(api, symbol, start, end, style, granularity);
                 }
