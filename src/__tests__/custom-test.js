@@ -42,6 +42,25 @@ describe('custom', () => {
             expect(candles).to.have.lengthOf(6);
             expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
+
+        it('should return even if contract does not have end time', async () => {
+            await liveApi.authorize(token);
+            const nonTickContractID = '8686424368';
+            const candles = await liveApi
+                .getDataForContract(
+                    () => liveApi.getContractInfo(nonTickContractID).then(r => {
+                        const cloned = Object.assign({}, r.proposal_open_contract);
+                        delete cloned.exit_tick_time;
+                        delete cloned.date_expiry;
+                        return cloned;
+                    }),
+                    1,
+                    'all',
+                    'candles',
+                );
+            expect(candles).to.have.length.above(1000);
+            expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
+        });
     });
 
     describe('getDataForSymbol', () => {

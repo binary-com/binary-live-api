@@ -103,9 +103,9 @@ export function getDataForContract(
                 const contractStart = +(contract.purchase_time);
                 const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
                 const buffer = Math.round((contractEnd - contractStart) * bufferSize);
-                const start = contractStart - buffer;    // add 5 minutes buffer
+                const start = buffer ? contractStart - buffer : contractStart;    // add 5 minutes buffer
                 const bufferedExitTime = contractEnd + buffer;
-                const end = contract.sell_spot ? bufferedExitTime : nowEpoch();
+                const end = contractEnd ? bufferedExitTime : nowEpoch();
 
                 return autoAdjustGetData(api, symbol, start, end, style, granularity);
             });
