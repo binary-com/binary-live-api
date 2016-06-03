@@ -34,7 +34,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
                 count: responseSizeLimit,
                 style: 'candles',
                 granularity,
-                subscribe,
+                subscribe: subscribe ? 1 : undefined,
             }
         ).then(r => style === 'ticks' ? ohlcDataToTicks(r.candles) : r.candles);
     }
@@ -45,7 +45,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
             adjust_start_time: 1,
             count: responseSizeLimit,
             style: 'ticks',
-            subscribe,
+            subscribe: subscribe ? 1 : undefined,
         }
     ).then(r => {
         const ticks = r.history.times.map((t, idx) => {
@@ -99,7 +99,7 @@ export function getDataForContract(
                     const start = +(contract.purchase_time) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
                     const end = contract.sell_spot ? exitTime : nowEpoch();
-                    return autoAdjustGetData(api, symbol, start, end, style, granularity);
+                    return autoAdjustGetData(api, symbol, start, end, style, granularity, subscribe);
                 }
 
                 const bufferSize = 0.05;                            // 5 % buffer
