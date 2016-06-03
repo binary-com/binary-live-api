@@ -15,17 +15,18 @@ const hcUnitConverter = type => {
     }
 };
 
-const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity = 60, subscribe) => {
+const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) => {
     const secs = end - start;
     const ticksCount = secs / 2;
     if (ticksCount >= responseSizeLimit || style === 'candles') {
         const idealGranularity = secs / responseSizeLimit;
+        let finalGranularity = 60;
         granularities.forEach((g, i) => {
             if (idealGranularity > g && idealGranularity <= granularities[i + 1]) {
-                granularity = granularities[i + 1];
+                finalGranularity = granularities[i + 1];
             }
         });
-        granularity = Math.min(86400, granularity);
+        finalGranularity = Math.min(86400, finalGranularity);
         return api.getTickHistory(symbol,
             {
                 start,
@@ -33,8 +34,8 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
                 adjust_start_time: 1,
                 count: responseSizeLimit,
                 style: 'candles',
-                granularity,
-                subscribe,
+                granularity: finalGranularity,
+                subscribe: subscribe ? 1 : undefined,
             }
         ).then(r => style === 'ticks' ? ohlcDataToTicks(r.candles) : r.candles);
     }
@@ -45,7 +46,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', granularity
             adjust_start_time: 1,
             count: responseSizeLimit,
             style: 'ticks',
-            subscribe,
+            subscribe: subscribe ? 1 : undefined,
         }
     ).then(r => {
         const ticks = r.history.times.map((t, idx) => {
@@ -88,7 +89,6 @@ export function getDataForContract(
     durationCount,
     durationType = 'all',
     style = 'ticks',
-    granularity = 60,
     subscribe,
 ) {
     const getAllData = () =>
@@ -99,7 +99,7 @@ export function getDataForContract(
                     const start = +(contract.purchase_time) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
                     const end = contract.sell_spot ? exitTime : nowEpoch();
-                    return autoAdjustGetData(api, symbol, start, end, style, granularity);
+                    return autoAdjustGetData(api, symbol, start, end, style, subscribe);
                 }
 
                 const bufferSize = 0.05;                            // 5 % buffer
@@ -110,7 +110,7 @@ export function getDataForContract(
                 const bufferedExitTime = contractEnd + buffer;
                 const end = contractEnd ? bufferedExitTime : nowEpoch();
 
-                return autoAdjustGetData(api, symbol, start, end, style, granularity, subscribe);
+                return autoAdjustGetData(api, symbol, start, end, style, subscribe);
             });
 
     if (durationType === 'all') {
@@ -125,6 +125,6 @@ export function getDataForContract(
             const end = contract.sell_spot ? sellT : nowEpoch();
             const durationUnit = hcUnitConverter(durationType);
             const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
-            return autoAdjustGetData(api, symbol, start, end, style, granularity, subscribe);
+            return autoAdjustGetData(api, symbol, start, end, style, subscribe);
         });
 }
