@@ -35,7 +35,7 @@ Require the library and then pass it to LiveApi's constructor.
 var ws = require('ws');
 var LiveApi = require('binary-live-api').LiveApi;
 
-var api = new LiveApi(ws);
+var api = new LiveApi({ websocket: ws });
 api.authorize('yourtoken');
 api.getPortfolio();
 api.events.on('portfolio', function(data) {
