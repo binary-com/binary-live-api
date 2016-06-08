@@ -121,6 +121,12 @@ export function getDataForContract(
         .then(contract => {
             const symbol = contract.underlying;
             const startTime = contract.date_start;
+
+            // handle Contract not started yet
+            if (startTime > nowEpoch()) {
+                return autoAdjustGetData(api, symbol, nowEpoch() - 600, nowEpoch(), style, subscribe);
+            }
+
             const sellT = contract.sell_time;
             const end = sellT || nowEpoch();
 
