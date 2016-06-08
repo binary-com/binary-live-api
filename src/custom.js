@@ -98,7 +98,7 @@ export function getDataForContract(
                 if (contract.tick_count) {
                     const start = +(contract.date_start) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
-                    const end = exitTime ? exitTime : nowEpoch();
+                    const end = exitTime || nowEpoch();
                     return autoAdjustGetData(api, symbol, start, end, style, subscribe);
                 }
 
