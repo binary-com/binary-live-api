@@ -105,12 +105,18 @@ export function getDataForContract(
                 const bufferSize = 0.05;                            // 5 % buffer
                 const contractStart = +(contract.date_start);
                 const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
-                const buffer = Math.round((contractEnd - contractStart) * bufferSize);
+
+                // handle Contract not started yet
+                if (contractStart > nowEpoch()) {
+                    return autoAdjustGetData(api, symbol, nowEpoch() - 600, nowEpoch(), style, subscribe);
+                }
+
+                const buffer = (contractEnd - contractStart) * bufferSize;
                 const start = buffer ? contractStart - buffer : contractStart;
                 const bufferedExitTime = contractEnd + buffer;
                 const end = contractEnd ? bufferedExitTime : nowEpoch();
 
-                return autoAdjustGetData(api, symbol, start, end, style, subscribe);
+                return autoAdjustGetData(api, symbol, Math.round(start), Math.round(end), style, subscribe);
             });
 
     if (durationType === 'all') {
@@ -120,7 +126,7 @@ export function getDataForContract(
     return getContract()
         .then(contract => {
             const symbol = contract.underlying;
-            const startTime = contract.date_start;
+            const startTime = +(contract.date_start);
 
             // handle Contract not started yet
             if (startTime > nowEpoch()) {
@@ -130,10 +136,10 @@ export function getDataForContract(
             const sellT = contract.sell_time;
             const end = sellT || nowEpoch();
 
-            const buffer = Math.round((end - startTime) * 0.05);
+            const buffer = (end - startTime) * 0.05;
 
             const durationUnit = hcUnitConverter(durationType);
             const start = Math.min(startTime - buffer, end - durationToSecs(durationCount, durationUnit));
-            return autoAdjustGetData(api, symbol, start, end, style, subscribe);
+            return autoAdjustGetData(api, symbol, Math.round(start), Math.round(end), style, subscribe);
         });
 }
