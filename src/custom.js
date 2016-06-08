@@ -96,14 +96,14 @@ export function getDataForContract(
             .then(contract => {
                 const symbol = contract.underlying;
                 if (contract.tick_count) {
-                    const start = +(contract.purchase_time) - 5;
+                    const start = +(contract.date_start) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
                     const end = contract.sell_spot ? exitTime : nowEpoch();
                     return autoAdjustGetData(api, symbol, start, end, style, subscribe);
                 }
 
                 const bufferSize = 0.05;                            // 5 % buffer
-                const contractStart = +(contract.purchase_time);
+                const contractStart = +(contract.date_start);
                 const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
                 const buffer = Math.round((contractEnd - contractStart) * bufferSize);
                 const start = buffer ? contractStart - buffer : contractStart;
@@ -120,11 +120,20 @@ export function getDataForContract(
     return getContract()
         .then(contract => {
             const symbol = contract.underlying;
-            const purchaseT = contract.purchase_time;
+            const startTime = contract.date_start;
+
+            // handle Contract not started yet
+            if (startTime > nowEpoch()) {
+                return autoAdjustGetData(api, symbol, nowEpoch() - 600, nowEpoch(), style, subscribe);
+            }
+
             const sellT = contract.sell_time;
-            const end = contract.sell_spot ? sellT : nowEpoch();
+            const end = sellT || nowEpoch();
+
+            const buffer = Math.round((end - startTime) * 0.05);
+
             const durationUnit = hcUnitConverter(durationType);
-            const start = Math.min(purchaseT, end - durationToSecs(durationCount, durationUnit));
+            const start = Math.min(startTime - buffer, end - durationToSecs(durationCount, durationUnit));
             return autoAdjustGetData(api, symbol, start, end, style, subscribe);
         });
 }
