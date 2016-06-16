@@ -32,6 +32,10 @@ export const getProfitTable = (options) => ({
     ...options,
 });
 
+export const getRealityCheckSummary = () => ({
+    reality_check: 1,
+});
+
 export const subscribeToBalance = () => ({
     balance: 1,
     subscribe: 1,
