@@ -37,7 +37,18 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) 
                 granularity: finalGranularity,
                 subscribe: subscribe ? 1 : undefined,
             }
-        ).then(r => style === 'ticks' ? ohlcDataToTicks(r.candles) : r.candles);
+        ).then(r => {
+            if (style === 'ticks') {
+                return {
+                    ticks: ohlcDataToTicks(r.candles),
+                    symbol,
+                };
+            }
+            return {
+                candles: r.candles,
+                symbol,
+            };
+        });
     }
     return api.getTickHistory(symbol,
         {
@@ -53,7 +64,10 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) 
             const quote = r.history.prices[idx];
             return { epoch: +t, quote: +quote };
         });
-        return ticks;
+        return {
+            ticks,
+            symbol,
+        };
     });
 };
 
