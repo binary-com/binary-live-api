@@ -1,7 +1,7 @@
 import nowEpoch from 'binary-utils/lib/nowAsEpoch';
 import durationToSecs from 'binary-utils/lib/durationToSecs';
 
-const responseSizeLimit = 2000;
+const responseSizeLimit = 700;
 
 const granularities = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
 const ohlcDataToTicks = candles => candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
