@@ -60,7 +60,7 @@ describe('custom', () => {
                     'all',
                     'candles',
                 );
-            expect(candles).to.have.length.above(1000);
+            expect(candles).to.have.length.below(700);
             expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
     });
@@ -69,7 +69,7 @@ describe('custom', () => {
         it('should get data for specified market', async () => {
             await liveApi.authorize(token);
             const { ticks } = await liveApi.getDataForSymbol('R_100');
-            expect(ticks).to.have.length.above(1000);
+            expect(ticks).to.have.length.below(700);
         });
 
         it('should get data for specified market using given duration params', async () => {
