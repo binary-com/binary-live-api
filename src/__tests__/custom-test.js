@@ -63,6 +63,14 @@ describe('custom', () => {
             expect(candles).to.have.length.below(700);
             expect(candles[0]).to.have.keys('open', 'close', 'epoch', 'high', 'low');
         });
+
+        it('should return isSold == true if contract sold', async () => {
+            await liveApi.authorize(token);
+            const tickContractID = '8818581808';
+            const { isSold } = await liveApi
+                .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
+            expect(isSold).to.have.true;
+        })
     });
 
     describe('getDataForSymbol', () => {
