@@ -15,7 +15,7 @@ const hcUnitConverter = type => {
     }
 };
 
-const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) => {
+const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe, extra = {}) => {
     const secs = end - start;
     const ticksCount = secs / 2;
     if (ticksCount >= responseSizeLimit || style === 'candles') {
@@ -40,11 +40,13 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) 
         ).then(r => {
             if (style === 'ticks') {
                 return {
+                    ...extra,
                     ticks: ohlcDataToTicks(r.candles),
                     symbol,
                 };
             }
             return {
+                ...extra,
                 candles: r.candles,
                 symbol,
             };
@@ -65,6 +67,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe) 
             return { epoch: +t, quote: +quote };
         });
         return {
+            ...extra,
             ticks,
             symbol,
         };
@@ -113,7 +116,7 @@ export function getDataForContract(
                     const start = +(contract.date_start) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
                     const end = exitTime || nowEpoch();
-                    return autoAdjustGetData(api, symbol, start, end, style, subscribe);
+                    return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
                 }
 
                 const bufferSize = 0.05;                            // 5 % buffer
@@ -130,7 +133,15 @@ export function getDataForContract(
                 const bufferedExitTime = contractEnd + buffer;
                 const end = contractEnd ? bufferedExitTime : nowEpoch();
 
-                return autoAdjustGetData(api, symbol, Math.round(start), Math.round(end), style, subscribe);
+                return autoAdjustGetData(
+                    api,
+                    symbol,
+                    Math.round(start),
+                    Math.round(end),
+                    style,
+                    subscribe,
+                    { isSold: !!contract.sell_time },
+                    );
             });
 
     if (durationType === 'all') {
@@ -144,7 +155,15 @@ export function getDataForContract(
 
             // handle Contract not started yet
             if (startTime > nowEpoch()) {
-                return autoAdjustGetData(api, symbol, nowEpoch() - 600, nowEpoch(), style, subscribe);
+                return autoAdjustGetData(
+                    api,
+                    symbol,
+                    nowEpoch() - 600,
+                    nowEpoch(),
+                    style,
+                    subscribe,
+                    { isSold: !!contract.sell_time },
+                );
             }
 
             const sellT = contract.sell_time;
@@ -154,6 +173,14 @@ export function getDataForContract(
 
             const durationUnit = hcUnitConverter(durationType);
             const start = Math.min(startTime - buffer, end - durationToSecs(durationCount, durationUnit));
-            return autoAdjustGetData(api, symbol, Math.round(start), Math.round(end), style, subscribe);
+            return autoAdjustGetData(
+                api,
+                symbol,
+                Math.round(start),
+                Math.round(end),
+                style,
+                subscribe,
+                { isSold: !!contract.sell_time },
+            );
         });
 }
