@@ -5,6 +5,7 @@ import * as calls from './calls';
 import * as stateful from './stateful';
 import * as customCalls from './custom';
 
+getUniqueId(); // skip 0 value
 const defaultApiUrl = 'wss://ws.binaryws.com/websockets/v3';
 const MockWebSocket = () => {};
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
