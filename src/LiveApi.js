@@ -1,3 +1,4 @@
+import getUniqueId from 'binary-utils/lib/getUniqueId';
 import LiveEvents from './LiveEvents';
 import LiveError from './LiveError';
 import * as calls from './calls';
@@ -153,7 +154,7 @@ export default class LiveApi {
     }
 
     resolvePromiseForResponse(json) {
-        if (!json.req_id) {
+        if (typeof json.req_id === 'undefined') {
             return Promise.resolve();
         }
 
@@ -206,13 +207,13 @@ export default class LiveApi {
             this.bufferedSends.push(json);
         }
 
-        if (json.req_id) {
+        if (typeof json.req_id !== 'undefined') {
             return this.generatePromiseForRequest(json);
         }
     }
 
     send(json) {
-        const reqId = Math.floor((Math.random() * 1e15));
+        const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
             ...json,
