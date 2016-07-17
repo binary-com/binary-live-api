@@ -145,15 +145,6 @@ export default class LiveApi {
         this.resubscribe();
     }
 
-    onError(error) {
-        console.error(error); // eslint-disable-line no-console
-
-        // And also make process exiting to respawn.
-        if (typeof process === 'function') {
-            process.exit();
-        }
-    }
-
     resolvePromiseForResponse(json) {
         if (typeof json.req_id === 'undefined') {
             return Promise.resolve();
