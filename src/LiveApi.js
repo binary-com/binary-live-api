@@ -62,11 +62,15 @@ export default class LiveApi {
     connect(connection) {
         const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}`;
 
-        this.socket = connection || new WebSocket(urlPlusParams);
-        this.socket.onopen = ::this.onOpen;
-        this.socket.onclose = ::this.onClose;
-        this.socket.onerror = ::this.onError;
-        this.socket.onmessage = ::this.onMessage;
+        try {
+            this.socket = connection || new WebSocket(urlPlusParams);
+        } catch (err) {
+            // swallow connection error, we can't do anything about it
+        } finally {
+            this.socket.onopen = ::this.onOpen;
+            this.socket.onclose = ::this.onClose;
+            this.socket.onmessage = ::this.onMessage;
+        }
     }
 
     disconnect() {
@@ -141,6 +145,10 @@ export default class LiveApi {
     }
 
     onClose() {
+        this.reconnect();
+    }
+
+    reconnect() {
         this.connect();
         this.resubscribe();
     }

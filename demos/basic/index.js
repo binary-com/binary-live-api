@@ -14,4 +14,8 @@ function pingWithPromises() {
     });
 }
 
-api.getCandlesForLastNDays('R_50', 30);
+function foreverPing() {
+    setInterval(() => api.ping().then(response => console.log(response)), 1000);
+}
+
+foreverPing();
