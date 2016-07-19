@@ -17,4 +17,10 @@ describe('LiveError', () => {
             throw new LiveError({});
         }).to.throw(/LiveError/);
     });
+
+    it('when converted to string, contains message', () => {
+        const error = new LiveError({ message: 'some msg' });
+        const str = error.toString();
+        expect(str).to.contain('some msg');
+    });
 });
