@@ -13,6 +13,12 @@ export const createApiToken = (token, scopes) => ({
     new_token_scopes: scopes,
 });
 
+export const changePassword = (oldPw, newPw) => ({
+    change_password: 1,
+    old_password: oldPw,
+    new_password: newPw,
+});
+
 export const registerApplication = options => ({
     app_register: 1,
     ...options,
