@@ -30,6 +30,12 @@ describe('admin', () => {
 		).to.not.throw();
 	});
 
+    it('should be able to call changePassword', () => {
+        expect(() =>
+            liveApi.changePassword('oldpassword', 'newpassword')
+        ).to.not.throw();
+    });
+
 	it('should be able to call the function registerApplication with no error', () => {
 		expect(() =>
 			liveApi.registerApplication({ name: 'AppName', link: 'Applink' })
