@@ -21,10 +21,11 @@ export default class LiveApi {
         Connected: 'connected',
     };
 
-    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection } = {}) {
+    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = {}) {
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
+        this.keepAlive = keepAlive;
 
         if (websocket) {
             WebSocket = websocket;
@@ -70,7 +71,9 @@ export default class LiveApi {
             this.socket.onopen = ::this.onOpen;
             this.socket.onclose = ::this.onClose;
             this.socket.onmessage = ::this.onMessage;
-            setInterval(() => { this.ping(); }, 60 * 1000);
+            if (this.keepAlive) {
+              setInterval(() => { this.ping(); }, 60 * 1000);
+            }
         }
     }
 
