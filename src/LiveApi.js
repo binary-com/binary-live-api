@@ -25,9 +25,9 @@ export default class LiveApi {
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
-				if (keepAlive) {
-					setInterval(() => { this.ping(); }, 60 * 1000);
-				}
+        if (keepAlive) {
+          setInterval(() => { this.ping(); }, 60 * 1000);
+        }
 
         if (websocket) {
             WebSocket = websocket;
