@@ -25,7 +25,9 @@ export default class LiveApi {
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
-        this.keepAlive = keepAlive;
+				if (keepAlive) {
+					setInterval(() => { this.ping(); }, 60 * 1000);
+				}
 
         if (websocket) {
             WebSocket = websocket;
@@ -71,9 +73,6 @@ export default class LiveApi {
             this.socket.onopen = ::this.onOpen;
             this.socket.onclose = ::this.onClose;
             this.socket.onmessage = ::this.onMessage;
-            if (this.keepAlive) {
-              setInterval(() => { this.ping(); }, 60 * 1000);
-            }
         }
     }
 
