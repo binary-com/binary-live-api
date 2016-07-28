@@ -70,7 +70,7 @@ export default class LiveApi {
             this.socket.onopen = ::this.onOpen;
             this.socket.onclose = ::this.onClose;
             this.socket.onmessage = ::this.onMessage;
-            setInterval(() => { this.ping();  }, 60 * 1000);
+            setInterval(() => { this.ping(); }, 60 * 1000);
         }
     }
 
