@@ -21,10 +21,13 @@ export default class LiveApi {
         Connected: 'connected',
     };
 
-    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection } = {}) {
+    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = {}) {
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
+        if (keepAlive) {
+          setInterval(() => { this.ping(); }, 60 * 1000);
+        }
 
         if (websocket) {
             WebSocket = websocket;
