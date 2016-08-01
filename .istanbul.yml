@@ -3,7 +3,7 @@ instrumentation:
   include-all-sources: true
   verbose: true
   excludes:
-      - src/__tests__/*.js
-      - src/index.js
+    - index.js
+    - __tests__/*.js
 reporting:
   dir: "coverage"

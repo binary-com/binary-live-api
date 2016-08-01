@@ -56,15 +56,16 @@ describe('stateful', () => {
         expect(stateAfter.ticks.size).to.equal(1);
     });
 
+    it('unsubsribing from a tick is remembered', () => {
+        liveApi.subscribeToTick('R_50');
+        liveApi.unsubscribeFromTick('R_50');
+        const stateAfter = getState();
+        expect(stateAfter.ticks.size).to.equal(0);
+    });
+
     it('subscribing to multiple tick updates is remembered', () => {
         liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100']);
         const stateAfter = getState();
         expect(stateAfter.ticks.size).to.equal(1);
-    });
-
-    it('subscribing to contract proposals is remembered', () => {
-        liveApi.subscribeToPriceForContractProposal({ param: 'value' });
-        const stateAfter = getState();
-        expect(stateAfter.proposals.size).to.equal(1);
     });
 });

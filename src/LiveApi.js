@@ -1,6 +1,6 @@
 import getUniqueId from 'binary-utils/lib/getUniqueId';
 import LiveEvents from './LiveEvents';
-import LiveError from './LiveError';
+import ServerError from './ServerError';
 import * as calls from './calls';
 import * as stateful from './stateful';
 import * as customCalls from './custom';
@@ -174,7 +174,7 @@ export default class LiveApi {
         }
 
         if (!shouldIgnoreError(json.error)) {
-            return promise.reject(new LiveError(json.error));
+            return promise.reject(new ServerError(json));
         }
 
         return Promise.resolve();
