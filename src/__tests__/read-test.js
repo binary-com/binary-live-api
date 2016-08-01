@@ -84,6 +84,12 @@ describe('read', () => {
         ).to.not.throw()
 	);
 
+    it('it should be able to get portfolio', () =>
+		expect(() =>
+			liveApi.getPortfolio()
+        ).to.not.throw()
+	);
+
 	it('should be able to get a statement if logged in', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getStatement();
@@ -96,11 +102,17 @@ describe('read', () => {
 		).to.not.throw();
 	});
 
-	it('scan get profitTable from the server', async () => {
+	it('can get profitTable from the server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getProfitTable();
 		expect(response).to.have.property('profit_table');
 	});
+
+    it('should be able to call getRealityCheckSummary without an error', () => {
+        expect(() =>
+            liveApi.getRealityCheckSummary()
+        ).to.not.throw();
+    });
 
     it('should be able to subscribe to balance updates', () => {
         expect(() =>

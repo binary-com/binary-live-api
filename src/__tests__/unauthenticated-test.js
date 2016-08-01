@@ -28,7 +28,19 @@ describe('unauthenticated', () => {
         ).to.eventually.be.rejected
     );
 
-    it('can get all active symbols', () =>
+    it('can get available contracts for symbol', () =>
+        expect(
+            liveApi.getContractsForSymbol('R_100')
+        ).to.eventually.have.property('contracts_for')
+    );
+
+    it('can get brief active symbols', () =>
+        expect(
+            liveApi.getActiveSymbolsBrief()
+        ).to.eventually.have.property('active_symbols')
+    );
+
+    it('can get full active symbols', () =>
         expect(
             liveApi.getActiveSymbolsFull()
         ).to.eventually.have.property('active_symbols')
