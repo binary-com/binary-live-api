@@ -1,4 +1,4 @@
-import { nowEpoch, durationToSecs } from 'binary-utils';
+import { nowAsEpoch, durationToSecs } from 'binary-utils';
 
 const responseSizeLimit = 700;
 
@@ -82,7 +82,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe, 
  */
 export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all', style = 'ticks', subscribe) {
     const durationUnit = hcUnitConverter(durationType);
-    const end = nowEpoch();
+    const end = nowAsEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
     return autoAdjustGetData(api, symbol, start, end, style, subscribe);
 }
@@ -114,7 +114,7 @@ export function getDataForContract(
                 if (contract.tick_count) {
                     const start = +(contract.date_start) - 5;
                     const exitTime = +(contract.exit_tick_time) + 5;
-                    const end = exitTime || nowEpoch();
+                    const end = exitTime || nowAsEpoch();
                     return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
                 }
 
@@ -123,14 +123,14 @@ export function getDataForContract(
                 const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
 
                 // handle Contract not started yet
-                if (contractStart > nowEpoch()) {
-                    return autoAdjustGetData(api, symbol, nowEpoch() - 600, nowEpoch(), style, subscribe);
+                if (contractStart > nowAsEpoch()) {
+                    return autoAdjustGetData(api, symbol, nowAsEpoch() - 600, nowAsEpoch(), style, subscribe);
                 }
 
                 const buffer = (contractEnd - contractStart) * bufferSize;
                 const start = buffer ? contractStart - buffer : contractStart;
                 const bufferedExitTime = contractEnd + buffer;
-                const end = contractEnd ? bufferedExitTime : nowEpoch();
+                const end = contractEnd ? bufferedExitTime : nowAsEpoch();
 
                 return autoAdjustGetData(
                     api,
@@ -153,12 +153,12 @@ export function getDataForContract(
             const startTime = +(contract.date_start);
 
             // handle Contract not started yet
-            if (startTime > nowEpoch()) {
+            if (startTime > nowAsEpoch()) {
                 return autoAdjustGetData(
                     api,
                     symbol,
-                    nowEpoch() - 600,
-                    nowEpoch(),
+                    nowAsEpoch() - 600,
+                    nowAsEpoch(),
                     style,
                     subscribe,
                     { isSold: !!contract.sell_time },
@@ -166,7 +166,7 @@ export function getDataForContract(
             }
 
             const sellT = contract.sell_time;
-            const end = sellT || nowEpoch();
+            const end = sellT || nowAsEpoch();
 
             const buffer = (end - startTime) * 0.05;
 
