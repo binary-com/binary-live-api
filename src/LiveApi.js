@@ -213,6 +213,8 @@ export default class LiveApi {
         if (typeof json.req_id !== 'undefined') {
             return this.generatePromiseForRequest(json);
         }
+
+        return undefined;
     }
 
     send(json) {
