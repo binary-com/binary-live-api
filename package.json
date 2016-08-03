@@ -1,40 +1,40 @@
 {
   "name": "binary-live-api",
-  "version": "20.4.0",
+  "version": "20.4.1",
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.0",
-    "babel-eslint": "^6.0.4",
-    "babel-istanbul": "^0.8.0",
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.11.4",
+    "babel-eslint": "^6.1.2",
+    "babel-istanbul": "^0.11.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-polyfill": "^6.9.0",
+    "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
-    "coveralls": "^2.11.9",
-    "eslint": "~2.10.2",
-    "eslint-config-airbnb": "^9.0.1",
-    "eslint-loader": "^1.3.0",
-    "eslint-plugin-import": "^1.8.0",
-    "eslint-plugin-jsx-a11y": "^1.2.2",
-    "eslint-plugin-react": "^5.1.1",
-    "mocha": "^2.4.5",
+    "coveralls": "^2.11.12",
+    "eslint": "~3.2.2",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^6.0.0",
+    "mocha": "^3.0.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "rimraf": "^2.5.2",
+    "rimraf": "^2.5.4",
     "webpack": "^2.0.7-beta",
-    "ws": "^1.1.0"
+    "ws": "^1.1.1"
   },
   "scripts": {
     "clean": "rimraf lib dist",
     "test": "mocha --compilers js:babel-core/register -t 10000 **/__tests__/*.js -R progress",
-    "test:eslint": "webpack --config webpack.config.js",
     "test:coverage": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha -- --opts mocha.opts",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "webpack --watch",
+    "test:eslint": "eslint src/*.js src/calls/*.js",
     "test:full": "npm run test:eslint && npm run test:coveralls",
     "build": "webpack",
     "lint": "eslint src",
@@ -60,6 +60,6 @@
     ]
   },
   "dependencies": {
-    "binary-utils": "^3.0.3"
+    "binary-utils": "^4.3.2"
   }
 }

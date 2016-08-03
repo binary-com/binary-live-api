@@ -2,86 +2,28 @@
   "parser": "babel-eslint",
   "extends": "eslint-config-airbnb",
   "env": {
+    "browser": true,
     "es6": true,
     "mocha": true
   },
-  "plugins": [
-    "react"
-  ],
   "rules": {
+    "indent": [0, 4],
     "camelcase": 0,
-    "no-empty-label": 0,
-    "no-confusing-arrow": 0,
-    "space-before-keywords": [0, 'always'],
-    "space-after-keywords": [0, 'always'],
-    "space-return-throw-case": 0,
-    "consistent-return": 0,
-
-    "prefer-const": 0,
-
-    "react/jsx-no-bind": 0,
-    "react/prefer-stateless-function": 0,
-
-    "no-unused-expressions": 0,
-    "no-param-reassign": 0,
+    "no-mixed-operators": 0,
+    "object-property-newline": 0,
+    "max-len": [1, 150, 4],
     "prefer-template": 0,
-
-    "no-unreachable": 1,
+    "no-confusing-arrow": 0,
+    "no-param-reassign": 0,
+    "react/jsx-indent": [0, "tab"],
+    "react/prefer-stateless-function": 0,
+    "react/jsx-indent-props": [0, "tab"],
+    "react/jsx-filename-extension": 0,
     "no-unused-vars": 1,
     "no-trailing-spaces": 1,
-    "spaced-comment": 1,
-    "padded-blocks": 1,
-    "react/jsx-closing-bracket-location": 1,
-
-    "indent": [0, 4],
-    "max-len": [1, 120, 4],
-    "id-length": [2, { "min": 1 }],
-
-    "comma-dangle": [2, "always-multiline"],
-    "no-eq-null": 2,
-    "block-scoped-var": 2,
-    "no-nested-ternary": 2,
-
-    "jsx-quotes": [2, "prefer-double"],
-    "react/jsx-indent-props": [0, "tab"],
-    "react/jsx-no-undef": 2,
-    "react/no-multi-comp": 0,
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
-    "react/no-did-mount-set-state": 2,
-    "react/no-did-update-set-state": 2,
-    "react/no-unknown-property": 0,
-    "react/prop-types": 1,
-    "react/react-in-jsx-scope": 2,
-    "react/self-closing-comp": 2,
-    "react/wrap-multilines": 2,
-    "react/sort-comp": [
-      2, {
-        "order": [
-          "displayName",
-          "propTypes",
-          "contextTypes",
-          "childContextTypes",
-          "mixins",
-          "statics",
-          "defaultProps",
-          "getDefaultProps",
-          "getInitialState",
-          "getChildContext",
-          "componentWillMount",
-          "componentDidMount",
-          "componentWillReceiveProps",
-          "shouldComponentUpdate",
-          "componentWillUpdate",
-          "componentDidUpdate",
-          "componentWillUnmount",
-          "/^on.+$/",
-          "/^get.+$/",
-          "/^render.+$/",
-          "/^.+$/", // All other methods go here
-          "render"
-        ]
-      }
-    ]
+    "import/named": 0,
+    "import/default": 0,
+    "import/namespace": 0,
+    "import/prefer-default-export": 0,
   }
 }

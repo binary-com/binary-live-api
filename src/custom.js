@@ -1,5 +1,4 @@
-import nowEpoch from 'binary-utils/lib/nowAsEpoch';
-import durationToSecs from 'binary-utils/lib/durationToSecs';
+import { nowEpoch, durationToSecs } from 'binary-utils';
 
 const responseSizeLimit = 700;
 
