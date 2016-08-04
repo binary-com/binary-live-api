@@ -64,6 +64,18 @@ describe('unauthenticated', () => {
         ).to.eventually.have.property('trading_times')
     );
 
+    it('can get residences', () =>
+        expect(
+            liveApi.getResidences()
+        ).to.eventually.have.property('residence_list')
+    );
+
+    it('can get states for a country', () =>
+        expect(
+            liveApi.getStatesForCountry('de')
+        ).to.eventually.have.property('states_list')
+    );
+
     it('can subscribe to tick updates', () =>
         expect(
             liveApi.subscribeToTick('R_100')
@@ -92,6 +104,30 @@ describe('unauthenticated', () => {
         expect(
             liveApi.getTickHistory('R_100', { end: 'latest', count: 10 })
         ).to.eventually.have.property('history')
+    );
+
+    it('can get the landing company for a country', () =>
+        expect(
+            liveApi.getLandingCompany('de')
+        ).to.eventually.have.property('landing_company')
+    );
+
+    it('can get details about a landing company', () =>
+        expect(
+            liveApi.getLandingCompanyDetails('costarica')
+        ).to.eventually.have.property('landing_company_details')
+    );
+
+    it('can get payment agents for a country', () =>
+        expect(
+            liveApi.getPaymentAgentsForCountry('id')
+        ).to.eventually.have.property('paymentagent_list')
+    );
+
+    it('can get payout currencies', () =>
+        expect(
+            liveApi.getPayoutCurrencies()
+        ).to.eventually.have.property('payout_currencies')
     );
 
     it('can get price proposal for contract', () =>
@@ -126,5 +162,35 @@ describe('unauthenticated', () => {
         expect(
             liveApi.unsubscribeFromAllProposals()
         ).to.not.throw
+    );
+
+    it('can get candles for a symbol', () =>
+        expect(
+            liveApi.getCandles('R_50')
+        ).to.eventually.have.property('candles')
+    );
+
+    it('can get candles for last N days', () =>
+        expect(
+            liveApi.getCandlesForLastNDays('R_50', 40)
+        ).to.eventually.have.property('candles')
+    );
+
+    it('can get server time', () =>
+        expect(
+            liveApi.getServerTime()
+        ).to.eventually.have.property('time')
+    );
+
+    it('can verify email', () =>
+        expect(
+            liveApi.verifyEmail('address@example.com', 'account_opening')
+        ).to.eventually.have.property('verify_email')
+    );
+
+    it('can get website status', () =>
+        expect(
+            liveApi.getWebsiteStatus()
+        ).to.eventually.have.property('website_status')
     );
 });
