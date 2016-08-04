@@ -66,6 +66,17 @@ describe('stateful', () => {
     it('subscribing to multiple tick updates is remembered', () => {
         liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100']);
         const stateAfter = getState();
-        expect(stateAfter.ticks.size).to.equal(1);
+        expect(stateAfter.ticks.has('R_25')).to.be.true;
+        expect(stateAfter.ticks.has('R_50')).to.be.true;
+        expect(stateAfter.ticks.has('R_100')).to.be.true;
+    });
+
+    it('unsubscribing from multiple tick updates is remembered', () => {
+        liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100']);
+        liveApi.unsubscribeFromTicks(['R_50', 'R_100']);
+        const stateAfter = getState();
+        expect(stateAfter.ticks.has('R_25')).to.be.true;
+        expect(stateAfter.ticks.has('R_50')).to.be.false;
+        expect(stateAfter.ticks.has('R_100')).to.be.false;
     });
 });

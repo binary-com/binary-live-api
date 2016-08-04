@@ -52,11 +52,15 @@ export const subscribeToTick = symbol => {
 };
 
 export const subscribeToTicks = symbols => {
-    state.ticks.add(...symbols);
+    symbols.forEach(subscribeToTick);
 };
 
 export const unsubscribeFromTick = symbol => {
     state.ticks.delete(symbol);
+};
+
+export const unsubscribeFromTicks = symbols => {
+    symbols.forEach(unsubscribeFromTick);
 };
 
 export const unsubscribeFromAllTicks = () => {

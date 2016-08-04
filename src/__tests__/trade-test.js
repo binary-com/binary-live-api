@@ -20,4 +20,16 @@ describe('trade', () => {
             liveApi.sellContract('someid', 100)
         ).to.not.throw();
     });
+
+    it('can sell expired contracts', () => {
+        expect(() =>
+            liveApi.sellExpiredContracts()
+        ).to.not.throw();
+    });
+
+    it('can topup virtual account', () => {
+        expect(() =>
+            liveApi.topUpVirtualAccount()
+        ).to.not.throw();
+    });
 });

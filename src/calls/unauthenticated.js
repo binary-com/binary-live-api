@@ -22,8 +22,9 @@ export const unsubscribeFromTick = symbol => ({
     forget: symbol,
 });
 
-export const unsubscribeFromTicks = symbols =>
-    symbols.forEach(this.unsubscribeFromTick);
+export const unsubscribeFromTicks = symbols => ({
+    forget: symbols,
+});
 
 export const unsubscribeByID = id => ({
     forget: id,
