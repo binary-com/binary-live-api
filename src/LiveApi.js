@@ -70,39 +70,49 @@ export default class LiveApi {
         } catch (err) {
             // swallow connection error, we can't do anything about it
         } finally {
-            this.socket.onopen = ::this.onOpen;
-            this.socket.onclose = ::this.onClose;
-            this.socket.onmessage = ::this.onMessage;
+            this.socket.onopen = this.onOpen;
+            this.socket.onclose = this.connect;
+            this.socket.onmessage = this.onMessage;
         }
     }
 
-    disconnect() {
+    onOpen = () => {
+        this.resubscribe();
+        this.sendBufferedSends();
+        this.executeBufferedExecutes();
+    }
+    disconnect = () => {
         this.token = '';
         this.socket.onclose = undefined;
         this.socket.close();
     }
 
-    resubscribe() {
+    resubscribe = () => {
         const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
 
-        const delayedCallAfterAuthSuccess = () => {
+        console.log('resubscribing', stateful.getState());
+
+        this.onAuth = () => {
             if (balance) {
+                console.log('subscribeToBalance');
                 this.subscribeToBalance();
             }
 
             if (transactions) {
+                console.log('subscribeToTransactions');
                 this.subscribeToTransactions();
             }
 
             if (portfolio) {
+                console.log('subscribeToAllOpenContracts');
                 this.subscribeToAllOpenContracts();
             }
 
             this.onAuth = undefined;
         };
-        this.onAuth = delayedCallAfterAuthSuccess;
 
         if (token) {
+            console.log('authorize');
             this.authorize(token);
         }
 
@@ -115,7 +125,7 @@ export default class LiveApi {
         );
     }
 
-    changeLanguage(ln) {
+    changeLanguage = ln => {
         if (ln === this.language) {
             return;
         }
@@ -123,40 +133,24 @@ export default class LiveApi {
         this.socket.close();
         this.language = ln;
         this.connect();
-        this.resubscribe();
     }
 
-    isReady() {
-        return this.socket && this.socket.readyState === 1;
-    }
+    isReady = () =>
+        this.socket && this.socket.readyState === 1;
 
-    sendBufferedSends() {
+    sendBufferedSends = () => {
         while (this.bufferedSends.length > 0) {
             this.socket.send(JSON.stringify(this.bufferedSends.shift()));
         }
     }
 
-    executeBufferedExecutes() {
+    executeBufferedExecutes = () => {
         while (this.bufferedExecutes.length > 0) {
             this.bufferedExecutes.shift()();
         }
     }
 
-    onOpen() {
-        this.sendBufferedSends();
-        this.executeBufferedExecutes();
-    }
-
-    onClose() {
-        this.reconnect();
-    }
-
-    reconnect() {
-        this.connect();
-        this.resubscribe();
-    }
-
-    resolvePromiseForResponse(json) {
+    resolvePromiseForResponse = json => {
         if (typeof json.req_id === 'undefined') {
             return Promise.resolve();
         }
@@ -180,7 +174,7 @@ export default class LiveApi {
         return Promise.resolve();
     }
 
-    onMessage(message) {
+    onMessage = message => {
         const json = JSON.parse(message.data);
 
         if (!json.error) {
@@ -195,7 +189,7 @@ export default class LiveApi {
         return this.resolvePromiseForResponse(json);
     }
 
-    generatePromiseForRequest(json) {
+    generatePromiseForRequest = json => {
         const reqId = json.req_id.toString();
 
         return new Promise((resolve, reject) => {
@@ -203,7 +197,7 @@ export default class LiveApi {
         });
     }
 
-    sendRaw(json) {
+    sendRaw = json => {
         if (this.isReady()) {
             this.socket.send(JSON.stringify(json));
         } else {
@@ -217,7 +211,7 @@ export default class LiveApi {
         return undefined;
     }
 
-    send(json) {
+    send = json => {
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -225,7 +219,7 @@ export default class LiveApi {
         });
     }
 
-    execute(func) {
+    execute = func => {
         if (this.isReady()) {
             func();
         } else {

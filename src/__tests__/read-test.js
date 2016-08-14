@@ -1,14 +1,15 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
 import 'babel-polyfill';
-
-import LiveApi from '../LiveApi';
 import ws from 'ws';
+import LiveApi from '../LiveApi';
+
+chai.use(chaiAsPromised);
+
+const token = 'qdJ86Avvrsh0Le4';
 
 describe('read', () => {
     let liveApi;
-    let token = '4yFDEnFI3EpnZ7M';
 
     beforeEach(() => {
         liveApi = new LiveApi({ websocket: ws, appId: 1089 });
@@ -35,7 +36,7 @@ describe('read', () => {
 	it('should be able to return account settings from a api response', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getAccountSettings();
-        expect(response.get_settings.country).to.equal('Belgium');
+        expect(response.get_settings.country).to.equal('Indonesia');
 	});
 
 	it('should be able to call getAccountStatus without an error', () => {

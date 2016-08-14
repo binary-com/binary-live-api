@@ -2,7 +2,7 @@ var LiveApi = window['binary-live-api'].LiveApi;
 
 var api = new LiveApi();
 
-const token = '8PgmMxKGP0ARsRs';
+const token = 'qdJ86Avvrsh0Le4';
 api.authorize(token).then(() =>{ console.log('Authorized!') }, () => { console.log('Not Authorized')});
 
 function tickHistoryDemo() {

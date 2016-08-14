@@ -1,13 +1,15 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
 import 'babel-polyfill';
-import LiveApi from '../LiveApi';
 import ws from 'ws';
+import LiveApi from '../LiveApi';
+
+chai.use(chaiAsPromised);
+
+const token = 'qdJ86Avvrsh0Le4';
 
 describe('payment', () => {
     let liveApi;
-    let token = '4yFDEnFI3EpnZ7M';
 
     beforeEach(() => {
         liveApi = new LiveApi({ websocket: ws });
