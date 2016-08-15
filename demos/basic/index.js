@@ -18,4 +18,7 @@ function foreverPing() {
     setInterval(() => api.ping().then(response => console.log(response)), 1000);
 }
 
-foreverPing();
+api.subscribeToTick('R_100');
+api.unsubscribeFromTick('R_100');
+
+api.resubscribe();

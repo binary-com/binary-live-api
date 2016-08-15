@@ -90,21 +90,16 @@ export default class LiveApi {
     resubscribe = () => {
         const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
 
-        console.log('resubscribing', stateful.getState());
-
         this.onAuth = () => {
             if (balance) {
-                console.log('subscribeToBalance');
                 this.subscribeToBalance();
             }
 
             if (transactions) {
-                console.log('subscribeToTransactions');
                 this.subscribeToTransactions();
             }
 
             if (portfolio) {
-                console.log('subscribeToAllOpenContracts');
                 this.subscribeToAllOpenContracts();
             }
 
@@ -112,7 +107,6 @@ export default class LiveApi {
         };
 
         if (token) {
-            console.log('authorize');
             this.authorize(token);
         }
 
