@@ -2,11 +2,10 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'babel-polyfill';
 import ws from 'ws';
+import token from './test-token';
 import LiveApi from '../LiveApi';
 
 chai.use(chaiAsPromised);
-
-const token = 'qdJ86Avvrsh0Le4';
 
 describe('read', () => {
     let liveApi;
@@ -24,7 +23,7 @@ describe('read', () => {
 	it('should be able return account limits in a server response', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getAccountLimits();
-		expect(response.get_limits.account_balance).to.equal(10000);
+		expect(response.get_limits.account_balance).to.equal(100000);
 	});
 
     it('should be able to call the function getAccountSettings', () =>
@@ -60,7 +59,7 @@ describe('read', () => {
 	it('should be able to getSelfExclusion in a response from a server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getSelfExclusion();
-		expect(response.get_self_exclusion.max_balance).to.equal('10000');
+		expect(response.get_self_exclusion.max_balance).to.equal('100000');
 	});
 
 	it('should be able to call logout function', () => {

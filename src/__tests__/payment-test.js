@@ -2,11 +2,10 @@ import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'babel-polyfill';
 import ws from 'ws';
+import token from './test-token';
 import LiveApi from '../LiveApi';
 
 chai.use(chaiAsPromised);
-
-const token = 'qdJ86Avvrsh0Le4';
 
 describe('payment', () => {
     let liveApi;
