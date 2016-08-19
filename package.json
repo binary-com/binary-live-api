@@ -35,6 +35,7 @@
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "webpack --watch",
     "test:eslint": "eslint src/*.js src/calls/*.js",
+    "test:flow": "flow check --all --show-all-errors",    
     "test:full": "npm run test:eslint && npm run test:coveralls",
     "build": "webpack",
     "lint": "eslint src",
