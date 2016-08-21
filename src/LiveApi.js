@@ -13,6 +13,8 @@ let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket
 const shouldIgnoreError = error =>
     error.message.includes('You are already subscribed to') ||
         error.message.includes('Input validation failed: forget');
+const shouldNotThrow = json => 
+    json.error.code === 'SelfExclusion' && json.msg_type === 'authorize';
 
 export default class LiveApi {
 
@@ -157,7 +159,7 @@ export default class LiveApi {
         }
 
         delete this.unresolvedPromises[reqId];
-        if (!json.error) {
+        if (!json.error || shouldNotThrow(json)) {
             return promise.resolve(json);
         }
 
