@@ -79,7 +79,7 @@ export default class LiveApi {
             // swallow connection error, we can't do anything about it
         } finally {
             this.socket.onopen = this.onOpen;
-            this.socket.onclose = this.connect;
+            this.socket.onclose = () => this.connect();
             this.socket.onmessage = this.onMessage;
         }
     }
@@ -119,9 +119,9 @@ export default class LiveApi {
             this.authorize(token);
         }
 
-        ticks.forEach(tick =>
-            this.subscribeToTick(tick)
-        );
+        if (ticks) {
+            this.subscribeToTicks([...ticks]);
+        }
 
         proposals.forEach(proposal =>
             this.subscribeToPriceForContractProposal(proposal)

@@ -16,6 +16,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
+    "chai-spies": "^0.7.1",
     "coveralls": "^2.11.12",
     "eslint": "~3.3.0",
     "eslint-config-airbnb": "^10.0.1",
@@ -31,7 +32,7 @@
   },
   "scripts": {
     "clean": "rimraf lib dist",
-    "test": "mocha --compilers js:babel-core/register -t 10000 **/__tests__/*.js -R progress",
+    "test": "mocha --compilers js:babel-core/register -t 20000 **/__tests__/*.js -R progress",
     "test:coverage": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha -- --opts mocha.opts",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "webpack --watch",
