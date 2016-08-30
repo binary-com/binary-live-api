@@ -5,6 +5,11 @@ type Epoch = number;
 
 type TransactionAction = 'deposit' | 'withdrawal' | 'buy' | 'sell';
 
+type LandingCompany = 'japan' | 'costarica' | 'malta' | 'maltainvest' | 'iom';
+
+type MarketType = 'forex' | 'indices' | 'stocks' | 'commodities' | 'volidx';
+
+
 declare class ApiRequest {
     req_id?: number,
 }
@@ -19,7 +24,7 @@ declare class ApiResponse {
 
 declare class ActiveSymbolsRequest extends ApiRequest {
     active_symbols: 'brief' | 'full',
-    landing_company?: 'japan' | 'costarica' | 'malta' | 'maltainvest' | 'iom',
+    landing_company?: LandingCompany,
 }
 
 declare class ActiveSymbol {
@@ -48,6 +53,15 @@ declare class ActiveSymbolsResponse extends ApiResponse {
 
 // TODO: asset_index
 
+declare class AssetIndexRequest extends ApiRequest {
+    asset_index: 1,
+    landing_company?: LandingCompany,
+}
+
+declare class AssetIndexResponse extends ApiResponse {
+    asset_index: any[],
+}
+
 // authorize
 
 declare class AuthorizeRequest extends ApiRequest {
@@ -67,6 +81,62 @@ declare class AuthorizeResponse extends ApiResponse {
 }
 
 // contracts_for
+
+declare class ForwardStartingOption {
+    close: Epoch,
+    date: Epoch,
+    open: Epoch,
+}
+
+declare class AvailableContractDetails {
+    market: MarketType,
+    contracts_display: string,
+    max_contract_duration: string,
+    barrier_category: string,
+    payout_limit: number,
+    submarket: string,
+    exchange_name: string,
+    contract_category_display: string,
+    contract_type: string,
+    min_contract_duration: string,
+    sentiment: string,
+    barriers: number,
+    contract_category: string,
+    start_type: string,
+    expiry_type: string,
+    underlying_symbol: string,
+    forward_starting_options: ForwardStartingOption[],
+    available_barriers?: number[],
+    expired_barriers?: any[],
+    trading_period?: {
+        date_expiry: {
+            date: string,
+            epoch: Epoch,
+        },
+        date_start: {
+            date: string,
+            epoch: Epoch,
+        },
+        duration: string,
+    }
+}
+
+declare class ContractsForRequest extends ApiRequest {
+    contracts_for: string,
+    currency?: string,
+    region?: 'japan' | 'other',
+}
+
+declare class ContractsForResponse extends ApiResponse {
+    contracts_for: {
+        available: AvailableContractDetails,
+        close: Epoch,
+        open: Epoch,
+        hit_count: number,
+        spot: ?number,
+        feed_license: string,
+    },
+}
 
 // forget
 
@@ -90,11 +160,83 @@ declare class ForgetAllResponse extends ApiResponse {
 
 // get_corporate_actions
 
+declare class CorporateAction {
+    display_date: string,
+    type: number,
+    value: number,
+    modifier: string,
+}
+
+declare class CorporateActionsRequest extends ApiRequest {
+    get_corporate_actions: 1,
+    symbol: string,
+    start: string,
+    end: string,
+}
+
+declare class CorporateActionsResponse extends ApiResponse {
+    get_corporate_actions: {
+        actions: CorporateAction[],
+    }
+}
+
 // landing_company
+
+declare class LandingCompanyDetails {
+    id: string,
+    name: string,
+    gaming_company: {
+        shortcode: string,
+        name: string,
+        address: string[],
+        country: string,
+        legal_default_currency: string,
+        legal_allowed_currencies: string[],
+        legal_allowed_markets: string[],
+        has_reality_check: 0 | 1,
+    },
+}
+
+declare class LandingCompanyRequest extends ApiRequest {
+    landing_company: string,
+}
+
+declare class LandingCompanyResponse extends ApiResponse {
+    landing_company: LandingCompanyDetails,
+}
 
 // landing_company_details
 
+declare class LandingCompanyDetailsRequest extends ApiRequest {
+    landing_company_details: string,
+}
+
+declare class LandingCompanyDetailsResponse extends ApiResponse {
+    landing_company_details: LandingCompanyDetails,
+}
+
 // new_account_virtual
+
+declare class NewAccountVirtualRequest extends ApiRequest {
+    new_account_virtual: 1,
+    verification_code: string,
+    client_password: string,
+    residence: string,
+    affiliate_token?: string,
+    utm_source?: string,
+    utm_medium?: string,
+    utm_campaign?: string,
+}
+
+declare class NewAccountVirtualResponse extends ApiResponse {
+    new_account_virtual: {
+        client_id: string,
+        email: string,
+        currency: string,
+        balance: number,
+        oauth_token: string,
+    },
+}
 
 // ping
 
@@ -108,23 +250,136 @@ declare class PingResponse extends ApiResponse {
 
 // paymentagent_list
 
+declare class PaymentAgentDetails {
+    currencies: string,
+    deposit_commission: string,
+    email: string,
+    further_information: string,
+    name: string,
+    paymentagent_loginid: string,
+    summary: string,
+    supported_banks: string,
+    telephone: string,
+    url: string,
+    withdrawal_commission: string,
+}
+
+declare class PaymentAgentListRequest extends ApiRequest {
+    paymentagent_list: string,
+}
+
+declare class PaymentAgentListResponse extends ApiResponse {
+    paymentagent_list: {
+        available_countries: any[],
+        list: PaymentAgentDetails[],
+    }
+}
+
 // payout_currencies
+
+declare class PayoutCurrenciesRequest extends ApiRequest {
+    payout_currencies: 1,
+}
+
+declare class PayoutCurrenciesResponse extends ApiResponse {
+    payout_currencies: string[],
+}
 
 // proposal
 
+// TODO
+
 // residence_list
+
+declare class ResidenceListRequest extends ApiRequest {
+    residence_list: 1,
+}
+
+declare class ResidenceListResponse extends ApiResponse {
+    residence_list: string[],
+}
 
 // states_list
 
+declare class StatesListRequest extends ApiRequest {
+    states_list: 1,
+}
+
+declare class StatesListResponse extends ApiResponse {
+    states_list: string[],
+}
+
 // ticks
+
+declare class TickSpotData {
+    epoch: Epoch,
+    id: string,
+    quote: number,
+    symbol: string,
+}
+
+declare class TicksRequest extends ApiRequest {
+    ticks: string | string[],
+    subscribe?: 1,
+}
+
+declare class TicksResponse extends ApiResponse {
+    tick: TickSpotData,
+}
 
 // ticks_history
 
+declare class TickHistoryRequest extends ApiRequest {
+    ticks_history: string | string[],
+    end?: Epoch | 'latest',
+    start: Epoch,
+    count: number,
+    style: 'candles' | 'ticks',
+    granularity?: number,
+    adjust_start_time?: 1,
+    subscribe?: 1,
+}
+
+declare class TickHistoryResponse extends ApiResponse {
+    history?: {
+        times: Epoch[],
+        prices: number,
+    },
+    candles?: Candle[],
+}
+
 // time
+
+declare class TimeRequest extends ApiRequest {
+    time: 1,
+}
+
+declare class TimeResponse extends ApiResponse {
+    time: Epoch,
+}
 
 // trading_times
 
+declare class TradingTimesRequest extends ApiRequest {
+    trading_times: string,
+}
+
+declare class TradingTimesResponse extends ApiResponse {
+    trading_times: {
+        markets: any[],
+    }
+}
+
 // verify_email
+
+declare class VerifyEmailRequest extends ApiRequest {
+    verify_email: string,
+    type: 'account_opening' | 'reset_password' | 'paymentagent_withdraw' | 'payment_withdraw',
+}
+
+declare class VerifyEmailResponse extends ApiResponse {
+    verify_email: 1,
+}
 
 // website_status
 
@@ -412,7 +667,7 @@ declare class ProfitTableRequest extends ApiRequest, ProfitTableOptions {
 declare class ProfitTableResponse extends ApiResponse {
     profit_table: {
         count: number,
-        transactions: Transaction[],
+        transactions: ProfitTableTransaction[],
     }
 }
 

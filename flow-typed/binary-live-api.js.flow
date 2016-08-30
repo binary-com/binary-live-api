@@ -16,10 +16,10 @@ declare class WebsocketMessage {
 declare interface ApiCalls {
     getActiveSymbolsBrief(): Promise<ActiveSymbolsResponse>;
     getActiveSymbolsFull(): Promise<ActiveSymbolsResponse>;
-    getAssetIndex(): LivePromise;
+    getAssetIndex(): Promise<AssetIndexResponse>;
     authorize(token: string): Promise<AuthorizeResponse>;
 
-    getContractsForSymbol(symbol: string): LivePromise;
+    getContractsForSymbol(symbol: string): Promise<ContractsForResponse>;
     unsubscribeFromTick(symbol: string): LivePromise;
     unsubscribeFromTicks(symbols: string[]): LivePromise;
     unsubscribeByID(id: number): LivePromise;
@@ -27,24 +27,24 @@ declare interface ApiCalls {
     unsubscribeFromAllProposals(): LivePromise;
     unsubscribeFromAllPortfolios(): LivePromise;
     unsubscribeFromAlProposals(): LivePromise;
-    getLandingCompany(landingCompany: string): LivePromise;
-    getLandingCompanyDetails(landingCompany: string): LivePromise;
-    createVirtualAccount(options: Object): LivePromise;
+    getLandingCompany(landingCompany: string): Promise<LandingCompanyResponse>;
+    getLandingCompanyDetails(landingCompany: string): Promise<LandingCompanyDetailsResponse>;
+    createVirtualAccount(options: Object): Promise<NewAccountVirtualResponse>;
     ping(): Promise<PingResponse>;
-    getPaymentAgentsForCountry(countryCode: string): LivePromise;
-    getPayoutCurrencies(): LivePromise;
+    getPaymentAgentsForCountry(countryCode: string): Promise<PaymentAgentsListResponse>;
+    getPayoutCurrencies(): Promise<PayoutCurrenciesResponse>;
     getPriceProposalForContract(options: Object): Promise<PriceProposal>;
     subscribeToPriceForContractProposal(options: Object): Promise<PriceProposal>;
-    getResidences(): LivePromise;
-    getStatesForCountry(countryCode: string): LivePromise;
+    getResidences(): Promise<ResidenceListResponse>;
+    getStatesForCountry(countryCode: string): Promise<StatesListResponse>;
     subscribeToTick(symbol: string): LivePromise;
     subscribeToTicks(symbols: string[]): LivePromise;
-    getTickHistory(symbol: string, options: Object): LivePromise;
-    getCandles(symbol: string, options: Object): LivePromise;
-    getCandlesForLastNDays(symbol: string, ndays: number): LivePromise;
-    getServerTime(): LivePromise;
-    getTradingTimes(date: Date): LivePromise;
-    verifyEmail(email: string, type: string): LivePromise;
+    getTickHistory(symbol: string, options: Object): Promise<TickHistoryResponse>;
+    getCandles(symbol: string, options: Object): Promise<TickHistoryResponse>;
+    getCandlesForLastNDays(symbol: string, ndays: number): Promise<TickHistoryResponse>;
+    getServerTime(): Promise<TimeResponse>;
+    getTradingTimes(date: Date): Promise<TradingTimesResponse>;
+    verifyEmail(email: string, type: string): Promise<VerifyEmailResponse>;
     getWebsiteStatus(): Promise<WebsiteStatusResponse>;
 
     getAccountLimits(): Promise<AccountLimitsResponse>;
