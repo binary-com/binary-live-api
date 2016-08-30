@@ -1,4 +1,4 @@
-import getUniqueId from 'binary-utils/lib/getUniqueId';
+import { getUniqueId } from 'binary-utils';
 import LiveEvents from './LiveEvents';
 import ServerError from './ServerError';
 import * as calls from './calls';
@@ -7,24 +7,34 @@ import * as customCalls from './custom';
 
 getUniqueId(); // skip 0 value
 const defaultApiUrl = 'wss://ws.binaryws.com/websockets/v3';
-const MockWebSocket = () => {};
+const nullFunc = () => {};
+const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
-const shouldIgnoreError = error =>
+const shouldIgnoreError = (error: Error): boolean =>
     error.message.includes('You are already subscribed to') ||
         error.message.includes('Input validation failed: forget');
 
 export default class LiveApi {
 
-    static Status = {
-        Unknown: 'unknown',
-        Connected: 'connected',
-    };
+    token: string;
+    apiUrl: string;
+    language: string;
+    appId: number;
+    socket: WebSocket;
+    bufferedSends: Object[];
+    bufferedExecutes: (() => void)[];
+    unresolvedPromises: Object;
+    events: LiveEvents;
+    onAuth: () => void;
 
-    constructor({ apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = {}) {
+    constructor(initParams: InitParams) {
+        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = initParams || {};
+
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
+
         if (keepAlive) {
             setInterval(() => this.ping(), 60 * 1000);
         }
@@ -32,8 +42,6 @@ export default class LiveApi {
         if (websocket) {
             WebSocket = websocket;
         }
-
-        this.status = LiveApi.Status.Unknown;
 
         this.bufferedSends = [];
         this.bufferedExecutes = [];
@@ -46,7 +54,7 @@ export default class LiveApi {
         this.connect(connection);
     }
 
-    bindCallsAndStateMutators() {
+    bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
             this[callName] = (...params) => {
                 if (stateful[callName]) {
@@ -62,7 +70,7 @@ export default class LiveApi {
         });
     }
 
-    connect(connection) {
+    connect(connection: ?WebSocket): void {
         const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}`;
 
         try {
@@ -76,18 +84,19 @@ export default class LiveApi {
         }
     }
 
-    onOpen = () => {
+    onOpen = (): void => {
         this.resubscribe();
         this.sendBufferedSends();
         this.executeBufferedExecutes();
     }
-    disconnect = () => {
+
+    disconnect = (): void => {
         this.token = '';
-        this.socket.onclose = undefined;
+        this.socket.onclose = nullFunc;
         this.socket.close();
     }
 
-    resubscribe = () => {
+    resubscribe = (): void => {
         const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
 
         this.onAuth = () => {
@@ -103,7 +112,7 @@ export default class LiveApi {
                 this.subscribeToAllOpenContracts();
             }
 
-            this.onAuth = undefined;
+            this.onAuth = () => {};
         };
 
         if (token) {
@@ -119,32 +128,32 @@ export default class LiveApi {
         );
     }
 
-    changeLanguage = ln => {
+    changeLanguage = (ln: string): void => {
         if (ln === this.language) {
             return;
         }
-        this.socket.onclose = undefined;
+        this.socket.onclose = nullFunc;
         this.socket.close();
         this.language = ln;
         this.connect();
     }
 
-    isReady = () =>
-        this.socket && this.socket.readyState === 1;
+    isReady = (): boolean =>
+        !!this.socket && this.socket.readyState === 1;
 
-    sendBufferedSends = () => {
+    sendBufferedSends = (): void => {
         while (this.bufferedSends.length > 0) {
             this.socket.send(JSON.stringify(this.bufferedSends.shift()));
         }
     }
 
-    executeBufferedExecutes = () => {
+    executeBufferedExecutes = (): void => {
         while (this.bufferedExecutes.length > 0) {
             this.bufferedExecutes.shift()();
         }
     }
 
-    resolvePromiseForResponse = json => {
+    resolvePromiseForResponse = (json: Object): LivePromise => {
         if (typeof json.req_id === 'undefined') {
             return Promise.resolve();
         }
@@ -168,7 +177,7 @@ export default class LiveApi {
         return Promise.resolve();
     }
 
-    onMessage = message => {
+    onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
 
         if (!json.error) {
@@ -183,7 +192,7 @@ export default class LiveApi {
         return this.resolvePromiseForResponse(json);
     }
 
-    generatePromiseForRequest = json => {
+    generatePromiseForRequest = (json: Object): LivePromise => {
         const reqId = json.req_id.toString();
 
         return new Promise((resolve, reject) => {
@@ -191,7 +200,7 @@ export default class LiveApi {
         });
     }
 
-    sendRaw = json => {
+    sendRaw = (json: Object): ?LivePromise => {
         if (this.isReady()) {
             this.socket.send(JSON.stringify(json));
         } else {
@@ -205,7 +214,7 @@ export default class LiveApi {
         return undefined;
     }
 
-    send = json => {
+    send = (json: Object): ?LivePromise => {
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -213,7 +222,7 @@ export default class LiveApi {
         });
     }
 
-    execute = func => {
+    execute = (func: () => void): void => {
         if (this.isReady()) {
             func();
         } else {

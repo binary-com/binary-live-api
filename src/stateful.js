@@ -15,7 +15,7 @@ export const resetState = () => {
 
 export const getState = () => state;
 
-export const authorize = token => {
+export const authorize = (token: string) => {
     state.token = token;
 };
 
@@ -47,19 +47,19 @@ export const unsubscribeFromTransactions = () => {
     state.transactions = false;
 };
 
-export const subscribeToTick = symbol => {
+export const subscribeToTick = (symbol: string) => {
     state.ticks.add(symbol);
 };
 
-export const subscribeToTicks = symbols => {
+export const subscribeToTicks = (symbols: string[]) => {
     symbols.forEach(subscribeToTick);
 };
 
-export const unsubscribeFromTick = symbol => {
+export const unsubscribeFromTick = (symbol: string) => {
     state.ticks.delete(symbol);
 };
 
-export const unsubscribeFromTicks = symbols => {
+export const unsubscribeFromTicks = (symbols: string[]) => {
     symbols.forEach(unsubscribeFromTick);
 };
 
@@ -67,7 +67,7 @@ export const unsubscribeFromAllTicks = () => {
     state.ticks.clear();
 };
 
-export const subscribeToPriceForContractProposal = options => {
+export const subscribeToPriceForContractProposal = (options: Object) => {
     state.proposals.add(options);
 };
 

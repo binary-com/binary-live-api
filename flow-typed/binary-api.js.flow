@@ -1,0 +1,156 @@
+declare class ApiRequest {
+    req_id?: number,
+}
+
+declare class ApiResponse {
+    msg_type: string,
+    req_id?: number,
+    echo_req?: Object,
+}
+
+// active_symbols
+
+declare class ActiveSymbolsRequest extends ApiRequest {
+    active_symbols: 'brief' | 'full',
+    landing_company?: 'japan' | 'costarica' | 'malta' | 'maltainvest' | 'iom',
+}
+
+declare class ActiveSymbol {
+    symbol: string,
+    intraday_interval_minutes: number,
+    symbol_type: string,
+    exchange_is_open: ?number,
+    exchange_name: string,
+    delay_amount: number,
+    display_name: string,
+    spot: ?number,
+    spot_time: string,
+    is_trading_suspended: number,
+    quoted_currency_symbol: string,
+    spot_age: string,
+    market: string,
+    market_display_name: string,
+    submarket: string,
+    submarket_display_name: string,
+    pip: number,
+}
+
+declare class ActiveSymbolsResponse extends ApiResponse {
+    active_symbolsarray: ActiveSymbol[],
+}
+
+// TODO: asset_index
+
+// authorize
+
+declare class AuthorizeRequest extends ApiRequest {
+    authorize: string,
+}
+
+declare class AuthorizeResponse extends ApiResponse {
+    authorize: {
+        email: string,
+        currency: string,
+        balance: number,
+        loginid: string,
+        is_virtual: 0 | 1,
+        landing_company_name: string,
+        fullname: string,
+    },
+}
+
+// contracts_for
+
+// forget
+
+declare class ForgetRequest extends ApiRequest {
+    forget: string,
+}
+
+declare class ForgetResponse extends ApiResponse {
+    forget: 0 | 1,
+}
+
+// forget_all
+
+declare class ForgetAllRequest extends ApiRequest {
+    forget_all: 'ticks' | 'candles' | 'proposal' | 'portfolio' | 'proposal_open_contract' | 'balance' | 'transaction' | 'pricing_table',
+}
+
+declare class ForgetAllResponse extends ApiResponse {
+    forget_all: number[],
+}
+
+// get_corporate_actions
+
+// landing_company
+
+// landing_company_details
+
+// new_account_virtual
+
+// ping
+
+declare class PingRequest extends ApiRequest {
+    ping: 1,
+}
+
+declare class PingResponse extends ApiResponse {
+    ping: 'pong',
+}
+
+// paymentagent_list
+
+// payout_currencies
+
+// proposal
+
+// residence_list
+
+// states_list
+
+// ticks
+
+// ticks_history
+
+// time
+
+// trading_times
+
+// verify_email
+
+// website_status
+
+declare class WebsiteStatus {
+    terms_conditions_version: string,
+    api_call_limits: {
+        max_proposal_subscription: {
+            applies_to: string,
+            max: number,
+        },
+        max_requestes_general: {
+            applies_to: string,
+            hourly: number,
+            minutely: number,
+        },
+        max_requests_outcome: {
+            applies_to: string,
+            hourly: number,
+            minutely: number,
+        },
+        max_requests_pricing: {
+            applies_to: string,
+            hourly: number,
+            minutely: number,
+        }
+    },
+    clients_country: string,
+}
+
+declare class WebsiteStatusRequest extends ApiRequest {
+    website_status: 1,
+}
+
+declare class WebsiteStatusResponse extends ApiResponse {
+    website_status: WebsiteStatus,
+}

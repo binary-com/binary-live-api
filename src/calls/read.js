@@ -18,7 +18,7 @@ export const logOut = () => ({
     logout: 1,
 });
 
-export const getStatement = (options) => ({
+export const getStatement = (options: Object) => ({
     statement: 1,
     ...options,
 });
@@ -27,7 +27,7 @@ export const getPortfolio = () => ({
     portfolio: 1,
 });
 
-export const getProfitTable = (options) => ({
+export const getProfitTable = (options: Object) => ({
     profit_table: 1,
     ...options,
 });
@@ -46,13 +46,13 @@ export const unsubscribeFromBalance = () => ({
     subscribe: 0,
 });
 
-export const subscribeToOpenContract = contractId => ({
+export const subscribeToOpenContract = (contractId: number) => ({
     proposal_open_contract: 1,
     subscribe: 1,
     contract_id: contractId,
 });
 
-export const getContractInfo = contractId => ({
+export const getContractInfo = (contractId: number) => ({
     proposal_open_contract: 1,
     contract_id: contractId,
 });

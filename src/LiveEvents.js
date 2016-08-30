@@ -1,29 +1,33 @@
+type LivEventHandler = (msgData: Object) => void;
+
 export default class LiveEvents {
+
+    messageHandlers: Object;
 
     constructor() {
         this.messageHandlers = {};
     }
 
-    emitSingle(msgType, msgData) {
+    emitSingle(msgType: string, msgData: Object) {
         const handlers = this.messageHandlers[msgType] || [];
         handlers.forEach(handler => {
             handler(msgData);
         });
     }
 
-    emitWildcard(msgData) {
+    emitWildcard(msgData: Object) {
         const handlers = this.messageHandlers['*'] || [];
         handlers.forEach(handler => {
             handler(msgData);
         });
     }
 
-    emit(msgType, msgData) {
+    emit(msgType: string, msgData: Object) {
         this.emitSingle(msgType, msgData);
         this.emitWildcard(msgData);
     }
 
-    on(msgType, callback) {
+    on(msgType: string, callback: LivEventHandler) {
         if (!this.messageHandlers[msgType]) {
             this.messageHandlers[msgType] = [callback];
         } else {

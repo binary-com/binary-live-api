@@ -2,9 +2,12 @@ import { nowAsEpoch, durationToSecs } from 'binary-utils';
 
 const responseSizeLimit = 700;
 
-const granularities = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
-const ohlcDataToTicks = candles => candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
-const hcUnitConverter = type => {
+const granularities: number[] = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
+
+const ohlcDataToTicks = (candles: Candle[]): Tick[] =>
+    candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
+
+const hcUnitConverter = (type: string): string => {
     switch (type) {
         case 'second': return 's';
         case 'minute': return 'm';
@@ -14,7 +17,15 @@ const hcUnitConverter = type => {
     }
 };
 
-const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe, extra = {}) => {
+const autoAdjustGetData = (
+    api: LiveApi,
+    symbol: string,
+    start: Epoch,
+    end: Epoch,
+    style: string = 'ticks',
+    subscribe: boolean,
+    extra = {},
+) => {
     const secs = end - start;
     const ticksCount = secs / 2;
     if (ticksCount >= responseSizeLimit || style === 'candles') {
@@ -26,6 +37,7 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe, 
             }
         });
         finalGranularity = Math.min(86400, finalGranularity);
+
         return api.getTickHistory(symbol,
             {
                 start,
@@ -73,14 +85,14 @@ const autoAdjustGetData = (api, symbol, start, end, style = 'ticks', subscribe, 
     });
 };
 
-/**
- *
- * @param api
- * @param symbol
- * @param durationCount
- * @param durationType
- */
-export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 'all', style = 'ticks', subscribe) {
+export function getDataForSymbol(
+        api: LiveApi,
+        symbol: string,
+        durationCount: number = 1,
+        durationType: string = 'all',
+        style: string = 'ticks',
+        subscribe: boolean,
+) {
     const durationUnit = hcUnitConverter(durationType);
     const end = nowAsEpoch();
     const start = end - durationToSecs(durationCount, durationUnit);
@@ -100,12 +112,12 @@ export function getDataForSymbol(api, symbol, durationCount = 1, durationType = 
  * @returns {*|Promise.<TResult>}
  */
 export function getDataForContract(
-    api,
+    api: LiveApi,
     getContract,
-    durationCount,
-    durationType = 'all',
-    style = 'ticks',
-    subscribe,
+    durationCount: number,
+    durationType: string = 'all',
+    style: string = 'ticks',
+    subscribe: boolean,
 ) {
     const getAllData = () =>
         getContract()
@@ -140,7 +152,7 @@ export function getDataForContract(
                     style,
                     subscribe,
                     { isSold: !!contract.sell_time },
-                    );
+                );
             });
 
     if (durationType === 'all') {

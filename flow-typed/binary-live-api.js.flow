@@ -1,0 +1,109 @@
+type LivePromise = Promise<Object>;
+
+declare class InitParams {
+    apiUrl?: string,
+    language?: string,
+    appId?: number,
+    websocket?: WebSocket,
+    connection?: WebSocket,
+    keepAlive?: boolean,
+}
+
+declare class WebsocketMessage {
+    data: string,
+}
+
+declare interface ApiCalls {
+    getActiveSymbolsBrief(): Promise<ActiveSymbolsResponse>;
+    getActiveSymbolsFull(): Promise<ActiveSymbolsResponse>;
+    getAssetIndex(): LivePromise;
+    authorize(token: string): Promise<AuthorizeResponse>;
+
+    getContractsForSymbol(symbol: string): LivePromise;
+    unsubscribeFromTick(symbol: string): LivePromise;
+    unsubscribeFromTicks(symbols: string[]): LivePromise;
+    unsubscribeByID(id: number): LivePromise;
+    unsubscribeFromAllTicks(): LivePromise;
+    unsubscribeFromAllProposals(): LivePromise;
+    unsubscribeFromAllPortfolios(): LivePromise;
+    unsubscribeFromAlProposals(): LivePromise;
+    getLandingCompany(landingCompany: string): LivePromise;
+    getLandingCompanyDetails(landingCompany: string): LivePromise;
+    createVirtualAccount(options: Object): LivePromise;
+    ping(): Promise<PingResponse>;
+    getPaymentAgentsForCountry(countryCode: string): LivePromise;
+    getPayoutCurrencies(): LivePromise;
+    getPriceProposalForContract(options: Object): LivePromise;
+    subscribeToPriceForContractProposal(options: Object): LivePromise;
+    getResidences(): LivePromise;
+    getStatesForCountry(countryCode: string): LivePromise;
+    subscribeToTick(symbol: string): LivePromise;
+    subscribeToTicks(symbols: string[]): LivePromise;
+    getTickHistory(symbol: string, options: Object): LivePromise;
+    getCandles(symbol: string, options: Object): LivePromise;
+    getCandlesForLastNDays(symbol: string, ndays: number): LivePromise;
+    getServerTime(): LivePromise;
+    getTradingTimes(date: Date): LivePromise;
+    verifyEmail(email: string, type: string): LivePromise;
+    getWebsiteStatus(): Promise<WebsiteStatusResponse>;
+
+    getAccountLimits(): LivePromise;
+    getAccountSettings(): LivePromise;
+    getAccountStatus(): LivePromise;
+    getSelfExclusion(): LivePromise;
+    logOut(): LivePromise;
+    getStatement(options: Object): LivePromise;
+    getPortfolio(): LivePromise;
+    getProfitTable(options: Object): LivePromise;
+    getRealityCheckSummary (): LivePromise;
+    subscribeToBalance(): LivePromise;
+    unsubscribeFromBalance(): LivePromise;
+    subscribeToOpenContract(contractId: number): LivePromise;
+    getContractInfo(contractId: number): LivePromise;
+    subscribeToAllOpenContracts(): LivePromise;
+    unsubscribeFromAllOpenContracts(): LivePromise;
+    subscribeToTransactions(): LivePromise;
+    unsubscribeFromTransactions(): LivePromise;
+
+    buyContract(contractId: number, price: number): LivePromise;
+    sellContract(contractId: number, price: number): LivePromise;
+    sellExpiredContracts(): LivePromise;
+    topUpVirtualAccount(): LivePromise;
+
+    getCashierLockStatus(): LivePromise;
+    setCashierLock(options: Object): LivePromise;
+    withdrawToPaymentAgent(options: Object): LivePromise;
+    paymentAgentTransfer(options: Object): LivePromise;
+    transferBetweenAccounts(options: Object): LivePromise;
+
+    deleteApiToken(token: string): LivePromise;
+    getApiTokens(): LivePromise;
+    createApiToken(token: string, scopes: string[]): LivePromise;
+    changePassword(oldPassword: string, newPassword: string): LivePromise;
+    registerApplication(options: Object): LivePromise;
+    getAllAppList(): LivePromise;
+    getAppslistById(appid: number): LivePromise;
+    deleteApplication(appid: number): LivePromise;
+    createRealAccountMaltaInvest(options: Object): LivePromise;
+    createRealAccount(options: Object): LivePromise;
+    setAccountCurrency(currency: string): LivePromise;
+    setSelfExclusion(options: Object): LivePromise;
+    setAccountSettings(options: Object): LivePromise;
+    setTnCApproval(): LivePromise;
+}
+
+declare module 'binary-live-api' {
+    declare class LiveApi extends ApiCalls {
+        [key: string]: LivePromise;
+
+        constructor(initParams: InitParams): void;
+        connect(connection: ?WebSocket): void;
+        disconnect(): void;
+        changeLanguage(ln: string): void;
+        isReady(): boolean;
+        sendRaw(json: Object): ?LivePromise;
+        send(json: Object): ?LivePromise;
+        execute(func: () => void): void;
+
+    }
+}

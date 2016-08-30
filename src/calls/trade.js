@@ -1,9 +1,9 @@
-export const buyContract = (contractId, price) => ({
+export const buyContract = (contractId: number, price: number) => ({
     buy: contractId,
     price,
 });
 
-export const sellContract = (contractId, price) => ({
+export const sellContract = (contractId: number, price: number) => ({
     sell: contractId,
     price,
 });

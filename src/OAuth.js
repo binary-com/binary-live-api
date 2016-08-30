@@ -1,10 +1,15 @@
-export const oauthUrl = appId =>
+export const oauthUrl = (appId: number): string =>
     `https://www.binary.com/oauth2/authorize?app_id=${appId}`;
 
-export const oauthUrlWithLanguage = (appId, langCode) =>
+export const oauthUrlWithLanguage = (appId: number, langCode: string): string =>
     `https://www.binary.com/oauth2/authorize?app_id=${appId}&l=${langCode}`;
 
-export const parseOAuthResponse = responseUrl => {
+type Account = {
+    account: string,
+    token: string,
+};
+
+export const parseOAuthResponse = (responseUrl: string): Account[] => {
     const matcher = /acct\d=(\w+)&token\d=([\w-]+)/g;
     const urlParts = responseUrl.split('/redirect?');
     if (urlParts.length !== 2) throw new Error('Not a valid url');
