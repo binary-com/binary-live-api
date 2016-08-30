@@ -1,14 +1,14 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
 import 'babel-polyfill';
-
 import ServerError from '../ServerError';
 
+chai.use(chaiAsPromised);
+
 describe('ServerError', () => {
-    it('can be thrown', () => {
+    it.only('can be thrown', () => {
         expect(() => {
-            throw new ServerError();
+            throw new ServerError({ error: {} });
         }).to.throw(/ServerError/);
     });
 
