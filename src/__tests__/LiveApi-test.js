@@ -9,7 +9,8 @@ import ws from 'ws';
 describe('LiveApi', () => {
     let liveApi;
 
-    beforeEach(() => {
+
+    before(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 

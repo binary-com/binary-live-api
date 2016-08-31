@@ -9,8 +9,12 @@ chai.use(chaiAsPromised);
 describe('custom', () => {
     let liveApi;
     const token = 'qdJ86Avvrsh0Le4';
-    beforeEach(() => {
+    beforeEach(done => {
         liveApi = new LiveApi({ websocket: ws });
+        liveApi.socket.onopen = () => {
+            liveApi.onOpen();
+            done();                         // make sure api is open before proceed
+        }
     });
 
     describe('getDataForContract', () => {

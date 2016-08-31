@@ -9,8 +9,12 @@ chai.use(chaiAsPromised);
 describe('unauthenticated', () => {
     let liveApi;
 
-    beforeEach(() => {
+    before(() => {
         liveApi = new LiveApi({ websocket: ws });
+    });
+
+    after(() => {
+        liveApi.disconnect();
     });
 
     it('can ping server', () =>

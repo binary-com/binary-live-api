@@ -6,7 +6,7 @@ import ServerError from '../ServerError';
 chai.use(chaiAsPromised);
 
 describe('ServerError', () => {
-    it.only('can be thrown', () => {
+    it('can be thrown', () => {
         expect(() => {
             throw new ServerError({ error: {} });
         }).to.throw(/ServerError/);

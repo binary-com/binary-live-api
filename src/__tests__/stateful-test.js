@@ -1,18 +1,26 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import WS from 'ws';
 chai.use(chaiAsPromised);
 
 import LiveApi from '../LiveApi';
 import { resetState, getState } from '../stateful';
 
-const MockWebSocket = () => {};
 
 describe('stateful', () => {
     let liveApi;
 
-    beforeEach(() => {
+    before(done => {
         resetState();
-        liveApi = new LiveApi({ websocket: MockWebSocket });
+        liveApi = new LiveApi({ websocket: WS });
+        liveApi.socket.onopen = () => {
+            liveApi.onOpen();
+            done();                         // make sure api is open before proceed
+        }
+    });
+
+    after(() => {
+        liveApi.disconnect();
     });
 
     it('initial state is empty', () => {

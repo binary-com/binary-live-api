@@ -8,9 +8,9 @@ import LiveApi from '../LiveApi';
 describe('admin', () => {
     let liveApi;
 
-    beforeEach(() => {
-        liveApi = new LiveApi({ websocket: ws });
-    });
+	before(() => {
+		liveApi = new LiveApi({ websocket: ws });
+	});
 
 	it('should be able to call getApiToken without an error', () => {
 		expect(() =>
