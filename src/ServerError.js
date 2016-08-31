@@ -5,7 +5,7 @@ export default class ServerError extends Error {
     name: string;
     message: string;
 
-    constructor(errorObj: ServerErrorResponse) {
+    constructor(errorObj: ApiErrorResponse) {
         super(errorObj);
 
         this.stack = (new Error()).stack;
