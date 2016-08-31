@@ -56,13 +56,10 @@ export default class LiveApi {
 
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
-            this[callName] = (...params) => {
-                if (stateful[callName]) {
-                    stateful[callName](...params);
-                }
-                return this.send(calls[callName](...params));
-            };
-        });
+                this[callName] =
+                    (...params) => this.send(callName, ...params);
+            }
+        );
 
         Object.keys(customCalls).forEach(callName => {
             this[callName] = (...params) =>
@@ -143,7 +140,7 @@ export default class LiveApi {
 
     sendBufferedSends = (): void => {
         while (this.bufferedSends.length > 0) {
-            this.socket.send(JSON.stringify(this.bufferedSends.shift()));
+            this.bufferedSends.shift()();
         }
     }
 
@@ -200,11 +197,25 @@ export default class LiveApi {
         });
     }
 
-    sendRaw = (json: Object): ?LivePromise => {
-        if (this.isReady()) {
+    send = function (callName: string, ...param: Object): ?LivePromise {
+        const reqId = getUniqueId();
+        const actualPaylod = calls[callName](...param);
+        const json = {
+            req_id: reqId,
+            ...actualPaylod,
+        };
+
+        const sendRaw = () => {
             this.socket.send(JSON.stringify(json));
+            if (stateful[callName]) {
+                stateful[callName](...param);
+            }
+        };
+
+        if (this.isReady()) {
+            sendRaw();
         } else {
-            this.bufferedSends.push(json);
+            this.bufferedSends.push(sendRaw);
         }
 
         if (typeof json.req_id !== 'undefined') {
@@ -212,14 +223,6 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
-
-    send = (json: Object): ?LivePromise => {
-        const reqId = getUniqueId();
-        return this.sendRaw({
-            req_id: reqId,
-            ...json,
-        });
     }
 
     execute = (func: () => void): void => {
