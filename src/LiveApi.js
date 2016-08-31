@@ -57,7 +57,7 @@ export default class LiveApi {
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
                 this[callName] =
-                    (...params) => this.send(callName, ...params);
+                    (...params) => this.sendWithApiName(callName, ...params);
             }
         );
 
@@ -116,7 +116,7 @@ export default class LiveApi {
             this.authorize(token);
         }
 
-        if (ticks) {
+        if (ticks.size !== 0) {
             this.subscribeToTicks([...ticks]);
         }
 
@@ -197,7 +197,7 @@ export default class LiveApi {
         });
     }
 
-    send = function (callName: string, ...param: Object): ?LivePromise {
+    sendWithApiName = function (callName: string, ...param: Object): ?LivePromise {
         const reqId = getUniqueId();
         const actualPaylod = calls[callName](...param);
         const json = {
@@ -205,7 +205,7 @@ export default class LiveApi {
             ...actualPaylod,
         };
 
-        const sendRaw = () => {
+        const socketSend = () => {
             this.socket.send(JSON.stringify(json));
             if (stateful[callName]) {
                 stateful[callName](...param);
@@ -213,9 +213,9 @@ export default class LiveApi {
         };
 
         if (this.isReady()) {
-            sendRaw();
+            socketSend();
         } else {
-            this.bufferedSends.push(sendRaw);
+            this.bufferedSends.push(socketSend);
         }
 
         if (typeof json.req_id !== 'undefined') {
@@ -231,5 +231,30 @@ export default class LiveApi {
         } else {
             this.bufferedExecutes.push(func);
         }
+    }
+
+    // TODO: should we deprecate this? preserve for backward compatibility
+    send = (json: Object): ?LivePromise => {
+        const reqId = getUniqueId();
+        return this.sendRaw({
+            req_id: reqId,
+            ...json,
+        });
+    }
+
+    // TODO: should we deprecate this? preserve for backward compatibility
+    sendRaw = (json: Object): ?LivePromise => {
+        const socketSend = () => this.socket.send(JSON.stringify(json));
+        if (this.isReady()) {
+            socketSend();
+        } else {
+            this.bufferedSends.push(socketSend);
+        }
+
+        if (typeof json.req_id !== 'undefined') {
+            return this.generatePromiseForRequest(json);
+        }
+
+        return undefined;
     }
 }
