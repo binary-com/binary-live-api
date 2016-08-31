@@ -2,7 +2,7 @@ import { getUniqueId } from 'binary-utils';
 import LiveEvents from './LiveEvents';
 import ServerError from './ServerError';
 import * as calls from './calls';
-import * as stateful from './stateful';
+import ApiState from './ApiState';
 import * as customCalls from './custom';
 
 getUniqueId(); // skip 0 value
@@ -27,6 +27,7 @@ export default class LiveApi {
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
+    state: ApiState;
 
     constructor(initParams: InitParams) {
         const { apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = initParams || {};
@@ -48,6 +49,7 @@ export default class LiveApi {
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
+        this.state = new ApiState();
 
         this.bindCallsAndStateMutators();
 
@@ -57,7 +59,7 @@ export default class LiveApi {
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
                 this[callName] =
-                    (...params) => this.send(callName, ...params);
+                    (...params) => this.sendAndUpdateState(callName, ...params);
             }
         );
 
@@ -94,7 +96,7 @@ export default class LiveApi {
     }
 
     resubscribe = (): void => {
-        const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
+        const { token, balance, portfolio, transactions, ticks, proposals } = this.state.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -116,7 +118,7 @@ export default class LiveApi {
             this.authorize(token);
         }
 
-        if (ticks) {
+        if (ticks.size !== 0) {
             this.subscribeToTicks([...ticks]);
         }
 
@@ -139,8 +141,10 @@ export default class LiveApi {
         !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        while (this.bufferedSends.length > 0) {
-            this.bufferedSends.shift()();
+        if (this.isReady()) {                           // TODO: test fail without this check, find out why!!??
+            while (this.bufferedSends.length > 0) {
+                this.bufferedSends.shift()();
+            }
         }
     }
 
@@ -197,7 +201,7 @@ export default class LiveApi {
         });
     }
 
-    send = function (callName: string, ...param: Object): ?LivePromise {
+    sendAndUpdateState = function (callName: string, ...param: Object): ?LivePromise {
         const reqId = getUniqueId();
         const actualPaylod = calls[callName](...param);
         const json = {
@@ -205,17 +209,17 @@ export default class LiveApi {
             ...actualPaylod,
         };
 
-        const sendRaw = () => {
+        const socketSend = () => {
             this.socket.send(JSON.stringify(json));
-            if (stateful[callName]) {
-                stateful[callName](...param);
+            if (this.state[callName]) {
+                this.state[callName](...param);
             }
         };
 
         if (this.isReady()) {
-            sendRaw();
+            socketSend();
         } else {
-            this.bufferedSends.push(sendRaw);
+            this.bufferedSends.push(socketSend);
         }
 
         if (typeof json.req_id !== 'undefined') {
@@ -231,5 +235,30 @@ export default class LiveApi {
         } else {
             this.bufferedExecutes.push(func);
         }
+    }
+
+    // TODO: should we deprecate this? preserve for backward compatibility
+    send = (json: Object): ?LivePromise => {
+        const reqId = getUniqueId();
+        return this.sendRaw({
+            req_id: reqId,
+            ...json,
+        });
+    }
+
+    // TODO: should we deprecate this? preserve for backward compatibility
+    sendRaw = (json: Object): ?LivePromise => {
+        const socketSend = () => this.socket.send(JSON.stringify(json));
+        if (this.isReady()) {
+            socketSend();
+        } else {
+            this.bufferedSends.push(socketSend);
+        }
+
+        if (typeof json.req_id !== 'undefined') {
+            return this.generatePromiseForRequest(json);
+        }
+
+        return undefined;
     }
 }
