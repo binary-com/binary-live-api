@@ -8,7 +8,7 @@ import LiveApi from '../LiveApi';
 
 describe('stateful', async () => {
     let liveApi = new LiveApi({ websocket: WS });
-    const r = await liveApi.ping();
+    await liveApi.ping();
 
     it('initial state is empty', () => {
         const state = liveApi.state.getState();
