@@ -9,16 +9,25 @@ type LandingCompany = 'japan' | 'costarica' | 'malta' | 'maltainvest' | 'iom';
 
 type MarketType = 'forex' | 'indices' | 'stocks' | 'commodities' | 'volidx';
 
-
 declare class ApiRequest {
     req_id?: number,
 }
 
 declare class ApiResponse {
     msg_type: string,
-    req_id?: number,
     echo_req?: Object,
+    req_id?: number,
 }
+
+type ApiErrorResponse = {
+    msg_type: string,
+    echo_req?: Object,
+    error: {
+        code: string,
+        message: string,
+    },
+}
+
 
 // active_symbols
 

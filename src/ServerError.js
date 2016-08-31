@@ -1,22 +1,7 @@
-type ServerErrorResponse = {
-    msg_type: string,
-    echo_req: Object,
-    error: {
-        code: string,
-        message: string,
-    },
-}
-
-type ServerSuccessResponse = {
-    msg_type: string,
-    req_id: ?number,
-    echo_req: Object,
-}
-
 export default class ServerError extends Error {
 
     stack: any;
-    error: ServerErrorResponse;
+    error: ApiErrorResponse;
     name: string;
     message: string;
 
