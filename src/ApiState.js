@@ -16,9 +16,7 @@ export default class ApiState {
         this.state = getInitialState();
     };
 
-    getState = () => {
-        return this.state;
-    }
+    getState = () => this.state;
 
     authorize = (token: string) => {
         this.state.token = token;
