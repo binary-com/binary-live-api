@@ -4,6 +4,7 @@ const getInitialState = () => ({
     portfolio: false,
     transactions: false,
     ticks: new Set(),
+    ticksHistory: new Map(),
     proposals: new Set(),
 });
 
@@ -60,10 +61,17 @@ export default class ApiState {
 
     unsubscribeFromTick = (symbol: string) => {
         this.state.ticks.delete(symbol);
+        this.state.ticksHistory.delete(symbol);
     };
 
     unsubscribeFromTicks = (symbols: string[]) => {
         symbols.forEach(this.unsubscribeFromTick);
+    };
+
+    getTickHistory = (symbol: string, params: Object) => {
+        if (params && params.subscribe === 1) {
+            this.state.ticksHistory.set(symbol, params);
+        }
     };
 
     unsubscribeFromAllTicks = () => {

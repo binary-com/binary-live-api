@@ -96,7 +96,7 @@ export default class LiveApi {
     }
 
     resubscribe = (): void => {
-        const { token, balance, portfolio, transactions, ticks, proposals } = this.state.getState();
+        const { token, balance, portfolio, transactions, ticks, ticksHistory, proposals } = this.state.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -120,6 +120,10 @@ export default class LiveApi {
 
         if (ticks.size !== 0) {
             this.subscribeToTicks([...ticks]);
+        }
+
+        if (ticksHistory.size > 0) {
+            ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
         }
 
         proposals.forEach(proposal =>
