@@ -1,78 +1,82 @@
-export default () => {
-    const getInitialState = () => ({
-        token: '',
-        balance: false,
-        portfolio: false,
-        transactions: false,
-        ticks: new Set(),
-        proposals: new Set(),
-    });
+const getInitialState = () => ({
+    token: '',
+    balance: false,
+    portfolio: false,
+    transactions: false,
+    ticks: new Set(),
+    proposals: new Set(),
+});
 
-    let state = getInitialState();
+export default class ApiState {
+    constructor() {
+        this.state = getInitialState();
+    }
 
-    const resetState = () => {
-        state = getInitialState();
+    resetState = () => {
+        this.state = getInitialState();
     };
 
-    const getState = () => state;
+    getState = () => {
+        return this.state;
+    }
 
-    const authorize = (token: string) => {
-        state.token = token;
+    authorize = (token: string) => {
+        this.state.token = token;
     };
 
-    const subscribeToBalance = () => {
-        state.balance = true;
+    subscribeToBalance = () => {
+        this.state.balance = true;
     };
 
-    const unsubscribeFromBalance = () => {
-        state.balance = false;
+    unsubscribeFromBalance = () => {
+        this.state.balance = false;
     };
 
-// const subscribeToOpenContract = contractId => {
+// subscribeToOpenContract = contractId => {
 //     state.portfolio.add(contractId);
 // };
 
-    const subscribeToAllOpenContracts = () => {
-        state.portfolio = true;
+    subscribeToAllOpenContracts = () => {
+        this.state.portfolio = true;
     };
 
-    const unsubscribeFromAllOpenContracts = () => {
-        state.portfolio = false;
+    unsubscribeFromAllOpenContracts = () => {
+        this.state.portfolio = false;
     };
 
-    const subscribeToTransactions = () => {
-        state.transactions = true;
+    subscribeToTransactions = () => {
+        this.state.transactions = true;
     };
 
-    const unsubscribeFromTransactions = () => {
-        state.transactions = false;
+    unsubscribeFromTransactions = () => {
+        this.state.transactions = false;
     };
 
-    const subscribeToTick = (symbol: string) => {
-        state.ticks.add(symbol);
+    subscribeToTick = (symbol: string) => {
+        this.state.ticks.add(symbol);
     };
 
-    const subscribeToTicks = (symbols: string[]) => {
-        symbols.forEach(subscribeToTick);
+    subscribeToTicks = (symbols: string[]) => {
+        symbols.forEach(this.subscribeToTick);
     };
 
-    const unsubscribeFromTick = (symbol: string) => {
-        state.ticks.delete(symbol);
+    unsubscribeFromTick = (symbol: string) => {
+        this.state.ticks.delete(symbol);
     };
 
-    const unsubscribeFromTicks = (symbols: string[]) => {
-        symbols.forEach(unsubscribeFromTick);
+    unsubscribeFromTicks = (symbols: string[]) => {
+        symbols.forEach(this.unsubscribeFromTick);
     };
 
-    const unsubscribeFromAllTicks = () => {
-        state.ticks.clear();
+    unsubscribeFromAllTicks = () => {
+        this.state.ticks.clear();
     };
 
-    const subscribeToPriceForContractProposal = (options: Object) => {
-        state.proposals.add(options);
+    subscribeToPriceForContractProposal = (options: Object) => {
+        this.state.proposals.add(options);
     };
 
-    const unsubscribeFromAllProposals = () => {
-        state.proposals.clear();
+    unsubscribeFromAllProposals = () => {
+        this.state.proposals.clear();
     };
 }

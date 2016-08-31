@@ -2,7 +2,7 @@ import { getUniqueId } from 'binary-utils';
 import LiveEvents from './LiveEvents';
 import ServerError from './ServerError';
 import * as calls from './calls';
-import * as stateful from './stateful';
+import ApiState from './ApiState';
 import * as customCalls from './custom';
 
 getUniqueId(); // skip 0 value
@@ -27,6 +27,7 @@ export default class LiveApi {
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
+    state: Object;
 
     constructor(initParams: InitParams) {
         const { apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = initParams || {};
@@ -48,6 +49,7 @@ export default class LiveApi {
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
+        this.state = new ApiState();
 
         this.bindCallsAndStateMutators();
 
@@ -94,7 +96,7 @@ export default class LiveApi {
     }
 
     resubscribe = (): void => {
-        const { token, balance, portfolio, transactions, ticks, proposals } = stateful.getState();
+        const { token, balance, portfolio, transactions, ticks, proposals } = this.state.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -207,8 +209,8 @@ export default class LiveApi {
 
         const socketSend = () => {
             this.socket.send(JSON.stringify(json));
-            if (stateful[callName]) {
-                stateful[callName](...param);
+            if (this.state[callName]) {
+                this.state[callName](...param);
             }
         };
 
