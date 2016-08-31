@@ -3,7 +3,7 @@ const getInitialState = () => ({
     balance: false,
     portfolio: false,
     transactions: false,
-    ticks: undefined,
+    ticks: new Set(),
     proposals: new Set(),
 });
 
