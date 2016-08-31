@@ -9,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('unauthenticated', () => {
     let liveApi;
 
-    beforeEach(() => {
+    before(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 

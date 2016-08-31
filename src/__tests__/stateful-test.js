@@ -1,22 +1,17 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import WS from 'ws';
 chai.use(chaiAsPromised);
 
 import LiveApi from '../LiveApi';
-import { resetState, getState } from '../stateful';
 
-const MockWebSocket = () => {};
 
-describe('stateful', () => {
-    let liveApi;
-
-    beforeEach(() => {
-        resetState();
-        liveApi = new LiveApi({ websocket: MockWebSocket });
-    });
+describe('stateful', async () => {
+    let liveApi = new LiveApi({ websocket: WS });
+    await liveApi.ping();
 
     it('initial state is empty', () => {
-        const state = getState();
+        const state = liveApi.state.getState();
 
         expect(state.token).to.be.empty;
         expect(state.balance).to.be.empty;
@@ -28,44 +23,44 @@ describe('stateful', () => {
 
     it('after authorization token is retained', () => {
         liveApi.authorize('some token');
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.token).to.equal('some token');
     });
 
     it('subscribing to balance updates is remembered', () => {
         liveApi.subscribeToBalance();
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.balance).to.be.true;
     });
 
     it('subscribing to balance updates is remembered', () => {
         liveApi.subscribeToAllOpenContracts();
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.portfolio).to.be.true;
     });
 
     it('subscribing to transactions updates is remembered', () => {
         liveApi.subscribeToTransactions();
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.transactions).to.be.true;
     });
 
     it('subscribing to a single tick updates is remembered', () => {
         liveApi.subscribeToTick('R_50');
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.ticks.size).to.equal(1);
     });
 
     it('unsubsribing from a tick is remembered', () => {
         liveApi.subscribeToTick('R_50');
         liveApi.unsubscribeFromTick('R_50');
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.ticks.size).to.equal(0);
     });
 
     it('subscribing to multiple tick updates is remembered', () => {
         liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100']);
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.ticks.has('R_25')).to.be.true;
         expect(stateAfter.ticks.has('R_50')).to.be.true;
         expect(stateAfter.ticks.has('R_100')).to.be.true;
@@ -74,7 +69,7 @@ describe('stateful', () => {
     it('unsubscribing from multiple tick updates is remembered', () => {
         liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100']);
         liveApi.unsubscribeFromTicks(['R_50', 'R_100']);
-        const stateAfter = getState();
+        const stateAfter = liveApi.state.getState();
         expect(stateAfter.ticks.has('R_25')).to.be.true;
         expect(stateAfter.ticks.has('R_50')).to.be.false;
         expect(stateAfter.ticks.has('R_100')).to.be.false;

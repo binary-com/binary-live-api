@@ -9,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('custom', () => {
     let liveApi;
     const token = 'qdJ86Avvrsh0Le4';
-    beforeEach(() => {
+    before(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 

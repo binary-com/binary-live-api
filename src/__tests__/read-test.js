@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 describe('read', () => {
     let liveApi;
 
-    beforeEach(() => {
+    before(() => {
         liveApi = new LiveApi({ websocket: ws, appId: 1089 });
     });
 

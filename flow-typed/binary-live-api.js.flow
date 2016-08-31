@@ -106,4 +106,24 @@ declare module 'binary-live-api' {
         execute(func: () => void): void;
 
     }
+
+    declare class ApiState {
+        constructor(): void;
+        resetState(): void;
+        getState(): Object;
+        authorize(token: string): void;
+        subscribeToBalance(): void;
+        unsubscribeFromBalance(): void;
+        subscribeToAllOpenContracts(): void;
+        unsubscribeFromAllOpenContracts(): void;
+        subscribeToTransactions(): void;
+        unsubscribeFromTransactions(): void;
+        subscribeToTick(symbol: string): void;
+        subscribeToTicks(symbol: string[]): void;
+        unsubscribeFromTick(symbol: string): void;
+        unsubscribeFromTicks(symbol: string[]): void;
+        unsubscribeFromAllTicks():void;
+        subscribeToPriceForContractProposal(options: Object): void;
+        unsubscribeFromAllProposals(): void;
+    }
 }
