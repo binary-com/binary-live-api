@@ -27,7 +27,7 @@ export default class LiveApi {
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
-    state: Object;
+    state: ApiState;
 
     constructor(initParams: InitParams) {
         const { apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = initParams || {};
@@ -59,7 +59,7 @@ export default class LiveApi {
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
                 this[callName] =
-                    (...params) => this.sendWithApiName(callName, ...params);
+                    (...params) => this.sendAndUpdateState(callName, ...params);
             }
         );
 
@@ -141,8 +141,10 @@ export default class LiveApi {
         !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        while (this.bufferedSends.length > 0) {
-            this.bufferedSends.shift()();
+        if (this.isReady()) {                           // TODO: test fail without this check, find out why!!??
+            while (this.bufferedSends.length > 0) {
+                this.bufferedSends.shift()();
+            }
         }
     }
 
@@ -199,7 +201,7 @@ export default class LiveApi {
         });
     }
 
-    sendWithApiName = function (callName: string, ...param: Object): ?LivePromise {
+    sendAndUpdateState = function (callName: string, ...param: Object): ?LivePromise {
         const reqId = getUniqueId();
         const actualPaylod = calls[callName](...param);
         const json = {
