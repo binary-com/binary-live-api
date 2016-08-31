@@ -7,15 +7,12 @@ import LiveApi from '../LiveApi';
 
 chai.use(chaiAsPromised);
 
-describe('payment', () => {
-    let liveApi;
-
-    beforeEach(() => {
-        liveApi = new LiveApi({ websocket: ws });
-    });
+describe('payment', async () => {
+    let liveApi = new LiveApi({ websocket: ws });
+    await liveApi.authorize(token);
 
     it('should be able to get cashierLock status', async () => {
-		await liveApi.authorize(token);
+
 		const response = await liveApi.getCashierLockStatus();
 		expect(response).to.have.property('cashier_password');
     });

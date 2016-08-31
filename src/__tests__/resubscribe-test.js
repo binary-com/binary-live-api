@@ -11,7 +11,7 @@ function sleep(ms = 0) {
     return new Promise(r => setTimeout(r, ms));
 }
 
-describe.only('resubscribe', () => {
+describe('resubscribe', () => {
 
     it('should reconnect when disconnected', async () => {
         const api = new LiveApi({ websocket: WS });

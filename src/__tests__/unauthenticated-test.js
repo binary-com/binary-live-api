@@ -13,10 +13,6 @@ describe('unauthenticated', () => {
         liveApi = new LiveApi({ websocket: ws });
     });
 
-    after(() => {
-        liveApi.disconnect();
-    });
-
     it('can ping server', () =>
         expect(
             liveApi.ping()
