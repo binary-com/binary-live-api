@@ -31,7 +31,7 @@ declare interface ApiCalls {
     getLandingCompanyDetails(landingCompany: string): Promise<LandingCompanyDetailsResponse>;
     createVirtualAccount(options: Object): Promise<NewAccountVirtualResponse>;
     ping(): Promise<PingResponse>;
-    getPaymentAgentsForCountry(countryCode: string): Promise<PaymentAgentsListResponse>;
+    getPaymentAgentsForCountry(countryCode: string): Promise<PaymentAgentListResponse>;
     getPayoutCurrencies(): Promise<PayoutCurrenciesResponse>;
     getPriceProposalForContract(options: Object): Promise<PriceProposal>;
     subscribeToPriceForContractProposal(options: Object): Promise<PriceProposal>;
@@ -68,7 +68,7 @@ declare interface ApiCalls {
     buyContract(contractId: number, price: number): Promise<BuyContractResponse>;
     sellContract(contractId: number, price: number): Promise<SellContractResponse>;
     sellExpiredContracts(): Promise<SellExpiredContractsResponse>;
-    topUpVirtualAccount(): Promise<TopUpResponse>;
+    topUpVirtualAccount(): Promise<TopUpVirtualResponse>;
 
     getCashierLockStatus(): Promise<CashierResponse>;
     setCashierLock(options: Object): LivePromise;
