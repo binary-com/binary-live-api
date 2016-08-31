@@ -56,13 +56,10 @@ export default class LiveApi {
 
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
-            this[callName] = (...params) => {
-                if (stateful[callName]) {
-                    stateful[callName](...params);
-                }
-                return this.send(calls[callName](...params));
-            };
-        });
+                this[callName] =
+                    (...params) => this.send(calls[callName](...params), callName);
+            }
+        );
 
         Object.keys(customCalls).forEach(callName => {
             this[callName] = (...params) =>
@@ -200,9 +197,18 @@ export default class LiveApi {
         });
     }
 
-    sendRaw = (json: Object): ?LivePromise => {
+    send = (param: Object, callName: string): ?LivePromise => {
+        const reqId = getUniqueId();
+        const json = {
+            req_id: reqId,
+            ...param,
+        };
+
         if (this.isReady()) {
             this.socket.send(JSON.stringify(json));
+            if (stateful[callName]) {
+                stateful[callName](param[Object.keys(param)[0]]);
+            }
         } else {
             this.bufferedSends.push(json);
         }
@@ -212,14 +218,6 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
-
-    send = (json: Object): ?LivePromise => {
-        const reqId = getUniqueId();
-        return this.sendRaw({
-            req_id: reqId,
-            ...json,
-        });
     }
 
     execute = (func: () => void): void => {
