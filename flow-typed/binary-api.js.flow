@@ -9,6 +9,8 @@ type LandingCompany = 'japan' | 'costarica' | 'malta' | 'maltainvest' | 'iom';
 
 type MarketType = 'forex' | 'indices' | 'stocks' | 'commodities' | 'volidx';
 
+type DurationUnit = 'd' | 'm' | 's' | 'h' | 't';
+
 declare class ApiRequest {
     req_id?: number,
 }
@@ -793,4 +795,113 @@ declare class TransactionRequest extends ApiRequest {
 
 declare class TransactionResponse extends ApiResponse {
     transaction: TrasnactionUpdate,
+}
+
+// buy
+
+declare class BuyContractParameters {
+    amount: number,
+    basis: 'payout' | 'stake',
+    contract_type: string,
+    currency: string,
+    date_start: Epoch,
+    date_expiry: Epoch,
+    duration: number,
+    duration_unit: DurationUnit,
+    symbol: string,
+    barrier: string,
+    barrier2: string,
+}
+
+declare class BuySpreadContractParameters extends BuyContractParameters {
+    amount_per_point: number,
+    stop_typee: 'dollar' | 'point',
+    stop_profit: number,
+    stop_loss: number,
+}
+
+declare class ReceiptConfirmation {
+    balance_after: number,
+    longcode: string,
+    shortcode: string,
+    start_time: Epoch,
+    contract_id: number,
+    buy_price: number,
+    purchase_time: Epoch,
+    transaction_id: number,
+}
+
+declare class SpreadReceiptConfirmation extends ReceiptConfirmation {
+    amount_per_point: number,
+    stop_profit_level: number,
+    stop_loss_level: number,
+    payout: number,
+}
+
+declare class BuyContractRequest extends ApiRequest {
+    buy: string,
+    price: number,
+    parameters: BuyContractParameters,
+}
+
+declare class BuyContractResponse extends ApiResponse {
+    buy: ReceiptConfirmation,
+}
+
+// buy_contract_for_multiple_accounts
+
+declare class BuyContractForMultipleAccountsRequest extends ApiRequest {
+    buy_contract_for_multiple_accounts: 1,
+    tokens: string[],
+    price: number,
+    parameters: BuyContractParameters,
+}
+
+declare class BuyContractForMultipleAccountsResponse extends ApiResponse {
+    buy_contract_for_multiple_accounts: {
+        result: ReceiptConfirmation[],
+    },
+}
+
+// sell
+
+declare class SellReceipt {
+    balance_after: number,
+    contract_id: number,
+    sold_for: number,
+    transaction_id: number,
+}
+
+declare class SellContractRequest extends ApiRequest {
+    sell: number,
+    price: number,
+}
+
+declare class SellContractResponse extends ApiResponse {
+    sell: SellReceipt,
+}
+
+// sell_expired
+
+declare class SellExpiredContractsRequest extends ApiRequest {
+    sell_expired: 1,
+}
+
+declare class SellExpiredContractsResponse extends ApiResponse {
+    sell_expired: {
+        count: number,
+    },
+}
+
+// topup_virtual
+
+declare class TopUpVirtualRequest extends ApiRequest {
+    topup_virtual: 1,
+}
+
+declare class TopUpVirtualResponse extends ApiResponse {
+    topup_virtual: {
+        currency: string,
+        amount: number,
+    },
 }

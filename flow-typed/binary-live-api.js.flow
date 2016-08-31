@@ -65,10 +65,10 @@ declare interface ApiCalls {
     subscribeToTransactions(): Promise<TransactionResponse>;
     unsubscribeFromTransactions(): LivePromise;
 
-    buyContract(contractId: number, price: number): LivePromise;
-    sellContract(contractId: number, price: number): LivePromise;
-    sellExpiredContracts(): LivePromise;
-    topUpVirtualAccount(): LivePromise;
+    buyContract(contractId: number, price: number): Promise<BuyContractResponse>;
+    sellContract(contractId: number, price: number): Promise<SellContractResponse>;
+    sellExpiredContracts(): Promise<SellExpiredContractsResponse>;
+    topUpVirtualAccount(): Promise<TopUpResponse>;
 
     getCashierLockStatus(): LivePromise;
     setCashierLock(options: Object): LivePromise;
