@@ -1,5 +1,5 @@
 const getInitialState = () => ({
-    token: '',
+    token: undefined,
     balance: false,
     portfolio: false,
     transactions: false,
