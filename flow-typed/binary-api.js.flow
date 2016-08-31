@@ -1225,12 +1225,84 @@ declare class TncApprovalResponse extends ApiResponse {
     tnc_approval: 1,
 }
 
-// AAA
+// cashier
 
-declare class AAARequest extends ApiRequest {
-    AAA: 1,
+declare class CashierRequest extends ApiRequest {
+    cashier: 'deposit' | 'withdraw',
+    verification_code: string,
 }
 
-declare class AAAResponse extends ApiResponse {
-    AAA: {},
+declare class CashierResponse extends ApiResponse {
+    cashier: string,
+}
+
+// cashier_password
+
+declare class CashierPasswordRequest extends ApiRequest {
+    cashier_password: 1,
+    unlock_password: string,
+    lock_password: string,
+}
+
+declare class CashierPasswordResponse extends ApiResponse {
+    cashier_password: 0 | 1,
+}
+
+// paymentagent_withdraw
+
+declare class PaymentAgentWithdrawRequest extends ApiRequest {
+    paymentagent_withdraw: 1,
+    paymentagent_loginid: string,
+    currency: string,
+    amount: number,
+    verification_code: string,
+    description: string,
+    dry_run?: 1,
+}
+
+declare class PaymentAgentWithdrawResponse extends ApiResponse {
+    paymentagent_withdraw: 1 | 2,
+    paymentagent_name: string,
+    transaction_id: number,
+}
+
+// paymentagent_transfer
+
+declare class PaymentAgentTransferRequest extends ApiRequest {
+    paymentagent_transfer: 1,
+    transfer_to: string,
+    currency: string,
+    amount: number,
+    dry_run?: 1,
+}
+
+declare class PaymentAgentTransferResponse extends ApiResponse {
+    paymentagent_transfer: 1 | 2,
+    client_to_full_name: string,
+    client_to_loginid: string,
+    transaction_id: number,
+}
+
+// transfer_between_accounts
+
+declare class Account {
+    loginid: string,
+    balance: string,
+    currency: string,
+}
+
+declare class TransferBetweenAccountsRequest extends ApiRequest {
+    transfer_between_accounts: 1,
+    account_from: string,
+    account_to: string,
+    currency: string,
+    amount: number,
+}
+
+declare class TransferBetweenAccountsResponse extends ApiResponse {
+    transfer_between_accounts: number,
+    accounts: Account[],
+    client_to_full_name: string,
+    client_to_loginid: string,
+    transaction_id: number,
 }

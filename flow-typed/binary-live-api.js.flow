@@ -70,11 +70,11 @@ declare interface ApiCalls {
     sellExpiredContracts(): Promise<SellExpiredContractsResponse>;
     topUpVirtualAccount(): Promise<TopUpResponse>;
 
-    getCashierLockStatus(): LivePromise;
+    getCashierLockStatus(): Promise<CashierResponse>;
     setCashierLock(options: Object): LivePromise;
-    withdrawToPaymentAgent(options: Object): LivePromise;
-    paymentAgentTransfer(options: Object): LivePromise;
-    transferBetweenAccounts(options: Object): LivePromise;
+    withdrawToPaymentAgent(options: Object): Promise<PaymentAgentWithdrawResponse>;
+    paymentAgentTransfer(options: Object): Promise<PaymentAgentTransferResponse>;
+    transferBetweenAccounts(options: Object): Promise<TransferBetweenAccountsResponse>;
 
     deleteApiToken(token: string): Promise<ApiTokenManagementResponse>;
     getApiTokens(): Promise<ApiTokenManagementResponse>;
