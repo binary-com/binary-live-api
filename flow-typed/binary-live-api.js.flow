@@ -76,20 +76,20 @@ declare interface ApiCalls {
     paymentAgentTransfer(options: Object): LivePromise;
     transferBetweenAccounts(options: Object): LivePromise;
 
-    deleteApiToken(token: string): LivePromise;
-    getApiTokens(): LivePromise;
-    createApiToken(token: string, scopes: string[]): LivePromise;
-    changePassword(oldPassword: string, newPassword: string): LivePromise;
-    registerApplication(options: Object): LivePromise;
-    getAllAppList(): LivePromise;
-    getAppslistById(appid: number): LivePromise;
-    deleteApplication(appid: number): LivePromise;
-    createRealAccountMaltaInvest(options: Object): LivePromise;
-    createRealAccount(options: Object): LivePromise;
-    setAccountCurrency(currency: string): LivePromise;
-    setSelfExclusion(options: Object): LivePromise;
-    setAccountSettings(options: Object): LivePromise;
-    setTnCApproval(): LivePromise;
+    deleteApiToken(token: string): Promise<ApiTokenManagementResponse>;
+    getApiTokens(): Promise<ApiTokenManagementResponse>;
+    createApiToken(token: string, scopes: string[]): Promise<ApiTokenManagementResponse>;
+    changePassword(oldPassword: string, newPassword: string): Promise<ChangePasswordResponse>;
+    registerApplication(options: ApplicationDetails): Promise<ApplicationRegisterResponse>;
+    getAllAppList(): Promise<ApplicationListResponse>;
+    getAppslistById(appid: number): Promise<ApplicationListResponse>;
+    deleteApplication(appid: number): Promise<ApplicationDeleteResponse>;
+    createRealAccountMaltaInvest(options: CreateMaltainvestAccountOptions): Promise<CreateMaltainvestAccountResponse>;
+    createRealAccount(options: CreateRealAccountOptions): Promise<CreateRealAccountResponse>;
+    setAccountCurrency(currency: string): Promise<SetAccountCurrencyResponse>;
+    setSelfExclusion(options: SelfExclusionSettings): Promise<SetSelfExclusionResponse>;
+    setAccountSettings(options: AccountSettings): Promise<SetSettingsResponse>;
+    setTnCApproval(): Promise<TncApprovalResponse>;
 }
 
 declare module 'binary-live-api' {

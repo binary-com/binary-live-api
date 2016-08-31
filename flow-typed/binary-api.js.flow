@@ -11,6 +11,8 @@ type MarketType = 'forex' | 'indices' | 'stocks' | 'commodities' | 'volidx';
 
 type DurationUnit = 'd' | 'm' | 's' | 'h' | 't';
 
+type AccessScope = 'read' | 'trade' | 'payments' | 'admin';
+
 declare class ApiRequest {
     req_id?: number,
 }
@@ -904,4 +906,331 @@ declare class TopUpVirtualResponse extends ApiResponse {
         currency: string,
         amount: number,
     },
+}
+
+// api_token
+
+declare class ApiTokenManagementRequest extends ApiRequest {
+    api_token: 1,
+    new_token: string,
+    new_token_scope: AccessScope[],
+    delete_token: string,
+    sub_account: string,
+}
+
+declare class ApiTokenManagementResponse extends ApiResponse {
+    api_token: {
+        tokens: string[],
+        new_token?: 1,
+        delete_token?: 1,
+        sub_account: string,
+    },
+}
+
+// app_register
+
+declare class ApplicationDetails {
+    name: string,
+    scopes: AccessScope[],
+    homepage?: string,
+    github?: string,
+    appstore?: string,
+    googleplay: string,
+    redirect_uri: string,
+    app_markup_percentage?: number,
+}
+
+declare class ApplicationRegisterRequest extends ApiRequest, ApplicationDetails {
+    app_register: 1,
+}
+
+declare class ApplicationRegisterResponse extends ApiResponse {
+    app_register: ApplicationDetails,
+}
+
+// app_list
+
+declare class ApplicationListRequest extends ApiRequest {
+    app_list: 1,
+}
+
+declare class ApplicationListResponse extends ApiResponse {
+    app_list: ApplicationDetails[],
+}
+
+// app_get
+
+declare class ApplicationDetailsRequest extends ApiRequest {
+    app_get: number,
+}
+
+declare class ApplicationDetailsResponse extends ApiResponse {
+    app_get: ApplicationDetails,
+}
+
+// app_delete
+
+declare class ApplicationDeleteRequest extends ApiRequest {
+    app_delete: number,
+}
+
+declare class ApplicationDeleteResponse extends ApiResponse {
+    app_delete: 1,
+}
+
+// app_update
+
+declare class ApplcationUpdateRequest extends ApiRequest, ApplicationDetails {
+    app_update: 1,
+}
+
+declare class ApplcationUpdateResponse extends ApiResponse {
+    app_update: ApplicationDetails,
+}
+
+// oauth_apps
+
+declare class OAuthApplication {
+    name: string,
+    app_id: number,
+    last_used?: string,
+    scopes: AccessScope[],
+    app_markup_percentage: number,
+}
+
+declare class OAuthApplicationsRequest extends ApiRequest {
+    oauth_apps: 1,
+    revoke_app: number,
+}
+
+declare class OAuthApplicationsResponse extends ApiResponse {
+    oauth_apps: OAuthApplication[],
+}
+
+// change_password
+
+declare class ChangePasswordRequest extends ApiRequest {
+    change_password: 1,
+    old_password: string,
+    new_password: string,
+}
+
+declare class ChangePasswordResponse extends ApiResponse {
+    change_password: 1,
+}
+
+// jp_knowledge_test
+
+declare class JapanKnowledgeTestRequest extends ApiRequest {
+    jp_knowledge_test: 1,
+    score: number,
+    status: 'pass' | 'fail',
+}
+
+declare class JapanKnowledgeTestResponse extends ApiResponse {
+    jp_knowledge_test: {
+        test_taken_epoch: Epoch,
+    },
+}
+
+// get_financial_assessment
+
+declare class FinancialAssessmentDetails {
+    score: number,
+    forex_trading_frequency: string,
+    forex_trading_experience: string,
+    indices_trading_frequency: string,
+    indices_trading_experience: string,
+    commodities_trading_frequency: string,
+    commodities_trading_experience: string,
+    stocks_trading_experience: string,
+    stocks_trading_frequency: string,
+    other_derivatives_trading_frequency: string,
+    other_derivatives_trading_experience: string,
+    other_instruments_trading_frequency: string,
+    other_instruments_trading_experience: string,
+    employment_industry: string,
+    education_level: string,
+    income_source: string,
+    net_income: string,
+    estimated_worth: string,
+}
+
+declare class GetFinancialAssesmentRequest extends ApiRequest {
+    get_financial_assessment: 1,
+}
+
+declare class GetFinancialAssesmentResponse extends ApiResponse {
+    get_financial_assessment: FinancialAssessmentDetails,
+}
+
+// set_financial_assessment
+
+declare class SetFinancialAssessmentRequest extends ApiRequest, FinancialAssessmentDetails {
+    set_financial_assessment: 1,
+}
+
+declare class SetFinancialAssessmentResponse extends ApiResponse {
+    set_financial_assessment: FinancialAssessmentDetails,
+}
+
+// new_account_maltainvest
+
+declare class CreateMaltainvestAccountOptions {
+    salutation: 'Mr' | 'Mrs' | 'Ms' | 'Miss',
+    first_name: string,
+    last_name: string,
+    date_of_birth: string,
+    residence: string,
+    address_line_1: string,
+    address_line_2?: string,
+    address_city: string,
+    address_state?: string,
+    address_postcode?: string,
+    phone: string,
+    secret_question: string,
+    secret_answer: string,
+    affiliate_token?: string,
+    forex_trading_experience: string,
+    forex_trading_frequency: string,
+    indices_trading_experience: string,
+    indices_trading_frequency: string,
+    commodities_trading_experience: string,
+    commodities_trading_frequency: string,
+    stocks_trading_experience: string,
+    stocks_trading_frequency: string,
+    other_derivatives_trading_experience: string,
+    other_derivatives_trading_frequency: string,
+    other_instruments_trading_experience: string,
+    other_instruments_trading_frequency: string,
+    employment_industry: string,
+    education_level: string,
+    income_source: string,
+    net_income: string,
+    estimated_worth: string,
+    accept_risk: number,
+}
+
+declare class CreateMaltainvestAccountRequest extends ApiRequest, CreateMaltainvestAccountOptions {
+    new_account_maltainvest: 1,
+}
+
+declare class CreateMaltainvestAccountResponse extends ApiResponse {
+    new_account_maltainvest: {
+        client_id: string,
+        landing_company: string,
+        landing_company_short: string,
+        oauth_token: string,
+    },
+}
+
+// new_account_real
+
+declare class CreateRealAccountOptions {
+    salutation: 'Mr' | 'Mrs' | 'Ms' | 'Miss',
+    first_name: string,
+    last_name: string,
+    date_of_birth: string,
+    residence: string,
+    address_line_1: string,
+    address_line_2?: string,
+    address_city: string,
+    address_state?: string,
+    address_postcode?: string,
+    phone: string,
+    secret_question: string,
+    secret_answer: string,
+    affiliate_token?: string,
+}
+
+declare class CreateRealAccountRequest extends ApiRequest, CreateRealAccountOptions {
+    new_account_real: 1,
+}
+
+declare class CreateRealAccountResponse extends ApiResponse {
+    new_account_real: {
+        client_id: string,
+        landing_company: string,
+        landing_company_short: string,
+        oauth_token: string,
+    },
+}
+
+// new_sub_account
+
+declare class CreateRealSubAccountRequest extends ApiRequest {
+    new_account_real: 1,
+    salutation: 'Mr' | 'Mrs' | 'Ms' | 'Miss',
+    first_name: string,
+    last_name: string,
+    date_of_birth: string,
+    residence: string,
+    address_line_1: string,
+    address_line_2?: string,
+    address_city: string,
+    address_state?: string,
+    address_postcode?: string,
+    phone: string,
+    secret_question: string,
+    secret_answer: string,
+    affiliate_token?: string,
+}
+
+declare class CreateRealSubAccountResponse extends ApiResponse {
+    new_account_real: {
+        client_id: string,
+        landing_company: string,
+        landing_company_short: string,
+    },
+}
+
+// set_account_currency
+
+declare class SetAccountCurrencyRequest extends ApiRequest {
+    set_account_currency: string,
+}
+
+declare class SetAccountCurrencyResponse extends ApiResponse {
+    set_account_currency: 0 | 1,
+}
+
+// set_self_exclusion
+
+declare class SetSelfExclusionRequest extends ApiRequest, SelfExclusionSettings {
+    set_self_exclusion: 1,
+}
+
+declare class SetSelfExclusionResponse extends ApiResponse {
+    set_self_exclusion: 1,
+}
+
+// set_settings
+
+declare class SetSettingsRequest extends ApiRequest, AccountSettings {
+    set_settings: 1,
+}
+
+declare class SetSettingsResponse extends ApiResponse {
+    set_settings: 1,
+}
+
+// tnc_approval
+
+declare class TncApprovalRequest extends ApiRequest {
+    tnc_approval: 1,
+    ukgc_funds_protection: 1,
+}
+
+declare class TncApprovalResponse extends ApiResponse {
+    tnc_approval: 1,
+}
+
+// AAA
+
+declare class AAARequest extends ApiRequest {
+    AAA: 1,
+}
+
+declare class AAAResponse extends ApiResponse {
+    AAA: {},
 }
