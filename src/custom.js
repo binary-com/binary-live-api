@@ -134,6 +134,13 @@ export function getDataForContract(
                 const contractStart = +(contract.date_start);
                 const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
 
+                // throw exception so that user can handle
+                if (contractEnd <= contractStart) {
+                    const e = new RangeError('Contract ends time is earlier than start time');
+                    e.name = 'ContractEndsBeforeStart';
+                    throw e;
+                }
+
                 // handle Contract not started yet
                 if (contractStart > nowAsEpoch()) {
                     return autoAdjustGetData(api, symbol, nowAsEpoch() - 600, nowAsEpoch(), style, subscribe);
