@@ -17,13 +17,13 @@ describe('payment', async () => {
 		expect(response).to.have.property('cashier_password');
     });
 
-    it('should be able to Lock Cashier', () => {
+    it.skip('should be able to Lock Cashier', () => {
 		expect(() =>
             liveApi.setCashierLock({ lock_password: '12345768' }))
         .to.not.throw();
     });
 
-    it('should be able to Unlock Cashier', () => {
+    it.skip('should be able to Unlock Cashier', () => {
 		expect(() =>
             liveApi.setCashierLock({ unlock_password: '12345768' }))
         .to.not.throw();
@@ -41,7 +41,7 @@ describe('payment', async () => {
         expect(response.message).to.contain('Input validation failed: verification_code');
     });
 
-	it('should be able to call withdrawToPaymentAgent function without an issue', () => {
+	it.skip('should be able to call withdrawToPaymentAgent function without an issue', () => {
         expect(() =>
             liveApi.withdrawToPaymentAgent({
                 paymentagent_loginid: 'CR100001',
@@ -62,7 +62,7 @@ describe('payment', async () => {
         expect(response.message).to.eventually.contains('Payment Agents are not available on this site.'); // ???
     });
 
-    it('should allow payment agent perform transfer', () => {
+    it.skip('should allow payment agent perform transfer', () => {
         expect(() =>
             liveApi.paymentAgentTransfer({
             transfer_to: 'CR100001',
@@ -71,7 +71,7 @@ describe('payment', async () => {
         })).to.not.throw();
     });
 
-    it('can perform transfer between MLF and MLT accounts', () =>
+    it.skip('can perform transfer between MLF and MLT accounts', () =>
         expect(() =>
             liveApi.transferBetweenAccounts({
                 account_from: 'MF3642',
