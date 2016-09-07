@@ -88,7 +88,7 @@ describe('custom', () => {
 
         it('should get candles for specified market if requested candles', async () => {
             await liveApi.authorize(token);
-            const { candles } = await liveApi.getDataForSymbol('R_100', 60 * 60 * 1000, 'candles');
+            const { candles } = await liveApi.getDataForSymbol('R_100', 60 * 60, 'candles');
             expect(candles).to.have.length.above(59);
         });
     });

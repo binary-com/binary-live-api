@@ -78,7 +78,7 @@ const autoAdjustGetData = (
 export function getDataForSymbol(
         api: LiveApi,
         symbol: string,
-        duration: Epoch = 60000,
+        duration: Epoch = 600,
         style: string = 'ticks',
         subscribe: boolean,
 ) {
