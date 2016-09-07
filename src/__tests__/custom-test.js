@@ -38,8 +38,7 @@ describe('custom', () => {
             const { candles } = await liveApi
                 .getDataForContract(
                     () => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract),
-                    1,
-                    'all',
+                    undefined,
                     'candles',
                 );
             expect(candles).to.have.lengthOf(6);
@@ -57,8 +56,7 @@ describe('custom', () => {
                         delete cloned.date_expiry;
                         return cloned;
                     }),
-                    1,
-                    'all',
+                    undefined,
                     'candles',
                 );
             expect(candles).to.have.length.below(700);
@@ -84,13 +82,13 @@ describe('custom', () => {
 
         it('should get data for specified market using given duration params', async () => {
             await liveApi.authorize(token);
-            const { ticks } = await liveApi.getDataForSymbol('R_100', 1, 'minute');
+            const { ticks } = await liveApi.getDataForSymbol('R_100');
             expect(ticks).to.have.length.above(29);
         });
 
         it('should get candles for specified market if requested candles', async () => {
             await liveApi.authorize(token);
-            const { candles } = await liveApi.getDataForSymbol('R_100', 1, 'hour', 'candles');
+            const { candles } = await liveApi.getDataForSymbol('R_100', 60 * 60 * 1000, 'candles');
             expect(candles).to.have.length.above(59);
         });
     });
