@@ -1,4 +1,4 @@
-import { nowAsEpoch, durationToSecs } from 'binary-utils';
+import { nowAsEpoch } from 'binary-utils';
 
 const responseSizeLimit = 700;
 
@@ -6,16 +6,6 @@ const granularities: number[] = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 
 
 const ohlcDataToTicks = (candles: Candle[]): Tick[] =>
     candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
-
-const hcUnitConverter = (type: string): string => {
-    switch (type) {
-        case 'second': return 's';
-        case 'minute': return 'm';
-        case 'hour': return 'h';
-        case 'day': return 'd';
-        default: return 'd';
-    }
-};
 
 const autoAdjustGetData = (
     api: LiveApi,
@@ -88,14 +78,12 @@ const autoAdjustGetData = (
 export function getDataForSymbol(
         api: LiveApi,
         symbol: string,
-        durationCount: number = 1,
-        durationType: string = 'all',
+        duration: Epoch = 600,
         style: string = 'ticks',
         subscribe: boolean,
 ) {
-    const durationUnit = hcUnitConverter(durationType);
     const end = nowAsEpoch();
-    const start = end - durationToSecs(durationCount, durationUnit);
+    const start = end - duration;
     return autoAdjustGetData(api, symbol, start, end, style, subscribe);
 }
 
@@ -114,8 +102,7 @@ export function getDataForSymbol(
 export function getDataForContract(
     api: LiveApi,
     getContract,
-    durationCount: number,
-    durationType: string = 'all',
+    duration?: Epoch,
     style: string = 'ticks',
     subscribe: boolean,
 ) {
@@ -162,7 +149,7 @@ export function getDataForContract(
                 );
             });
 
-    if (durationType === 'all') {
+    if (!duration) {
         return getAllData();
     }
 
@@ -189,8 +176,7 @@ export function getDataForContract(
 
             const buffer = (end - startTime) * 0.05;
 
-            const durationUnit = hcUnitConverter(durationType);
-            const start = Math.min(startTime - buffer, end - durationToSecs(durationCount, durationUnit));
+            const start = Math.min(startTime - buffer, end - duration);
             return autoAdjustGetData(
                 api,
                 symbol,
