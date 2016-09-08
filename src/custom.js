@@ -7,7 +7,7 @@ const granularities: number[] = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 
 const ohlcDataToTicks = (candles: Candle[]): Tick[] =>
     candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
 
-const autoAdjustGetData = (
+export const autoAdjustGetData = (
     api: LiveApi,
     symbol: string,
     start: Epoch,
