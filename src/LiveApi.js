@@ -30,11 +30,12 @@ export default class LiveApi {
     state: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, websocket, connection, keepAlive } = initParams || {};
+        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
+        this.sendSpy = sendSpy;
 
         if (keepAlive) {
             setInterval(() => this.ping(), 60 * 1000);
@@ -214,6 +215,7 @@ export default class LiveApi {
         };
 
         const socketSend = () => {
+            this.sendSpy(JSON.stringify(json));
             this.socket.send(JSON.stringify(json));
             if (this.state[callName]) {
                 this.state[callName](...param);
@@ -252,7 +254,10 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
-        const socketSend = () => this.socket.send(JSON.stringify(json));
+        const socketSend = () => {
+          this.sendSpy(JSON.stringify(json));
+          this.socket.send(JSON.stringify(json));
+        };
         if (this.isReady()) {
             socketSend();
         } else {
