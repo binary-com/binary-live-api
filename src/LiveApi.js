@@ -96,7 +96,7 @@ export default class LiveApi {
         this.socket.close();
     }
 
-    resubscribe = (): void => {
+    resubscribe = async (): void => {
         const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.state.getState();
 
         this.onAuth = () => {
@@ -112,6 +112,8 @@ export default class LiveApi {
                 this.subscribeToAllOpenContracts();
             }
 
+            contracts.forEach(id => this.subscribeToOpenContract(id));
+
             this.onAuth = () => {};
         };
 
@@ -124,8 +126,6 @@ export default class LiveApi {
         }
 
         ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
-
-        contracts.forEach(id => this.subscribeToOpenContract(id));
 
         proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
     }
