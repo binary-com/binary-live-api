@@ -96,7 +96,7 @@ export default class LiveApi {
     }
 
     resubscribe = (): void => {
-        const { token, balance, portfolio, transactions, ticks, ticksHistory, proposals } = this.state.getState();
+        const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.state.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -107,7 +107,7 @@ export default class LiveApi {
                 this.subscribeToTransactions();
             }
 
-            if (portfolio) {
+            if (allContract) {
                 this.subscribeToAllOpenContracts();
             }
 
@@ -122,13 +122,11 @@ export default class LiveApi {
             this.subscribeToTicks([...ticks]);
         }
 
-        if (ticksHistory.size > 0) {
-            ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
-        }
+        ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
 
-        proposals.forEach(proposal =>
-            this.subscribeToPriceForContractProposal(proposal)
-        );
+        contracts.forEach(id => this.subscribeToOpenContract(id));
+
+        proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
     }
 
     changeLanguage = (ln: string): void => {

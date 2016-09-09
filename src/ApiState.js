@@ -32,20 +32,18 @@ export default class ApiState {
         this.state.balance = false;
     };
 
+    // TODO: decide whether to support unsubscribe by contract id
     subscribeToOpenContract = contractId => {
         this.state.contracts.add(contractId);
     };
 
     unsubscribeFromAllProposalsOpenContract = () => {
         this.state.contracts.clear();
+        this.state.allContract = false;
     }
 
     subscribeToAllOpenContracts = () => {
         this.state.allContract = true;
-    };
-
-    unsubscribeFromAllOpenContracts = () => {
-        this.state.allContract = false;
     };
 
     subscribeToTransactions = () => {

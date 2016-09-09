@@ -3,6 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import WS from 'ws';
 chai.use(chaiAsPromised);
 
+import token from './test-token';
 import LiveApi from '../LiveApi';
 
 
@@ -73,5 +74,22 @@ describe('stateful', async () => {
         expect(stateAfter.ticks.has('R_25')).to.be.true;
         expect(stateAfter.ticks.has('R_50')).to.be.false;
         expect(stateAfter.ticks.has('R_100')).to.be.false;
+    });
+
+    it('subscribe to single contract is remembered', () => {
+        liveApi.authorize(token);
+        liveApi.subscribeToOpenContract('xxxx');
+        const stateAfter = liveApi.state.getState();
+
+        expect(stateAfter.contracts.size).to.equal(1);
+    });
+
+    it('unsubscribe a contract is remembered', () => {
+        liveApi.authorize(token);
+        liveApi.subscribeToOpenContract('xxxx');
+        liveApi.unsubscribeToOpenContract('xxxx');
+        const stateAfter = liveApi.state.getState();
+
+        expect(stateAfter.contracts.size).to.equal(0);
     });
 });
