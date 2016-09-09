@@ -27,7 +27,7 @@ export default class LiveApi {
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
-    state: ApiState;
+    apiState: ApiState;
 
     constructor(initParams: InitParams) {
         const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive } = initParams || {};
@@ -50,7 +50,7 @@ export default class LiveApi {
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
-        this.state = new ApiState();
+        this.apiState = new ApiState();
 
         this.bindCallsAndStateMutators();
 
@@ -96,8 +96,8 @@ export default class LiveApi {
         this.socket.close();
     }
 
-    resubscribe = (): void => {
-        const { token, balance, portfolio, transactions, ticks, ticksHistory, proposals } = this.state.getState();
+    resubscribe = async (): void => {
+        const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -108,9 +108,11 @@ export default class LiveApi {
                 this.subscribeToTransactions();
             }
 
-            if (portfolio) {
+            if (allContract) {
                 this.subscribeToAllOpenContracts();
             }
+
+            contracts.forEach(id => this.subscribeToOpenContract(id));
 
             this.onAuth = () => {};
         };
@@ -123,13 +125,9 @@ export default class LiveApi {
             this.subscribeToTicks([...ticks]);
         }
 
-        if (ticksHistory.size > 0) {
-            ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
-        }
+        ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
 
-        proposals.forEach(proposal =>
-            this.subscribeToPriceForContractProposal(proposal)
-        );
+        proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
     }
 
     changeLanguage = (ln: string): void => {
@@ -217,8 +215,8 @@ export default class LiveApi {
         const socketSend = () => {
             this.sendSpy(JSON.stringify(json));
             this.socket.send(JSON.stringify(json));
-            if (this.state[callName]) {
-                this.state[callName](...param);
+            if (this.apiState[callName]) {
+                this.apiState[callName](...param);
             }
         };
 
@@ -229,7 +227,17 @@ export default class LiveApi {
         }
 
         if (typeof json.req_id !== 'undefined') {
-            return this.generatePromiseForRequest(json);
+            return this.generatePromiseForRequest(json).then(r => {
+                if (!this.apiState[callName]) return r;
+
+                // TODO: hackish and need redo, this depends on object identity to works!!!
+                if (r.proposal_open_contract && r.proposal_open_contract.id) {
+                    this.apiState[callName](...param, r.proposal_open_contract.id);
+                } else if (r.proposal) {
+                    this.apiState[callName](...param, r.proposal.id);
+                }
+                return r;
+            });
         }
 
         return undefined;
@@ -245,6 +253,8 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
+        console.warn('This method is deprecated, you should use high-level methods, ' +
+            'please contact us if you need help in migration');
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -254,6 +264,8 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
+        console.warn('This method is deprecated, you should use high-level methods, ' +
+            'please contact us if you need help in migration');
         const socketSend = () => {
           this.sendSpy(JSON.stringify(json));
           this.socket.send(JSON.stringify(json));

@@ -39,7 +39,7 @@ describe('resubscribe', () => {
         api.socket.close();
 
         await sleep(5000);
-        expect(api.state.getState().ticks.has('R_100')).to.equal(true);
+        expect(api.apiState.getState().ticks.has('R_100')).to.equal(true);
         expect(spy).to.have.been.called();
     });
 
