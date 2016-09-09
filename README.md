@@ -162,7 +162,7 @@ unsubscribeFromAllPortfolios()
 [Documentation for 'Forget' API Call](https://developers.binary.com/api/#forget)
 
 ```
-unsubscribeFromAlProposals()
+unsubscribeFromAllProposalsOpenContract()
 ```
 
 [Documentation for 'Forget' API Call](https://developers.binary.com/api/#forget)

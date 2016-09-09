@@ -1,7 +1,8 @@
 const getInitialState = () => ({
     token: undefined,
     balance: false,
-    portfolio: false,
+    contracts: new Set(),
+    allContract: false,
     transactions: false,
     ticks: new Set(),
     ticksHistory: new Map(),
@@ -31,16 +32,20 @@ export default class ApiState {
         this.state.balance = false;
     };
 
-// subscribeToOpenContract = contractId => {
-//     state.portfolio.add(contractId);
-// };
+    subscribeToOpenContract = contractId => {
+        this.state.contracts.add(contractId);
+    };
+
+    unsubscribeFromAllProposalsOpenContract = () => {
+        this.state.contracts.clear();
+    }
 
     subscribeToAllOpenContracts = () => {
-        this.state.portfolio = true;
+        this.state.allContract = true;
     };
 
     unsubscribeFromAllOpenContracts = () => {
-        this.state.portfolio = false;
+        this.state.allContract = false;
     };
 
     subscribeToTransactions = () => {
@@ -85,4 +90,9 @@ export default class ApiState {
     unsubscribeFromAllProposals = () => {
         this.state.proposals.clear();
     };
+
+    unsubscribeByID = (id) => {
+        this.state.contracts.delete(id);
+        this.state.proposals.delete(id);
+    }
 }

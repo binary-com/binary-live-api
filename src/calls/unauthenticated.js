@@ -42,7 +42,7 @@ export const unsubscribeFromAllPortfolios = () => ({
     forget_all: 'portfolio',
 });
 
-export const unsubscribeFromAlProposals = () => ({
+export const unsubscribeFromAllProposalsOpenContract = () => ({
     forget_all: 'proposal_open_contract',
 });
 

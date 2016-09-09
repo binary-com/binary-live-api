@@ -15,7 +15,7 @@ describe('stateful', async () => {
 
         expect(state.token).to.be.empty;
         expect(state.balance).to.be.empty;
-        expect(state.portfolio).to.be.empty;
+        expect(state.allContract).to.be.empty;
         expect(state.transactions).to.be.empty;
         expect(state.ticks.size).to.be.empty;
         expect(state.proposals.size).to.be.empty;
@@ -36,7 +36,7 @@ describe('stateful', async () => {
     it('subscribing to balance updates is remembered', () => {
         liveApi.subscribeToAllOpenContracts();
         const stateAfter = liveApi.state.getState();
-        expect(stateAfter.portfolio).to.be.true;
+        expect(stateAfter.allContract).to.be.true;
     });
 
     it('subscribing to transactions updates is remembered', () => {
