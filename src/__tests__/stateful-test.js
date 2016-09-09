@@ -7,9 +7,9 @@ import token from './test-token';
 import LiveApi from '../LiveApi';
 
 
-describe('stateful', async () => {
+describe('stateful', () => {
     let liveApi = new LiveApi({ websocket: WS });
-    await liveApi.ping();
+    liveApi.ping();
 
     it('initial state is empty', () => {
         const state = liveApi.apiState.getState();
@@ -84,12 +84,24 @@ describe('stateful', async () => {
         expect(stateAfter.contracts.size).to.equal(1);
     });
 
-    it('unsubscribe a contract is remembered', () => {
-        liveApi.authorize(token);
-        liveApi.subscribeToOpenContract('xxxx');
-        liveApi.unsubscribeToOpenContract('xxxx');
-        const stateAfter = liveApi.apiState.getState();
+    it('unsubscribeById should remove corresponding id', async () => {
+        await liveApi.subscribeToPriceForContractProposal({
+            amount: 100,
+            basis: 'payout',
+            contract_type: 'CALL',
+            currency: 'USD',
+            duration: 60,
+            duration_unit: 's',
+            symbol: 'R_100',
+        }).then(r => {
+            const id = r.proposal.id;
 
-        expect(stateAfter.contracts.size).to.equal(0);
+            const stateBefore = liveApi.apiState.getState();
+            expect(stateBefore.proposals.size).to.equal(1);
+            liveApi.unsubscribeByID(id);
+
+            const stateAfter = liveApi.apiState.getState();
+            expect(stateAfter.proposals.size).to.equal(0);
+        });
     });
 });

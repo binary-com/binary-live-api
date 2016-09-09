@@ -228,7 +228,14 @@ export default class LiveApi {
 
         if (typeof json.req_id !== 'undefined') {
             return this.generatePromiseForRequest(json).then(r => {
-                // side effect to register into state
+                if (!this.apiState[callName]) return r;
+
+                // TODO: hackish and need redo, this depends on object identity to works!!!
+                if (r.proposal_open_contract && r.proposal_open_contract.id) {
+                    this.apiState[callName](...param, r.proposal_open_contract.id);
+                } else if (r.proposal) {
+                    this.apiState[callName](...param, r.proposal.id);
+                }
                 return r;
             });
         }
