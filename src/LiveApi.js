@@ -27,7 +27,7 @@ export default class LiveApi {
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
-    state: ApiState;
+    apiState: ApiState;
 
     constructor(initParams: InitParams) {
         const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive } = initParams || {};
@@ -50,7 +50,7 @@ export default class LiveApi {
         this.unresolvedPromises = {};
 
         this.events = new LiveEvents();
-        this.state = new ApiState();
+        this.apiState = new ApiState();
 
         this.bindCallsAndStateMutators();
 
@@ -97,7 +97,7 @@ export default class LiveApi {
     }
 
     resubscribe = async (): void => {
-        const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.state.getState();
+        const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -215,8 +215,8 @@ export default class LiveApi {
         const socketSend = () => {
             this.sendSpy(JSON.stringify(json));
             this.socket.send(JSON.stringify(json));
-            if (this.state[callName]) {
-                this.state[callName](...param);
+            if (this.apiState[callName]) {
+                this.apiState[callName](...param);
             }
         };
 
@@ -227,7 +227,10 @@ export default class LiveApi {
         }
 
         if (typeof json.req_id !== 'undefined') {
-            return this.generatePromiseForRequest(json);
+            return this.generatePromiseForRequest(json).then(r => {
+                // side effect to register into state
+                return r;
+            });
         }
 
         return undefined;
@@ -243,6 +246,8 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
+        console.warn('This method is deprecated, you should use high-level methods, ' +
+            'please contact us if you need help in migration');
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -252,6 +257,8 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
+        console.warn('This method is deprecated, you should use high-level methods, ' +
+            'please contact us if you need help in migration');
         const socketSend = () => {
           this.sendSpy(JSON.stringify(json));
           this.socket.send(JSON.stringify(json));
