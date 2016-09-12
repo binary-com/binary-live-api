@@ -87,6 +87,43 @@ export function getDataForSymbol(
     return autoAdjustGetData(api, symbol, start, end, style, subscribe);
 }
 
+// TODO: not sure where to place this?
+const computeStartEndForContract = contract => {
+    const nowEpoch = nowAsEpoch();
+    if (contract.tick_count) {
+        const start = +(contract.date_start) - 5;
+        const exitTime = +(contract.exit_tick_time) + 5;
+        const end = exitTime || nowEpoch;
+        return { start, end };
+    }
+
+    const bufferSize = 0.05;                            // 5 % buffer
+    const contractStart = +(contract.date_start);
+    const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
+
+    if (contractEnd <= contractStart) {
+        const e = new RangeError('Contract ends time is earlier than start time');
+        e.name = 'ContractEndsBeforeStart';
+        throw e;
+    }
+
+    if (contractStart > nowEpoch) {
+        const start = nowEpoch - 600;
+        return { start, end: nowEpoch };
+    }
+
+    const buffer = (contractEnd - contractStart) * bufferSize;
+    const bufferedExitTime = contractEnd + buffer;
+
+    const start = buffer ? contractStart - buffer : contractStart;
+    const end = contractEnd ? bufferedExitTime : nowEpoch;
+
+    return {
+        end: Math.round(end),
+        start: Math.round(start),
+    };
+};
+
 /**
  * get data of contract
  * @param api                      - will be injected by library
@@ -110,43 +147,8 @@ export function getDataForContract(
         getContract()
             .then(contract => {
                 const symbol = contract.underlying;
-                if (contract.tick_count) {
-                    const start = +(contract.date_start) - 5;
-                    const exitTime = +(contract.exit_tick_time) + 5;
-                    const end = exitTime || nowAsEpoch();
-                    return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
-                }
-
-                const bufferSize = 0.05;                            // 5 % buffer
-                const contractStart = +(contract.date_start);
-                const contractEnd = +(contract.exit_tick_time) || +(contract.date_expiry);
-
-                // throw exception so that user can handle
-                if (contractEnd <= contractStart) {
-                    const e = new RangeError('Contract ends time is earlier than start time');
-                    e.name = 'ContractEndsBeforeStart';
-                    throw e;
-                }
-
-                // handle Contract not started yet
-                if (contractStart > nowAsEpoch()) {
-                    return autoAdjustGetData(api, symbol, nowAsEpoch() - 600, nowAsEpoch(), style, subscribe);
-                }
-
-                const buffer = (contractEnd - contractStart) * bufferSize;
-                const start = buffer ? contractStart - buffer : contractStart;
-                const bufferedExitTime = contractEnd + buffer;
-                const end = contractEnd ? bufferedExitTime : nowAsEpoch();
-
-                return autoAdjustGetData(
-                    api,
-                    symbol,
-                    Math.round(start),
-                    Math.round(end),
-                    style,
-                    subscribe,
-                    { isSold: !!contract.sell_time },
-                );
+                const { start, end } = computeStartEndForContract(contract);
+                return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
             });
 
     if (!duration) {
@@ -188,3 +190,8 @@ export function getDataForContract(
             );
         });
 }
+
+export const helpers = {
+    computeStartEndForContract,
+    autoAdjustGetData,
+};
