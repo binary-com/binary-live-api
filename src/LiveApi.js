@@ -96,7 +96,7 @@ export default class LiveApi {
         this.socket.close();
     }
 
-    resubscribe = async (): void => {
+    resubscribe = (): void => {
         const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
         this.onAuth = () => {
