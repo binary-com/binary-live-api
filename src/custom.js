@@ -191,7 +191,7 @@ export function getDataForContract(
         });
 }
 
-export const helpers = {
+export const helpers: Object = {
     computeStartEndForContract,
     autoAdjustGetData,
 };
