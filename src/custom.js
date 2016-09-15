@@ -14,7 +14,7 @@ export const autoAdjustGetData = (
     end: Epoch,
     style: string = 'ticks',
     subscribe: boolean,
-    extra = {},
+    extra: Object = {},
 ) => {
     const secs = end - start;
     const ticksCount = secs / 2;
@@ -138,7 +138,7 @@ const computeStartEndForContract = contract => {
  */
 export function getDataForContract(
     api: LiveApi,
-    getContract,
+    getContract: LivePromise,
     duration?: Epoch,
     style: string = 'ticks',
     subscribe: boolean,
@@ -191,7 +191,7 @@ export function getDataForContract(
         });
 }
 
-export const helpers = {
+export const helpers:Object = {
     computeStartEndForContract,
     autoAdjustGetData,
 };
