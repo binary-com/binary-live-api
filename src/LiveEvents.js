@@ -34,4 +34,8 @@ export default class LiveEvents {
             this.messageHandlers[msgType].push(callback);
         }
     }
+
+    ignoreAll(msgType: string) {
+        delete this.messageHandlers[msgType];
+    }
 }

@@ -6,6 +6,7 @@ const getInitialState = () => ({
     transactions: false,
     ticks: new Set(),
     ticksHistory: new Map(),
+    candlesHistory: new Map(),
     proposals: new Set(),
     streamIdMapping: new Map(),
 });
@@ -70,25 +71,24 @@ export default class ApiState {
         symbols.forEach(this.subscribeToTick);
     };
 
-    unsubscribeFromTick = (symbol: string) => {
-        this.state.ticks.delete(symbol);
-        this.state.ticksHistory.delete(symbol);
-    };
+    unsubscribeFromAllTicks = () => {
+        this.state.ticks.clear();
+        this.state.ticksHistory.clear();
+    }
 
-    unsubscribeFromTicks = (symbols: string[]) => {
-        symbols.forEach(this.unsubscribeFromTick);
-    };
+    unsubscribeFromAllCandles = () => {
+        this.state.candlesHistory.clear();
+    }
 
     getTickHistory = (symbol: string, params: Object) => {
         if (params && params.subscribe === 1) {
-            this.state.ticksHistory.set(symbol, params);
+            if (params.style === 'candles') {
+                this.state.candlesHistory.set(symbol, params);
+            } else {
+                this.state.ticksHistory.set(symbol, params);
+            }
         }
     };
-
-    unsubscribeFromAllTicks = () => {
-        this.state.ticks.clear();
-    };
-
 
     subscribeToPriceForContractProposal = (options: Object, streamId: string) => {
         if (streamId) {
