@@ -34,6 +34,10 @@ export const unsubscribeFromAllTicks = () => ({
     forget_all: 'ticks',
 });
 
+export const unsubscribeFromAllCandles = () => ({
+    forget_all: 'candles',
+});
+
 export const unsubscribeFromAllProposals = () => ({
     forget_all: 'proposal',
 });
