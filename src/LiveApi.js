@@ -234,7 +234,7 @@ export default class LiveApi {
                 if (r.proposal_open_contract && r.proposal_open_contract.id) {
                     this.apiState[callName](...param, r.proposal_open_contract.id);
                 } else if (r.proposal) {
-                    this.apiState[callName](...param, r.proposal.id);
+                    this.apiState[callName](...param: Object, r.proposal.id);
                 }
                 return r;
             });
