@@ -97,7 +97,8 @@ export default class LiveApi {
     }
 
     resubscribe = (): void => {
-        const { token, contracts, balance, allContract, transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
+        const { token, contracts, balance, allContract, candlesHistory,
+            transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -126,6 +127,8 @@ export default class LiveApi {
         }
 
         ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
+
+        candlesHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
 
         proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
     }
@@ -233,7 +236,7 @@ export default class LiveApi {
                 // TODO: hackish and need redo, this depends on object identity to works!!!
                 if (r.proposal_open_contract && r.proposal_open_contract.id) {
                     this.apiState[callName](...param, r.proposal_open_contract.id);
-                } else if (r.proposal) {
+                } else if (r.proposal && r.proposal.id) {
                     this.apiState[callName](...param, r.proposal.id);
                 }
                 return r;
