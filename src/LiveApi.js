@@ -73,6 +73,13 @@ export default class LiveApi {
     connect(connection: ?WebSocket): void {
         const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}`;
 
+        Object.keys(this.unresolvedPromises).forEach(reqId => {
+            const disconnectedError = new Error('Websocket disconnected before response received.');
+            disconnectedError.name = 'DisconnectError';
+            this.unresolvedPromises[reqId].reject(disconnectedError);
+            delete this.unresolvedPromises[reqId];
+        });
+
         try {
             this.socket = connection || new WebSocket(urlPlusParams);
         } catch (err) {
