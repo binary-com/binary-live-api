@@ -45,4 +45,13 @@ describe('resubscribe', () => {
 
     // check if empty state, and no resubsription when new
     // check for specific resubsriptions
+
+    it('should reject promise with DisconnectError when socket disconnected before response received', () => {
+        const api = new LiveApi({ websocket: WS });
+
+        const promise = api.ping();
+        api.socket.close();
+
+        return promise.catch(err => expect(err.name).to.be.equal('DisconnectError'));
+    });
 });
