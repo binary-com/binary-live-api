@@ -39,8 +39,6 @@ export default class ApiState {
     subscribeToOpenContract = (contractId: string, streamId: string) => {
         if (streamId) {
             this.state.streamIdMapping.set(streamId, contractId);
-        } else {
-            this.state.contracts.add(contractId);
         }
     };
 
@@ -94,7 +92,6 @@ export default class ApiState {
         if (streamId) {
             this.state.streamIdMapping.set(streamId, options);
         }
-        this.state.proposals.add(options);
     };
 
     unsubscribeFromAllProposals = () => {
