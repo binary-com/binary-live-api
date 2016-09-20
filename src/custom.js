@@ -107,11 +107,6 @@ const computeStartEndForContract = contract => {
         throw e;
     }
 
-    if (contractStart > nowEpoch) {
-        const start = nowEpoch - 600;
-        return { start, end: nowEpoch };
-    }
-
     const buffer = (contractEnd - contractStart) * bufferSize;
     const bufferedExitTime = contractEnd + buffer;
 
