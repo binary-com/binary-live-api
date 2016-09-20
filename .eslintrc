@@ -10,6 +10,7 @@
     "indent": [0, 4],
     "camelcase": 0,
     "no-undef": 0,
+    "arrow-parens": 0,
     "no-mixed-operators": 0,
     "object-property-newline": 0,
     "max-len": [1, 150, 4],
