@@ -92,7 +92,7 @@ export default class LiveApi {
     }
 
     onOpen = (): void => {
-        this.recoverConnection();
+        this.resubscribe();
         this.executeBufferedExecutes();
     }
 
@@ -102,7 +102,7 @@ export default class LiveApi {
         this.socket.close();
     }
 
-    recoverConnection = (): void => {
+    resubscribe = (): void => {
         const { token, contracts, balance, allContract, candlesHistory,
             transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
@@ -120,10 +120,6 @@ export default class LiveApi {
             }
 
             contracts.forEach(id => this.subscribeToOpenContract(id));
-
-            if (!token) {
-                this.sendBufferedSends();
-            }
 
             this.onAuth = () => {};
         };
@@ -198,6 +194,10 @@ export default class LiveApi {
 
     onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
+
+        if (json.msg_type === 'authorize' && this.onAuth) {
+            this.sendBufferedSends();
+        }
 
         if (!json.error) {
             if (json.msg_type === 'authorize' && this.onAuth) {
