@@ -10,9 +10,10 @@ export default class ServerError extends Error {
 
         this.stack = (new Error()).stack;
         this.error = errorObj;
-        this.name = this.constructor.name;
+        this.name = errorObj.error.code;
 
         const { error: { message }, echo_req } = errorObj;
+
         const echoStr = JSON.stringify(echo_req, null, 2);
         this.message = `[ServerError] ${message}\n${echoStr}`;
     }
