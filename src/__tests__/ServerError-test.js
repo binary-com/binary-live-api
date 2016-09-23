@@ -30,5 +30,6 @@ describe('ServerError', () => {
         expect(str).to.contain('ServerError');
         expect(str).to.contain('some_value');
         expect(str).to.contain('Unrecognised request.');
+        expect(error.name).to.equal('UnrecognisedRequest');
     });
 });
