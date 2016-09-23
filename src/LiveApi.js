@@ -92,8 +92,7 @@ export default class LiveApi {
     }
 
     onOpen = (): void => {
-        this.resubscribe();
-        this.sendBufferedSends();
+        this.recoverConnection();
         this.executeBufferedExecutes();
     }
 
@@ -103,7 +102,7 @@ export default class LiveApi {
         this.socket.close();
     }
 
-    resubscribe = (): void => {
+    recoverConnection = (): void => {
         const { token, contracts, balance, allContract, candlesHistory,
             transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
 
@@ -122,11 +121,17 @@ export default class LiveApi {
 
             contracts.forEach(id => this.subscribeToOpenContract(id));
 
+            if (!token) {
+                this.sendBufferedSends();
+            }
+
             this.onAuth = () => {};
         };
 
         if (token) {
             this.authorize(token);
+        } else {
+            this.sendBufferedSends();
         }
 
         if (ticks.size !== 0) {
