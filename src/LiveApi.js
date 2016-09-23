@@ -93,7 +93,6 @@ export default class LiveApi {
 
     onOpen = (): void => {
         this.resubscribe();
-        this.sendBufferedSends();
         this.executeBufferedExecutes();
     }
 
@@ -127,6 +126,8 @@ export default class LiveApi {
 
         if (token) {
             this.authorize(token);
+        } else {
+            this.sendBufferedSends();
         }
 
         if (ticks.size !== 0) {
@@ -193,6 +194,10 @@ export default class LiveApi {
 
     onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
+
+        if (json.msg_type === 'authorize' && this.onAuth) {
+            this.sendBufferedSends();
+        }
 
         if (!json.error) {
             if (json.msg_type === 'authorize' && this.onAuth) {
