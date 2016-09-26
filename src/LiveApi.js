@@ -124,12 +124,6 @@ export default class LiveApi {
             this.onAuth = () => {};
         };
 
-        if (token) {
-            this.authorize(token);
-        } else {
-            this.sendBufferedSends();
-        }
-
         if (ticks.size !== 0) {
             this.subscribeToTicks([...ticks]);
         }
@@ -139,6 +133,14 @@ export default class LiveApi {
         candlesHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
 
         proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
+
+        if (token) {
+            this.authorize(token);
+        } else {
+            // this need to be called last as it mayb mutate
+            // ticksHistory, candlesHistory and proposals
+            this.sendBufferedSends();
+        }
     }
 
     changeLanguage = (ln: string): void => {
