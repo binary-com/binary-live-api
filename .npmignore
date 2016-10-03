@@ -1,8 +1,0 @@
-.DS_Store
-*.log
-src
-test
-demos
-examples
-coverage
-node_modules

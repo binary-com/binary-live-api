@@ -1,9 +1,0 @@
-instrumentation:
-  root: src
-  include-all-sources: true
-  verbose: true
-  excludes:
-    - index.js
-    - __tests__/*.js
-reporting:
-  dir: "coverage"
