@@ -15,9 +15,8 @@ gulp.task('build', function(callback) {
         var v = pkg.version;
 
         gulp.src(['lib/*.*'])
-            .pipe(gulp.dest('lib/' + v));
-
-        callback();
+            .pipe(gulp.dest('lib/' + v))
+            .pipe(callback());
     });
 });
 
