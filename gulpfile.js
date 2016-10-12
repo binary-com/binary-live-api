@@ -25,3 +25,8 @@ gulp.task('deploy', ['build'], function () {
     return gulp.src("./lib/**/*")
         .pipe(gh({ force: true }));
 });
+
+gulp.task('deploy-prod', ['build'], function () {
+    return gulp.src("./lib/**/*")
+        .pipe(gh({ force: true, origin: 'upstream' }));
+});
