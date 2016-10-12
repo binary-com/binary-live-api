@@ -6,3 +6,4 @@ lib
 coverage
 demos/node/dist
 demos/advanced/dist
+.publish
