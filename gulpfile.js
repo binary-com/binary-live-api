@@ -12,21 +12,22 @@ gulp.task('build', function(callback) {
         if(err) throw new gutil.PluginError("webpack", err);
         gutil.log("[webpack]", stats.toString());
 
-        var v = pkg.version;
-
-        gulp.src(['lib/*.*'])
-            .pipe(gulp.dest('lib/' + v));
-
         callback();
     });
 });
 
-gulp.task('deploy', ['build'], function () {
+gulp.task('versioning', ['build'], function () {
+    var v = pkg.version;
+    return gulp.src(['lib/*.*'])
+        .pipe(gulp.dest('lib/' + v));
+});
+
+gulp.task('deploy', ['versioning'], function () {
     return gulp.src("./lib/**/*")
         .pipe(gh({ force: true }));
 });
 
-gulp.task('deploy-prod', ['build'], function () {
+gulp.task('deploy-prod', ['versioning'], function () {
     return gulp.src("./lib/**/*")
         .pipe(gh({ force: true, origin: 'upstream' }));
 });

@@ -214,3 +214,7 @@ getPortfolio().then(response) {
     console.log(response);
 }
 ```
+
+## To deploy
+run `gulp deploy` to deploy library to origin/gh-pages
+run `gulp deploy-prod` to deploy library to upstream/gh-pages
