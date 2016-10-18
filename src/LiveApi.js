@@ -226,6 +226,7 @@ export default class LiveApi {
             } else {
                 streamObs.onNext(json);
             }
+            return;
         }
 
         if (!shouldIgnoreError(json.error)) {
@@ -265,7 +266,9 @@ export default class LiveApi {
 
         if (this.useRx) {
             const obs = Observable.create(observer => {
-                if (json.subscribe) {
+                // if call is an subscription, store it in uncompleteStreamObs
+                // ticks is a special case that's a stream without subscribe keyword
+                if (json.subscribe || json.ticks) {
                     this.uncompleteStreamObs[reqId] = observer;
                 } else {
                     this.uncompleteOneTimeObs[reqId] = observer;
