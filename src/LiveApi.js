@@ -1,3 +1,4 @@
+import { Observable } from 'rx-lite';
 import { getUniqueId } from 'binary-utils';
 import LiveEvents from './LiveEvents';
 import ServerError from './ServerError';
@@ -30,12 +31,17 @@ export default class LiveApi {
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive } = initParams || {};
+        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
         this.sendSpy = sendSpy;
+
+        if (useRx) {
+            console.log('You have turn rx on, note this is an experimental feature and we do not encourage usage in production');
+        }
+        this.useRx = useRx;
 
         if (keepAlive) {
             setInterval(() => this.ping(), 60 * 1000);
@@ -51,6 +57,11 @@ export default class LiveApi {
 
         this.events = new LiveEvents();
         this.apiState = new ApiState();
+
+        if (useRx) {
+            this.uncompleteOneTimeObs = {};
+            this.uncompleteStreamObs = {};
+        }
 
         this.bindCallsAndStateMutators();
 
@@ -194,6 +205,40 @@ export default class LiveApi {
         return Promise.resolve();
     }
 
+    publishToObservables = (json: Object): void => {
+        if (typeof json.req_id === 'undefined') {
+            return;
+        }
+
+        const reqId = json.req_id.toString();
+
+        const onetimeObs = this.uncompleteOneTimeObs[reqId];
+
+        const streamObs = this.uncompleteStreamObs[reqId];
+
+        if (!onetimeObs && !streamObs) {
+            return;
+        }
+
+        if (!json.error) {
+            if (onetimeObs) {
+                onetimeObs.onNext(json);
+                onetimeObs.onCompleted();
+            } else {
+                streamObs.onNext(json);
+            }
+        }
+
+        if (!shouldIgnoreError(json.error)) {
+
+            if (onetimeObs) {
+                onetimeObs.onError(new ServerError(json));
+            } else {
+                streamObs.onError(new ServerError(json));
+            }
+        }
+    }
+
     onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
 
@@ -210,15 +255,35 @@ export default class LiveApi {
             this.events.emit('error', json);
         }
 
+        if (this.useRx) {
+            return this.publishToObservables(json);
+        }
+
         return this.resolvePromiseForResponse(json);
     }
 
-    generatePromiseForRequest = (json: Object): LivePromise => {
+    generatePromiseOrObservable = (json: Object): LivePromise => {
         const reqId = json.req_id.toString();
 
-        return new Promise((resolve, reject) => {
-            this.unresolvedPromises[reqId] = { resolve, reject };
-        });
+        if (this.useRx) {
+            const obs = Observable.create(observer => {
+                if (json.subscribe) {
+                    this.uncompleteStreamObs[reqId] = observer;
+                } else {
+                    this.uncompleteOneTimeObs[reqId] = observer;
+                }
+
+                return () => {
+                    delete this.uncompleteOneTimeObs[reqId];
+                    delete this.uncompleteStreamObs[reqId];
+                }
+            });
+            return obs.publish();       // use hot observables
+        } else {
+            return new Promise((resolve, reject) => {
+                this.unresolvedPromises[reqId] = { resolve, reject };
+            });
+        }
     }
 
     sendAndUpdateState = function (callName: string, ...param: Object): ?LivePromise {
@@ -244,17 +309,26 @@ export default class LiveApi {
         }
 
         if (typeof json.req_id !== 'undefined') {
-            return this.generatePromiseForRequest(json).then(r => {
+            // Set the stream id into ApiState so that we can unsubscribe later
+            // TODO: hackish and need redo, this depends on object identity to works!!!
+            const setState = r => {
                 if (!this.apiState[callName]) return r;
 
-                // TODO: hackish and need redo, this depends on object identity to works!!!
                 if (r.proposal_open_contract && r.proposal_open_contract.id) {
                     this.apiState[callName](...param, r.proposal_open_contract.id);
                 } else if (r.proposal && r.proposal.id) {
                     this.apiState[callName](...param, r.proposal.id);
                 }
                 return r;
-            });
+            };
+
+            if (this.useRx) {
+                const connectableObs = this.generatePromiseOrObservable(json);
+                connectableObs.take(1).forEach(setState);
+                return connectableObs;
+            }
+
+            return this.generatePromiseOrObservable(json).then(setState);
         }
 
         return undefined;
@@ -294,7 +368,7 @@ export default class LiveApi {
         }
 
         if (typeof json.req_id !== 'undefined') {
-            return this.generatePromiseForRequest(json);
+            return this.generatePromiseOrObservable(json);
         }
 
         return undefined;
