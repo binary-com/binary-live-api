@@ -50,6 +50,32 @@ api.events.on('portfolio', function(data) {
 
 For all available calls, please check [here](docs/networkcalls.md)
 
+## Experimental feature (Not for production)
+support [RxJs](https://github.com/Reactive-Extensions/RxJS)
+
+User can opt to use observables API instead of Promise API by passing `useRx = true` in constructor, like below
+
+```
+var api = new LiveApi({ useRx: true });
+api.ping()      // return Observable, instead of Promise
+```
+
+No more global events ~!! as Stream is now modelled as observables, you can pass it around, instead of listening to global event.
+This will allow better composition of streams, right now it only include rx.lite, thus not all observables operator are supported,
+all supported operators can be check [here](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/libraries/lite/rx.lite.md)
+
+Example
+
+```
+var api = new LiveApi({ useRx: true });
+var r100TickStream = api.subscribeToTicks('R_100');
+
+// silly example, but to illustrate you can now operate on them independently
+var epochs = r100TickStream.map(function(json){return json.tick.epoch});
+var quotes = r100TickStream.map(function(json){return json.tick.quote});
+
+```
+
 ## To deploy as library on gh pages
 run `gulp deploy` to deploy library to origin/gh-pages
 

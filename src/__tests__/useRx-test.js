@@ -5,7 +5,7 @@ import ws from 'ws';
 import LiveApi from '../LiveApi';
 
 
-describe.only('use rx', () => {
+describe('use rx', () => {
     const apiWithRX = new LiveApi({ websocket: ws, useRx: true });
 
     it('should return observable for any call', cb => {
@@ -35,7 +35,9 @@ describe.only('use rx', () => {
             return newAvg;
         }, 0);
 
-        avgPerTick.take(3).subscribe(avg => console.log(avg), () => {}, () => cb());
+        avgPerTick.take(3).subscribe(avg => {
+            expect(avg).to.be.a('number');
+        }, () => {}, () => cb());
         stream.connect();
     });
 });
