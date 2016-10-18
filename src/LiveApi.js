@@ -276,7 +276,10 @@ export default class LiveApi {
                     delete this.uncompleteStreamObs[reqId];
                 };
             });
-            return obs.publish();       // use hot observables
+
+            const published = obs.publish();
+
+            return published;       // use hot observables
         }
 
         return new Promise((resolve, reject) => {
