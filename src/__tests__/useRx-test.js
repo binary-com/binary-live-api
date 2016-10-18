@@ -2,10 +2,9 @@ import { Observable } from 'rx-lite';
 import { expect } from 'chai';
 import 'babel-polyfill';
 import ws from 'ws';
-import token from './test-token';
 import LiveApi from '../LiveApi';
 
-describe.only('use rx', () => {
+describe('use rx', () => {
     const apiWithRX = new LiveApi({ websocket: ws, appId: 1089, useRx: true });
 
     it('should return observable for any call', cb => {
