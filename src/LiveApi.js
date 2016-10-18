@@ -31,16 +31,15 @@ export default class LiveApi {
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
+        const { apiUrl = defaultApiUrl, language = 'en', appId = 0,
+            sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
         this.sendSpy = sendSpy;
 
-        if (useRx) {
-            console.log('You have turn rx on, note this is an experimental feature and we do not encourage usage in production');
-        }
+        // experimental: use at your own risk
         this.useRx = useRx;
 
         if (keepAlive) {
@@ -230,7 +229,6 @@ export default class LiveApi {
         }
 
         if (!shouldIgnoreError(json.error)) {
-
             if (onetimeObs) {
                 onetimeObs.onError(new ServerError(json));
             } else {
@@ -276,14 +274,14 @@ export default class LiveApi {
                 return () => {
                     delete this.uncompleteOneTimeObs[reqId];
                     delete this.uncompleteStreamObs[reqId];
-                }
+                };
             });
             return obs.publish();       // use hot observables
-        } else {
-            return new Promise((resolve, reject) => {
-                this.unresolvedPromises[reqId] = { resolve, reject };
-            });
         }
+
+        return new Promise((resolve, reject) => {
+            this.unresolvedPromises[reqId] = { resolve, reject };
+        });
     }
 
     sendAndUpdateState = function (callName: string, ...param: Object): ?LivePromise {
