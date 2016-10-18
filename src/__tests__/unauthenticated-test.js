@@ -1,10 +1,5 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import ws from 'ws';
 import LiveApi from '../LiveApi';
-
-
-chai.use(chaiAsPromised);
 
 describe('unauthenticated', () => {
     let liveApi;
@@ -86,13 +81,13 @@ describe('unauthenticated', () => {
     it('can subscribe to multiple ticks updates', () =>
         expect(
             liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100'])
-        ).to.not.throw
+        ).not.toThrow
     );
 
     it('can unsubscribe from all tick updates', () =>
         expect(
             liveApi.unsubscribeFromAllTicks()
-        ).to.not.throw
+        ).not.toThrow
     );
 
     it('can get tick history with no parameters', () =>
@@ -162,7 +157,7 @@ describe('unauthenticated', () => {
     it('can unsubscribe from all price proposal updates', () =>
         expect(
             liveApi.unsubscribeFromAllProposals()
-        ).to.not.throw
+        ).not.toThrow
     );
 
     it('can get candles for a symbol', () =>

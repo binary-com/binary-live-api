@@ -1,11 +1,6 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import 'babel-polyfill';
 import ws from 'ws';
 import token from './test-token';
 import LiveApi from '../LiveApi';
-
-chai.use(chaiAsPromised);
 
 describe('payment', async () => {
     const liveApi = new LiveApi({ websocket: ws });
@@ -20,13 +15,13 @@ describe('payment', async () => {
     it.skip('should be able to Lock Cashier', () => {
 		expect(() =>
             liveApi.setCashierLock({ lock_password: '12345768' }))
-        .to.not.throw();
+        .not.toThrow();
     });
 
     it.skip('should be able to Unlock Cashier', () => {
 		expect(() =>
             liveApi.setCashierLock({ unlock_password: '12345768' }))
-        .to.not.throw();
+        .not.toThrow();
     });
 
     it.skip('should return server error when wrong verification_code is provided', async () => {
@@ -37,7 +32,7 @@ describe('payment', async () => {
             amount: 1000,
             verification_code: 'Ag76JL9+B/g=',
         });
-        expect(response.name).to.equal('Error');
+        expect(response.name).toEqual('Error');
         expect(response.message).to.contain('Input validation failed: verification_code');
     });
 
@@ -49,7 +44,7 @@ describe('payment', async () => {
                 amount: 1000,
                 verification_code: 'Ag76JL9+B/g=',
             })
-		).to.not.throw();
+		).not.toThrow();
     });
 
     it.skip('should throw PaymentAgentTransferError where payment agent is not available', async () => {
@@ -68,7 +63,7 @@ describe('payment', async () => {
             transfer_to: 'CR100001',
             currency: 'USD',
             amount: 1000,
-        })).to.not.throw();
+        })).not.toThrow();
     });
 
     it.skip('can perform transfer between MLF and MLT accounts', () =>
@@ -79,7 +74,7 @@ describe('payment', async () => {
                 currency: 'EUR',
                 amount: 1000,
             })
-		).to.not.throw()
+		).not.toThrow()
     );
 
     it.skip('should be able to perform transfer between MLT and MLF accounts and return response', async () => {

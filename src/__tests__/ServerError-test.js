@@ -1,9 +1,4 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import 'babel-polyfill';
 import ServerError from '../ServerError';
-
-chai.use(chaiAsPromised);
 
 describe('ServerError', () => {
     it('can be thrown', () => {
@@ -30,6 +25,6 @@ describe('ServerError', () => {
         expect(str).to.contain('ServerError');
         expect(str).to.contain('some_value');
         expect(str).to.contain('Unrecognised request.');
-        expect(error.name).to.equal('UnrecognisedRequest');
+        expect(error.name).toEqual('UnrecognisedRequest');
     });
 });

@@ -1,11 +1,5 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import spies from 'chai-spies';
-chai.use(spies);
-chai.use(chaiAsPromised);
-
-import LiveApi from '../LiveApi';
 import WS from 'ws';
+import LiveApi from '../LiveApi';
 
 function sleep(ms = 0) {
     return new Promise(r => setTimeout(r, ms));
@@ -26,11 +20,11 @@ describe('resubscribe', () => {
     });
 
     it('should resubscribe all subscription after reconnect', async () => {
+        const spy = jest.fn();
         const api = new LiveApi({ websocket: WS });
 
         await api.ping();
 
-        const spy = chai.spy();
         api.events.on('tick', spy);
 
         const ticks = ['R_100'];
@@ -39,8 +33,8 @@ describe('resubscribe', () => {
         api.socket.close();
 
         await sleep(5000);
-        expect(api.apiState.getState().ticks.has('R_100')).to.equal(true);
-        expect(spy).to.have.been.called();
+        expect(api.apiState.getState().ticks.has('R_100')).toEqual(true);
+        expect(spy).toHaveBeenCalled();
     });
 
     // check if empty state, and no resubsription when new
@@ -52,6 +46,6 @@ describe('resubscribe', () => {
         const promise = api.ping();
         api.socket.close();
 
-        return promise.catch(err => expect(err.name).to.be.equal('DisconnectError'));
+        return promise.catch(err => expect(err.name).toEqual('DisconnectError'));
     });
 });

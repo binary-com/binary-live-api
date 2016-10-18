@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import LiveEvents from '../LiveEvents';
 
 describe('LiveEvents', () => {
@@ -15,13 +14,13 @@ describe('LiveEvents', () => {
     it('can subscribe to events', () => {
         expect(() =>
             liveEvents.on('message', () => {})
-        ).to.not.throw();
+        ).not.toThrow();
     });
 
     it('can emit events', () => {
         expect(() =>
             liveEvents.emit('message', {})
-        ).to.not.throw();
+        ).not.toThrow();
     });
 
     it('can receive emitted events', (done) => {

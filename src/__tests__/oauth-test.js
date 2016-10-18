@@ -1,8 +1,3 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
-import 'babel-polyfill';
-
 import { oauthUrl, oauthUrlWithLanguage, parseOAuthResponse } from '../OAuth';
 
 describe('OAuth', () => {
@@ -10,13 +5,13 @@ describe('OAuth', () => {
 
     it('should be able to get the OAuth url', () => {
         const url = oauthUrl(appId);
-        expect(url).to.contain('binary.com');
+        expect(url).toContain('binary.com');
     });
 
     it('should be able to get the OAuth url with language', () => {
         const url = oauthUrlWithLanguage(appId, 'RU');
-        expect(url).to.contain('binary.com');
-        expect(url).to.contain('RU');
+        expect(url).toContain('binary.com');
+        expect(url).toContain('RU');
     });
 
     it('should be able to parse the simplest response url', () => {
@@ -25,7 +20,7 @@ describe('OAuth', () => {
         const expected = [
             { account: 'vr123', token: 'a1-456' },
         ];
-        expect(expected).to.deep.equal(parsed);
+        expect(expected).toEqual(parsed);
     });
 
     it('should throw an exception if the url is not valid', () => {
@@ -40,7 +35,7 @@ describe('OAuth', () => {
             { account: 'cc123', token: 'a1-bob' },
             { account: 'ml123', token: 'a1-hello' },
         ];
-        expect(expected).to.deep.equal(parsed);
+        expect(expected).toEqual(parsed);
     });
 
     it('should parse actual url response', () => {
@@ -52,6 +47,6 @@ describe('OAuth', () => {
             { account: 'CR300810', token: 'a1-isZfteMh8GOxnpPUIi1rlUqepWXKW' },
             { account: 'VRTC547953', token: 'a1-LVaOlP2v56wDwE7Fv8VftJNDdIt2G' },
         ];
-        expect(expected).to.deep.equal(parsed);
+        expect(expected).toEqual(parsed);
     });
 });

@@ -290,7 +290,7 @@ export default class LiveApi {
         });
     }
 
-    sendAndUpdateState = function (callName: string, ...param: Object): ?LivePromise {
+    sendAndUpdateState = (callName: string, ...param: Object): ?LivePromise => {
         const reqId = getUniqueId();
         const actualPaylod = calls[callName](...param);
         const json = {
@@ -348,8 +348,7 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
-        console.warn('This method is deprecated, you should use high-level methods, ' +
-            'please contact us if you need help in migration');
+        console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -359,8 +358,7 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
-        console.warn('This method is deprecated, you should use high-level methods, ' +
-            'please contact us if you need help in migration');
+        console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const socketSend = () => {
           this.sendSpy(JSON.stringify(json));
           this.socket.send(JSON.stringify(json));

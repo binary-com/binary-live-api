@@ -1,10 +1,5 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import 'babel-polyfill';
 import ws from 'ws';
 import LiveApi from '../LiveApi';
-
-chai.use(chaiAsPromised);
 
 describe('custom', () => {
     let liveApi;
@@ -69,7 +64,7 @@ describe('custom', () => {
             const { isSold } = await liveApi.getDataForContract(() =>
                 liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract)
             );
-            expect(isSold).to.be.true;
+            expect(isSold).toBeTruthy();
         });
     });
 
