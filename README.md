@@ -34,6 +34,8 @@ npm install ws --save
 npm install binary-live-api --save
 ```
 
+Alternatively, you can add the library to your project with the following link: [https://liveapi.binary.com/binary-live-api.js](https://liveapi.binary.com/binary-live-api.js) - or to fix to a specific version, put the version number in the URL as follows: [https://liveapi.binary.com/27.0.0/binary-live-api.js](https://liveapi.binary.com/27.0.0/binary-live-api.js)
+
 Require the library and then pass it to LiveApi's constructor.
 
 ```
