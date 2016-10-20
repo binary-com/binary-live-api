@@ -6,7 +6,7 @@
 
 This library is a high-level abstraction over the [Binary.com Websockets API](https://developers.binary.com)
 
-Note: the master branch represents the latest version of the API. For previous versions (e.g. v2) please see the relevant branches.
+## 
 
 ## Features
 
