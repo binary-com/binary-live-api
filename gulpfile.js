@@ -23,11 +23,11 @@ gulp.task('versioning', ['build'], function () {
 });
 
 gulp.task('deploy', ['versioning'], function () {
-    return gulp.src("./lib/**/*")
+    return gulp.src(["./lib/**/*", "./CNAME"])
         .pipe(gh({ force: true }));
 });
 
 gulp.task('deploy-prod', ['versioning'], function () {
-    return gulp.src("./lib/**/*")
+    return gulp.src(["./lib/**/*", "./CNAME"])
         .pipe(gh({ force: true, origin: 'upstream' }));
 });
