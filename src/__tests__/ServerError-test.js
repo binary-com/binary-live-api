@@ -4,7 +4,7 @@ describe('ServerError', () => {
     it('can be thrown', () => {
         expect(() => {
             throw new ServerError({ error: {} });
-        }).to.throw(/ServerError/);
+        }).toThrow(/ServerError/);
     });
 
     it('contains all elements of the error response', () => {
@@ -22,9 +22,9 @@ describe('ServerError', () => {
         const error = new ServerError(errorResponse);
         const str = error.toString();
 
-        expect(str).to.contain('ServerError');
-        expect(str).to.contain('some_value');
-        expect(str).to.contain('Unrecognised request.');
+        expect(str).toContain('ServerError');
+        expect(str).toContain('some_value');
+        expect(str).toContain('Unrecognised request.');
         expect(error.name).toEqual('UnrecognisedRequest');
     });
 });

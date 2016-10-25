@@ -1,5 +1,4 @@
 import { Observable } from 'rx-lite';
-import { expect } from 'chai';
 import 'babel-polyfill';
 import ws from 'ws';
 import LiveApi from '../LiveApi';
@@ -13,7 +12,7 @@ describe('use rx', () => {
 
         obs.subscribe(
             next => {
-                expect(next.msg_type).to.equal('ping');
+                expect(next.msg_type).toEqual('ping');
             },
             err => {
 
@@ -36,7 +35,7 @@ describe('use rx', () => {
         }, 0);
 
         avgPerTick.take(3).subscribe(avg => {
-            expect(avg).to.be.a('number');
+            expect(typeof avg).toBe('number');
         }, () => {}, () => cb());
         stream.connect();
     });

@@ -1,10 +1,10 @@
-import LiveApi from '../LiveApi';
 import ws from 'ws';
+import LiveApi from '../LiveApi';
 
 describe('LiveApi', () => {
     let liveApi;
 
-    before(() => {
+    beforeAll(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 
@@ -26,7 +26,7 @@ describe('LiveApi', () => {
 
     it('using api calls returns a Promise', () => {
         const response = liveApi.ping();
-        expect(typeof response).toEqual('Promise');
+        expect(typeof response.then).toBe('function');
     });
 
     it('can send raw json', async () => {
@@ -37,6 +37,6 @@ describe('LiveApi', () => {
 
     it('sending raw json does not produce a Promise', () => {
         const response = liveApi.sendRaw({ ping: 1 });
-        expect(typeof response).toEqual('Promise');
+        expect(response).toBeUndefined();
     });
 });

@@ -6,7 +6,6 @@ function sleep(ms = 0) {
 }
 
 describe('resubscribe', () => {
-
     it('should reconnect when disconnected', async () => {
         const api = new LiveApi({ websocket: WS });
 
@@ -16,7 +15,8 @@ describe('resubscribe', () => {
 
         await sleep(5000);
 
-        expect(api.ping()).to.eventually.have.property('ping');
+        const response = await api.ping();
+        expect(response.ping).toBeTruthy();
     });
 
     it('should resubscribe all subscription after reconnect', async () => {
@@ -31,8 +31,8 @@ describe('resubscribe', () => {
         api.subscribeToTicks(ticks);
 
         api.socket.close();
+        await sleep(2000);
 
-        await sleep(5000);
         expect(api.apiState.getState().ticks.has('R_100')).toEqual(true);
         expect(spy).toHaveBeenCalled();
     });

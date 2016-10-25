@@ -1,15 +1,15 @@
 import ws from 'ws';
-import token from './test-token';
 import LiveApi from '../LiveApi';
+
+const token = 'if9yO8qFuejRCDk';
 
 describe('payment', async () => {
     const liveApi = new LiveApi({ websocket: ws });
     await liveApi.authorize(token);
 
     it('should be able to get cashierLock status', async () => {
-
 		const response = await liveApi.getCashierLockStatus();
-		expect(response).to.have.property('cashier_password');
+		expect(response.cashier_password).toBeTruthy();
     });
 
     it.skip('should be able to Lock Cashier', () => {
@@ -33,7 +33,7 @@ describe('payment', async () => {
             verification_code: 'Ag76JL9+B/g=',
         });
         expect(response.name).toEqual('Error');
-        expect(response.message).to.contain('Input validation failed: verification_code');
+        expect(response.message).toContain('Input validation failed: verification_code');
     });
 
 	it.skip('should be able to call withdrawToPaymentAgent function without an issue', () => {
@@ -54,7 +54,7 @@ describe('payment', async () => {
             currency: 'USD',
             amount: 1000,
         });
-        expect(response.message).to.eventually.contains('Payment Agents are not available on this site.'); // ???
+        expect(response.message).toContain('Payment Agents are not available on this site.');
     });
 
     it.skip('should allow payment agent perform transfer', () => {
@@ -88,6 +88,6 @@ describe('payment', async () => {
             amount: 1000,
         });
 
-        expect(response).to.have.property('transfer_between_accounts');
+        expect(response.transfer_between_accounts).toBeTruthy();
     });
 });

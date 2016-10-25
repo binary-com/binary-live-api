@@ -4,11 +4,11 @@ import LiveApi from '../LiveApi';
 describe('admin', () => {
     let liveApi;
 
-	before(() => {
+	beforeAll(() => {
 		liveApi = new LiveApi({ websocket: ws });
 	});
 
-	it('should be able to call getApiToken without an error', () => {
+	it('should be able to call getApiToken without an error', async () => {
 		expect(() =>
 			liveApi.getApiTokens()
 		).not.toThrow();
@@ -17,7 +17,7 @@ describe('admin', () => {
 	it('should be able to call deleteApiToken function without an error', () => {
 		expect(() =>
 			liveApi.deleteApiToken('token')
-		).not.toTthrow();
+		).not.toThrow();
 	});
 
 	it('should be able to call createApiToken without an issue', () => {
@@ -62,10 +62,10 @@ describe('admin', () => {
 		).not.toThrow();
 	});
 
-	it.skip('should be able to call createRealAccount function with no error', () =>
+	it.skip('should be able to call createRealAccount function with no error', async () =>
 		expect(
-			liveApi.createRealAccount({ name: 'name', username: 'username' })
-		).to.eventually.not.throw()
+			await liveApi.createRealAccount({ name: 'name', username: 'username' })
+		).not.toThrow()
 	);
 
 	it('should be able to call the function setAccountCurrency with no error', () => {

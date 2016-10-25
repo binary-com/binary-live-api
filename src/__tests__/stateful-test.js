@@ -1,11 +1,10 @@
 import WS from 'ws';
-import token from './test-token';
 import LiveApi from '../LiveApi';
 
 describe('stateful', () => {
     let liveApi;
 
-    before(async () => {
+    beforeAll(async () => {
         liveApi = new LiveApi({ websocket: WS });
         await liveApi.ping();
     });
@@ -17,14 +16,12 @@ describe('stateful', () => {
     it('initial state is empty', () => {
         const state = liveApi.apiState.getState();
 
-        expect(state.token).to.be.empty;
-        expect(state.balance).to.be.empty;
-        expect(state.allContract).to.be.empty;
-        expect(state.transactions).to.be.empty;
-        expect(state.ticks.size).to.be.empty;
-        expect(state.proposals.size).to.be.empty;
-        expect(state.ticksHistory).to.be.empty;
-        expect(state.candlesHistory).to.be.empty;
+        expect(state.token).toBeFalsy();
+        expect(state.balance).toBeFalsy();
+        expect(state.allContract).toBeFalsy();
+        expect(state.transactions).toBe(false);
+        expect(state.ticks.size).toBeFalsy();
+        expect(state.proposals.size).toBeFalsy();
     });
 
     it('after authorization token is retained', () => {

@@ -1,7 +1,7 @@
 import { oauthUrl, oauthUrlWithLanguage, parseOAuthResponse } from '../OAuth';
 
 describe('OAuth', () => {
-    let appId = 'id-ud5PPOTeBcEnkam7ArXIc4AO9e9gw';
+    const appId = 'id-ud5PPOTeBcEnkam7ArXIc4AO9e9gw';
 
     it('should be able to get the OAuth url', () => {
         const url = oauthUrl(appId);
@@ -24,7 +24,7 @@ describe('OAuth', () => {
     });
 
     it('should throw an exception if the url is not valid', () => {
-        expect(() => parseOAuthResponse('not valid')).to.throw();
+        expect(() => parseOAuthResponse('not valid')).toThrow();
     });
 
     it('should parse multipe account url', () => {

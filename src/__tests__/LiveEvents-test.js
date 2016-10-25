@@ -8,7 +8,7 @@ describe('LiveEvents', () => {
     });
 
     it('can create object', () => {
-        expect(liveEvents).to.be.ok;
+        expect(liveEvents).toBeTruthy();
     });
 
     it('can subscribe to events', () => {

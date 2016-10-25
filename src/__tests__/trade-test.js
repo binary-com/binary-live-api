@@ -1,5 +1,5 @@
-import LiveApi from '../LiveApi';
 import ws from 'ws';
+import LiveApi from '../LiveApi';
 
 describe('trade', () => {
     let liveApi;

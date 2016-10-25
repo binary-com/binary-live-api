@@ -4,131 +4,131 @@ import LiveApi from '../LiveApi';
 describe('unauthenticated', () => {
     let liveApi;
 
-    before(() => {
+    beforeAll(() => {
         liveApi = new LiveApi({ websocket: ws });
     });
 
-    it('can ping server', () =>
+    it('can ping server', async () =>
         expect(
-            liveApi.ping()
-        ).to.eventually.have.property('ping')
+            (await liveApi.ping()).ping
+        ).toBeTruthy()
     );
 
     it('can call authorize', () =>
-        expect(liveApi.authorize).to.be.ok
+        expect(liveApi.authorize).toBeTruthy()
     );
 
-    it('can not authorize with an invalid token', () =>
-        expect(
-            liveApi.authorize('invalid_token')
-        ).to.eventually.be.rejected
+    it('can not authorize with an invalid token', async () =>
+        expect(async () =>
+            await liveApi.authorize('invalid_token')
+        ).toThrow()
     );
 
-    it('can get available contracts for symbol', () =>
+    it('can get available contracts for symbol', async () =>
         expect(
-            liveApi.getContractsForSymbol('R_100')
-        ).to.eventually.have.property('contracts_for')
+            (await liveApi.getContractsForSymbol('R_100')).contracts_for
+        ).toBeTruthy()
     );
 
-    it('can get brief active symbols', () =>
+    it('can get brief active symbols', async () =>
         expect(
-            liveApi.getActiveSymbolsBrief()
-        ).to.eventually.have.property('active_symbols')
+            (await liveApi.getActiveSymbolsBrief()).active_symbols
+        ).toBeTruthy()
     );
 
-    it('can get full active symbols', () =>
+    it('can get full active symbols', async () =>
         expect(
-            liveApi.getActiveSymbolsFull()
-        ).to.eventually.have.property('active_symbols')
+            (await liveApi.getActiveSymbolsFull()).active_symbols
+        ).toBeTruthy()
     );
 
-    it('can get asset index', () =>
+    it('can get asset index', async () =>
         expect(
-            liveApi.getAssetIndex()
-        ).to.eventually.have.property('asset_index')
+            (await liveApi.getAssetIndex()).asset_index
+        ).toBeTruthy()
     );
 
-    it('must provide a parameter to getTradingTimes', () =>
+    it('must provide a parameter to getTradingTimes', async () =>
         expect(
-            liveApi.getTradingTimes(new Date())
-        ).to.eventually.have.property('trading_times')
+            (await liveApi.getTradingTimes(new Date())).trading_times
+        ).toBeTruthy()
     );
 
-    it('can get trading times', () =>
+    it('can get trading times', async () =>
         expect(
-            liveApi.getTradingTimes(new Date())
-        ).to.eventually.have.property('trading_times')
+            (await liveApi.getTradingTimes(new Date())).trading_times
+        ).toBeTruthy()
     );
 
-    it('can get residences', () =>
+    it('can get residences', async () =>
         expect(
-            liveApi.getResidences()
-        ).to.eventually.have.property('residence_list')
+            (await liveApi.getResidences()).residence_list
+        ).toBeTruthy()
     );
 
-    it('can get states for a country', () =>
+    it('can get states for a country', async () =>
         expect(
-            liveApi.getStatesForCountry('de')
-        ).to.eventually.have.property('states_list')
+            (await liveApi.getStatesForCountry('de')).states_list
+        ).toBeTruthy()
     );
 
-    it('can subscribe to tick updates', () =>
+    it('can subscribe to tick updates', async () =>
         expect(
-            liveApi.subscribeToTick('R_100')
-        ).to.eventually.have.property('tick')
+            (await liveApi.subscribeToTick('R_100')).tick
+        ).toBeTruthy()
     );
 
-    it('can subscribe to multiple ticks updates', () =>
-        expect(
-            liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100'])
-        ).not.toThrow
+    it('can subscribe to multiple ticks updates', async () =>
+        expect(async () =>
+            await liveApi.subscribeToTicks(['R_25', 'R_50', 'R_100'])
+        ).not.toThrow()
     );
 
-    it('can unsubscribe from all tick updates', () =>
-        expect(
-            liveApi.unsubscribeFromAllTicks()
-        ).not.toThrow
+    it('can unsubscribe from all tick updates', async () =>
+        expect(async () =>
+            await liveApi.unsubscribeFromAllTicks()
+        ).not.toThrow()
     );
 
-    it('can get tick history with no parameters', () =>
-        expect(
-            liveApi.getTickHistory('R_100')
-        ).to.eventually.have.property('history')
+    it('can get tick history with no parameters', async () =>
+        expect(async () =>
+            (await liveApi.getTickHistory('R_100')).history
+        ).not.toThrow()
     );
 
-    it('can get tick history with custom intervals', () =>
-        expect(
-            liveApi.getTickHistory('R_100', { end: 'latest', count: 10 })
-        ).to.eventually.have.property('history')
+    it('can get tick history with custom intervals', async () =>
+        expect(async () =>
+            (await liveApi.getTickHistory('R_100', { end: 'latest', count: 10 })).history
+        ).not.toThrow()
     );
 
-    it('can get the landing company for a country', () =>
+    it('can get the landing company for a country', async () =>
         expect(
-            liveApi.getLandingCompany('de')
-        ).to.eventually.have.property('landing_company')
+            (await liveApi.getLandingCompany('de')).landing_company
+        ).toBeTruthy()
     );
 
-    it('can get details about a landing company', () =>
+    it('can get details about a landing company', async () =>
         expect(
-            liveApi.getLandingCompanyDetails('costarica')
-        ).to.eventually.have.property('landing_company_details')
+            (await liveApi.getLandingCompanyDetails('costarica')).landing_company_details
+        ).toBeTruthy()
     );
 
-    it('can get payment agents for a country', () =>
+    it('can get payment agents for a country', async () =>
         expect(
-            liveApi.getPaymentAgentsForCountry('id')
-        ).to.eventually.have.property('paymentagent_list')
+            (await liveApi.getPaymentAgentsForCountry('id')).paymentagent_list
+        ).toBeTruthy()
     );
 
-    it('can get payout currencies', () =>
+    it('can get payout currencies', async () =>
         expect(
-            liveApi.getPayoutCurrencies()
-        ).to.eventually.have.property('payout_currencies')
+            (await liveApi.getPayoutCurrencies()).payout_currencies
+        ).toBeTruthy()
     );
 
-    it('can get price proposal for contract', () =>
+    it('can get price proposal for contract', async () =>
         expect(
-            liveApi.getPriceProposalForContract({
+            (await liveApi.getPriceProposalForContract({
                 amount: 100,
                 basis: 'payout',
                 contract_type: 'CALL',
@@ -136,13 +136,13 @@ describe('unauthenticated', () => {
                 duration: 60,
                 duration_unit: 's',
                 symbol: 'R_100',
-            })
-        ).to.eventually.have.property('proposal')
+            })).proposal
+        ).toBeTruthy()
     );
 
-    it('can subscribe to price proposal updates for contract', () =>
+    it('can subscribe to price proposal updates for contract', async () =>
         expect(
-            liveApi.subscribeToPriceForContractProposal({
+            (await liveApi.subscribeToPriceForContractProposal({
                 amount: 100,
                 basis: 'payout',
                 contract_type: 'CALL',
@@ -150,43 +150,43 @@ describe('unauthenticated', () => {
                 duration: 60,
                 duration_unit: 's',
                 symbol: 'R_100',
-            })
-        ).to.eventually.have.property('proposal')
+            })).proposal
+        ).toBeTruthy()
     );
 
-    it('can unsubscribe from all price proposal updates', () =>
-        expect(
-            liveApi.unsubscribeFromAllProposals()
-        ).not.toThrow
+    it('can unsubscribe from all price proposal updates', async () =>
+        expect(async () =>
+            await liveApi.unsubscribeFromAllProposals()
+        ).not.toThrow()
     );
 
-    it('can get candles for a symbol', () =>
+    it('can get candles for a symbol', async () =>
         expect(
-            liveApi.getCandles('R_50')
-        ).to.eventually.have.property('candles')
+            (await liveApi.getCandles('R_50')).candles
+        ).toBeTruthy()
     );
 
-    it('can get candles for last N days', () =>
+    it('can get candles for last N days', async () =>
         expect(
-            liveApi.getCandlesForLastNDays('R_50', 40)
-        ).to.eventually.have.property('candles')
+            (await liveApi.getCandlesForLastNDays('R_50', 40)).candles
+        ).toBeTruthy()
     );
 
-    it('can get server time', () =>
+    it('can get server time', async () =>
         expect(
-            liveApi.getServerTime()
-        ).to.eventually.have.property('time')
+            (await liveApi.getServerTime()).time
+        ).toBeTruthy()
     );
 
-    it('can verify email', () =>
+    it('can verify email', async () =>
         expect(
-            liveApi.verifyEmail('address@example.com', 'account_opening')
-        ).to.eventually.have.property('verify_email')
+            (await liveApi.verifyEmail('address@example.com', 'account_opening')).verify_email
+        ).toBeTruthy()
     );
 
-    it('can get website status', () =>
+    it('can get website status', async () =>
         expect(
-            liveApi.getWebsiteStatus()
-        ).to.eventually.have.property('website_status')
+            (await liveApi.getWebsiteStatus()).website_status
+        ).toBeTruthy()
     );
 });

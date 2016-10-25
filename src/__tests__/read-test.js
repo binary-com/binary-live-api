@@ -1,18 +1,19 @@
 import ws from 'ws';
-import token from './test-token';
 import LiveApi from '../LiveApi';
+
+const token = 'if9yO8qFuejRCDk';
 
 describe('read', () => {
     let liveApi;
 
-    before(() => {
+    beforeAll(() => {
         liveApi = new LiveApi({ websocket: ws, appId: 1089 });
     });
 
     it('should be able to get account limit', async () => {
         await liveApi.authorize(token);
         const response = await liveApi.getAccountLimits();
-		expect(response).to.have.property('get_limits');
+		expect(response.get_limits).toBeTruthy();
     });
 
 	it('should be able return account limits in a server response', async () => {
@@ -42,7 +43,7 @@ describe('read', () => {
 	it('should be able to get account status in a response from a server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getAccountStatus();
-		expect(response.get_account_status).to.have.any.keys('status');
+		expect(response.get_account_status.status).toBeTruthy();
 	});
 
 	it('should be able to call getSelfExclusion without an issue', () => {
@@ -66,7 +67,7 @@ describe('read', () => {
 	it('should be able to sign user out of his account', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.logOut();
-		expect(response).to.not.have.property('error');
+		expect(response.error).toBeFalsy();
 	});
 
 	it('it should be able to call getStatement function without an issue', () =>
@@ -88,7 +89,7 @@ describe('read', () => {
 	it('should be able to get a statement if logged in', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getStatement();
-        expect(response).to.have.property('statement');
+        expect(response.statement).toBeTruthy();
 	});
 
 	it('should be able to call getProfitTable without an error', () => {
@@ -100,7 +101,7 @@ describe('read', () => {
 	it('can get profitTable from the server', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.getProfitTable();
-		expect(response).to.have.property('profit_table');
+		expect(response.profit_table).toBeTruthy();
 	});
 
     it('should be able to call getRealityCheckSummary without an error', () => {
@@ -154,6 +155,6 @@ describe('read', () => {
 	it('should subscribeToOpenContract and return a server response', async () => {
 		await liveApi.authorize(token);
 		const response = await liveApi.subscribeToOpenContract();
-		expect(response.echo_req).to.have.property('subscribe');
+		expect(response.echo_req.subscribe).toBeTruthy();
 	});
 });

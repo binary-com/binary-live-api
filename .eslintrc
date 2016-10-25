@@ -9,7 +9,9 @@
   "rules": {
     "indent": [0, 4],
     "camelcase": 0,
+    "no-tabs": 0,
     "no-undef": 0,
+    "no-plusplus": 0,
     "arrow-parens": 0,
     "no-mixed-operators": 0,
     "object-property-newline": 0,
