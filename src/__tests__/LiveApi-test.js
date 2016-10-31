@@ -28,15 +28,4 @@ describe('LiveApi', () => {
         const response = liveApi.ping();
         expect(typeof response.then).toBe('function');
     });
-
-    it('can send raw json', async () => {
-        expect(() =>
-            liveApi.sendRaw({ ping: 1 })
-        ).not.toThrow();
-    });
-
-    it('sending raw json does not produce a Promise', () => {
-        const response = liveApi.sendRaw({ ping: 1 });
-        expect(response).toBeUndefined();
-    });
 });

@@ -18,12 +18,6 @@ describe('unauthenticated', () => {
         expect(liveApi.authorize).toBeTruthy()
     );
 
-    it('can not authorize with an invalid token', async () =>
-        expect(async () =>
-            await liveApi.authorize('invalid_token')
-        ).toThrow()
-    );
-
     it('can get available contracts for symbol', async () =>
         expect(
             (await liveApi.getContractsForSymbol('R_100')).contracts_for

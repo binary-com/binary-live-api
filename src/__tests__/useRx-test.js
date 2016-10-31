@@ -1,4 +1,4 @@
-import { Observable } from 'rx-lite';
+// import { Observable } from 'rx-lite';
 import 'babel-polyfill';
 import ws from 'ws';
 import LiveApi from '../LiveApi';
@@ -7,25 +7,21 @@ import LiveApi from '../LiveApi';
 describe('use rx', () => {
     const apiWithRX = new LiveApi({ websocket: ws, useRx: true });
 
-    it('should return observable for any call', cb => {
+    it('should return observable for any call', callback => {
         const obs = apiWithRX.ping();
 
         obs.subscribe(
             next => {
                 expect(next.msg_type).toEqual('ping');
             },
-            err => {
-
-            },
-            () => {
-                cb();
-            }
+            err => console.log(err), // eslint-disable-line no-console
+            callback,
         );
         obs.connect();
     });
 
     // simple example
-    it('should make stream handling easier', cb => {
+    it('should make stream handling easier', callback => {
         const stream = apiWithRX.subscribeToTick('R_100');
 
         const avgPerTick = stream.scan((avg, json, idx) => {
@@ -35,8 +31,11 @@ describe('use rx', () => {
         }, 0);
 
         avgPerTick.take(3).subscribe(avg => {
-            expect(typeof avg).toBe('number');
-        }, () => {}, () => cb());
+                expect(typeof avg).toBe('number');
+            },
+            err => console.log(err), // eslint-disable-line no-console
+            callback,
+        );
         stream.connect();
     });
 });

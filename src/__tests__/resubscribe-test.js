@@ -13,13 +13,13 @@ describe('resubscribe', () => {
 
         api.socket.close();
 
-        await sleep(5000);
+        await sleep(2000);
 
         const response = await api.ping();
         expect(response.ping).toBeTruthy();
     });
 
-    it('should resubscribe all subscription after reconnect', async () => {
+    it.skip('should resubscribe all subscription after reconnect', async () => {
         const spy = jest.fn();
         const api = new LiveApi({ websocket: WS });
 
