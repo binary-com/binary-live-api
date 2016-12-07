@@ -46,10 +46,6 @@ export const unsubscribeFromAllPortfolios = () => ({
     forget_all: 'portfolio',
 });
 
-export const unsubscribeFromAllProposalsOpenContract = () => ({
-    forget_all: 'proposal_open_contract',
-});
-
 export const getLandingCompany = (landingCompany: string) => ({
     landing_company: landingCompany,
 });
