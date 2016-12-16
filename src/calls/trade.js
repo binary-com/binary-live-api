@@ -4,9 +4,9 @@ export const buyContract = (contractId: number, price: number) => ({
 });
 
 export const buyContractParams = (params: Object, price: number) => ({
-  buy: 1,
-  price,
-  parameters: params,
+    buy: 1,
+    price,
+    parameters: params,
 });
 
 export const sellContract = (contractId: number, price: number) => ({
