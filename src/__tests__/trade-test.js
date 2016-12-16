@@ -14,6 +14,21 @@ describe('trade', () => {
         ).not.toThrow();
     });
 
+    it('can buy contract with parameters', () => {
+        let parameters = {
+            amount: 100,
+            basis: 'payout', // or 'stake'
+            contract_type: 'PUT', // or 'CALL'
+            currency: 'USD',
+            duration: 5,
+            duration_unit: 't',
+            symbol: 'frxEURUSD',
+        };
+        expect(() =>
+            liveApi.buyContract({ name: 'name', username: 'username' }, 100)
+        ).not.toThrow();
+    });
+
     it('can sell contract', () => {
         expect(() =>
             liveApi.sellContract('someid', 100)
