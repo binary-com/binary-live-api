@@ -25,7 +25,7 @@ describe('trade', () => {
             symbol: 'frxEURUSD',
         };
         expect(() =>
-            liveApi.buyContract({ name: 'name', username: 'username' }, 100)
+            liveApi.buyContract(parameters, 100)
         ).not.toThrow();
     });
 
