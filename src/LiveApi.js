@@ -22,6 +22,7 @@ export default class LiveApi {
     apiUrl: string;
     language: string;
     appId: number;
+    brand: string;
     socket: WebSocket;
     bufferedSends: Object[];
     bufferedExecutes: (() => void)[];
@@ -31,12 +32,13 @@ export default class LiveApi {
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0,
+        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, brand = '',
             sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
         this.appId = appId;
+        this.brand = brand;
         this.sendSpy = sendSpy;
 
         // experimental: use at your own risk
@@ -81,7 +83,7 @@ export default class LiveApi {
     }
 
     connect(connection: ?WebSocket): void {
-        const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}`;
+        const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}${this.brand ? `&brand=${this.brand}` : ''}`;
 
         Object.keys(this.unresolvedPromises).forEach(reqId => {
             const disconnectedError = new Error('Websocket disconnected before response received.');
