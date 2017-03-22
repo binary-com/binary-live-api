@@ -117,9 +117,12 @@ export default class LiveApi {
     disconnect = (): void => {
         this.token = '';
         this.socket.onclose = nullFunc;
-        this.socket.close();
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
+        }
     };
-
     resubscribe = (): void => {
         const {
             token,
@@ -175,7 +178,11 @@ export default class LiveApi {
             return;
         }
         this.socket.onclose = nullFunc;
-        this.socket.close();
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
+        }
         this.language = ln;
         this.connect();
     };
