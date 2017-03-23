@@ -13,8 +13,7 @@ const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
 const shouldIgnoreError = (error: Error): boolean =>
-    error.message.includes('You are already subscribed to') ||
-    error.message.includes('Input validation failed: forget');
+    error.name === 'AlreadySubscribed';
 
 export default class LiveApi {
     token: string;
