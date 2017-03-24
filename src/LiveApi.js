@@ -12,9 +12,9 @@ const nullFunc = () => {};
 const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
-const shouldIgnoreError = (error: Error): boolean => error.name === 'AlreadySubscribed';
+const shouldIgnoreError = (error: Error): boolean => error.code === 'AlreadySubscribed';
 
-const shouldRestartOnError = (error: Error): boolean => error.name === 'CallError';
+const shouldRestartOnError = (error: Error): boolean => error.code === 'CallError' || error.code === 'WrongResponse';
 
 export default class LiveApi {
     token: string;
@@ -191,7 +191,7 @@ export default class LiveApi {
         const { authorized, unauthorized } = this.resubscriptions;
 
         const resubscribe = stream => {
-            const type = Object.types(stream).find(t => t === msgType);
+            const type = Object.keys(stream).find(t => t === msgType);
 
             if (type) {
                 stream[type]();
