@@ -14,8 +14,6 @@ let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket
 
 const shouldIgnoreError = (error: Error): boolean => error.code === 'AlreadySubscribed';
 
-const shouldRestartOnError = (error: Error): boolean => error.code === 'CallError' || error.code === 'WrongResponse';
-
 export default class LiveApi {
     token: string;
     apiUrl: string;
@@ -187,21 +185,29 @@ export default class LiveApi {
         },
     };
 
-    resubscribeOnError = (msgType: string): void => {
-        const { authorized, unauthorized } = this.resubscriptions;
+    shouldResubscribeOnError = (json: Object): void => {
+        const { msg_type: msgType, error } = json;
 
-        const resubscribe = stream => {
+        if (
+            ![
+                'CallError',
+                'WrongResponse',
+                'GetProposalFailure',
+                'ProposalArrayFailure',
+                'ContractValidationError',
+            ].includes(error.code)
+        ) {
+            return;
+        }
+
+        Object.keys(this.resubscriptions).forEach(k => {
+            const stream = this.resubscriptions[k];
             const type = Object.keys(stream).find(t => t === msgType);
 
             if (type) {
                 stream[type]();
             }
-        };
-
-        resubscribe(authorized);
-        resubscribe(unauthorized);
-
-        return Promise.resolve();
+        });
     };
     changeLanguage = (ln: string): void => {
         if (ln === this.language) {
@@ -243,16 +249,15 @@ export default class LiveApi {
         const promise = this.unresolvedPromises[reqId];
 
         if (!promise) {
+            if (json.error) {
+                this.shouldResubscribeOnError(json);
+            }
             return Promise.resolve();
         }
 
         delete this.unresolvedPromises[reqId];
         if (!json.error) {
             return promise.resolve(json);
-        }
-
-        if (shouldRestartOnError(json.error)) {
-            return this.resubscribeOnError(json.msg_type);
         }
 
         if (!shouldIgnoreError(json.error)) {
