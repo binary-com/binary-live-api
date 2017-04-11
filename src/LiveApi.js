@@ -195,6 +195,7 @@ export default class LiveApi {
                 'GetProposalFailure',
                 'ProposalArrayFailure',
                 'ContractValidationError',
+                'ContractCreationFailure',
             ].includes(error.code)
         ) {
             return;
