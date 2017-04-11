@@ -206,7 +206,7 @@ export default class LiveApi {
             const type = Object.keys(stream).find(t => t === msgType);
 
             if (type) {
-                stream[type]();
+                setTimeout(() => stream[type](), 1000);
             }
         });
     };
