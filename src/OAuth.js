@@ -1,5 +1,4 @@
-export const oauthUrl = (appId: number): string =>
-    `https://www.binary.com/oauth2/authorize?app_id=${appId}`;
+export const oauthUrl = (appId: number): string => `https://www.binary.com/oauth2/authorize?app_id=${appId}`;
 
 export const oauthUrlWithLanguage = (appId: number, langCode: string): string =>
     `https://www.binary.com/oauth2/authorize?app_id=${appId}&l=${langCode}`;
@@ -21,7 +20,7 @@ export const parseOAuthResponse = (responseUrl: string): Account[] => {
     for (let i = 1; i < params.length; i += 3) {
         accounts.push({
             account: params[i],
-            token: params[i + 1],
+            token  : params[i + 1],
         });
     }
 
