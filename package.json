@@ -48,7 +48,7 @@
     "url": "https://github.com/binary-com/binary-live-api/issues"
   },
   "homepage": "https://github.com/binary-com/binary-live-api#readme",
-  "babel": {
+  "babel-cli": {
     "presets": [
       "latest",
       "stage-0"
