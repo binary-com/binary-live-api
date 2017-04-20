@@ -1,5 +1,5 @@
 export const deleteApiToken = (token: string) => ({
-    api_token: 1,
+    api_token   : 1,
     delete_token: token,
 });
 
@@ -8,15 +8,15 @@ export const getApiTokens = () => ({
 });
 
 export const createApiToken = (token: string, scopes: string[]) => ({
-    api_token: 1,
-    new_token: token,
+    api_token       : 1,
+    new_token       : token,
     new_token_scopes: scopes,
 });
 
 export const changePassword = (oldPassword: string, newPassword: string) => ({
     change_password: 1,
-    old_password: oldPassword,
-    new_password: newPassword,
+    old_password   : oldPassword,
+    new_password   : newPassword,
 });
 
 export const registerApplication = (options: Object) => ({

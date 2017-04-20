@@ -1,11 +1,11 @@
-import ws from 'ws';
+import websocket from 'ws';
 import LiveApi from '../LiveApi';
 
 describe('LiveApi', () => {
     let liveApi;
 
     beforeAll(() => {
-        liveApi = new LiveApi({ websocket: ws });
+        liveApi = new LiveApi({ websocket, appId: 1089 });
     });
 
     it('can be created', () => {
@@ -13,15 +13,11 @@ describe('LiveApi', () => {
     });
 
     it('can be connected to', () => {
-        expect(() =>
-            liveApi.connect()
-        ).not.toThrow();
+        expect(() => liveApi.connect()).not.toThrow();
     });
 
     it('can change language', () => {
-        expect(() =>
-            liveApi.changeLanguage()
-        ).not.toThrow();
+        expect(() => liveApi.changeLanguage()).not.toThrow();
     });
 
     it('using api calls returns a Promise', () => {

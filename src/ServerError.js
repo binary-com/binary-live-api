@@ -1,5 +1,4 @@
 export default class ServerError extends Error {
-
     stack: any;
     error: ApiErrorResponse;
     name: string;
@@ -8,7 +7,7 @@ export default class ServerError extends Error {
     constructor(errorObj: ApiErrorResponse) {
         super(errorObj);
 
-        this.stack = (new Error()).stack;
+        this.stack = new Error().stack;
         this.error = errorObj;
         this.name = errorObj.error.code;
 

@@ -37,7 +37,7 @@ export const getRealityCheckSummary = () => ({
 });
 
 export const subscribeToBalance = () => ({
-    balance: 1,
+    balance  : 1,
     subscribe: 1,
 });
 
@@ -47,18 +47,18 @@ export const unsubscribeFromBalance = () => ({
 
 export const subscribeToOpenContract = (contractId: number) => ({
     proposal_open_contract: 1,
-    subscribe: 1,
-    contract_id: contractId,
+    subscribe             : 1,
+    contract_id           : contractId,
 });
 
 export const getContractInfo = (contractId: number) => ({
     proposal_open_contract: 1,
-    contract_id: contractId,
+    contract_id           : contractId,
 });
 
 export const subscribeToAllOpenContracts = () => ({
     proposal_open_contract: 1,
-    subscribe: 1,
+    subscribe             : 1,
 });
 
 export const unsubscribeFromAllOpenContracts = () => ({
@@ -67,7 +67,7 @@ export const unsubscribeFromAllOpenContracts = () => ({
 
 export const subscribeToTransactions = () => ({
     transaction: 1,
-    subscribe: 1,
+    subscribe  : 1,
 });
 
 export const unsubscribeFromTransactions = () => ({

@@ -77,7 +77,7 @@ export const getPriceProposalForContract = (options: Object) => ({
 });
 
 export const subscribeToPriceForContractProposal = (options: Object) => ({
-    proposal: 1,
+    proposal : 1,
     subscribe: 1,
     ...options,
 });
@@ -105,17 +105,17 @@ export const getTickHistory = (symbol: string, options: Object) => ({
 
 export const getCandles = (symbol: string, options: Object) => ({
     ticks_history: symbol,
-    style: 'candles',
+    style        : 'candles',
     ...(options || { end: 'latest' }),
 });
 
 export const getCandlesForLastNDays = (symbol: string, ndays: number) => ({
     ticks_history: symbol,
-    style: 'candles',
-    start: Math.floor(Date.now() / 1000) - (ndays - 1) * 60 * 60 * 24,
-    end: 'latest',
-    granularity: 60 * 60 * 24,
-    count: 30,
+    style        : 'candles',
+    start        : Math.floor(Date.now() / 1000) - (ndays - 1) * 60 * 60 * 24,
+    end          : 'latest',
+    granularity  : 60 * 60 * 24,
+    count        : 30,
 });
 
 export const getServerTime = () => ({

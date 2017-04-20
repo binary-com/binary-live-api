@@ -14,10 +14,9 @@ let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket
 
 const shouldIgnoreError = (error: Error): boolean =>
     error.message.includes('You are already subscribed to') ||
-        error.message.includes('Input validation failed: forget');
+    error.message.includes('Input validation failed: forget');
 
 export default class LiveApi {
-
     token: string;
     apiUrl: string;
     language: string;
@@ -25,15 +24,24 @@ export default class LiveApi {
     brand: string;
     socket: WebSocket;
     bufferedSends: Object[];
-    bufferedExecutes: (() => void)[];
+    bufferedExecutes: () => void[];
     unresolvedPromises: Object;
     events: LiveEvents;
     onAuth: () => void;
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, brand = '',
-            sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
+        const {
+            apiUrl = defaultApiUrl,
+            language = 'en',
+            appId = 0,
+            brand = '',
+            sendSpy = () => {},
+            websocket,
+            connection,
+            keepAlive,
+            useRx = false,
+        } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
@@ -71,14 +79,11 @@ export default class LiveApi {
 
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
-                this[callName] =
-                    (...params) => this.sendAndUpdateState(callName, ...params);
-            }
-        );
+            this[callName] = (...params) => this.sendAndUpdateState(callName, ...params);
+        });
 
         Object.keys(customCalls).forEach(callName => {
-            this[callName] = (...params) =>
-                customCalls[callName](this, ...params);      // seems to be a good place to do some simple cache
+            this[callName] = (...params) => customCalls[callName](this, ...params); // seems to be a good place to do some simple cache
         });
     }
 
@@ -107,17 +112,26 @@ export default class LiveApi {
     onOpen = (): void => {
         this.resubscribe();
         this.executeBufferedExecutes();
-    }
+    };
 
     disconnect = (): void => {
         this.token = '';
         this.socket.onclose = nullFunc;
         this.socket.close();
-    }
+    };
 
     resubscribe = (): void => {
-        const { token, contracts, balance, allContract, candlesHistory,
-            transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
+        const {
+            token,
+            contracts,
+            balance,
+            allContract,
+            candlesHistory,
+            transactions,
+            ticks,
+            ticksHistory,
+            proposals,
+        } = this.apiState.getState();
 
         this.onAuth = () => {
             if (balance) {
@@ -154,7 +168,7 @@ export default class LiveApi {
             // ticksHistory, candlesHistory and proposals
             this.sendBufferedSends();
         }
-    }
+    };
 
     changeLanguage = (ln: string): void => {
         if (ln === this.language) {
@@ -164,24 +178,24 @@ export default class LiveApi {
         this.socket.close();
         this.language = ln;
         this.connect();
-    }
+    };
 
-    isReady = (): boolean =>
-        !!this.socket && this.socket.readyState === 1;
+    isReady = (): boolean => !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        if (this.isReady()) {                           // TODO: test fail without this check, find out why!!??
+        if (this.isReady()) {
+            // TODO: test fail without this check, find out why!!??
             while (this.bufferedSends.length > 0) {
                 this.bufferedSends.shift()();
             }
         }
-    }
+    };
 
     executeBufferedExecutes = (): void => {
         while (this.bufferedExecutes.length > 0) {
             this.bufferedExecutes.shift()();
         }
-    }
+    };
 
     resolvePromiseForResponse = (json: Object): LivePromise => {
         if (typeof json.req_id === 'undefined') {
@@ -205,7 +219,7 @@ export default class LiveApi {
         }
 
         return Promise.resolve();
-    }
+    };
 
     publishToObservables = (json: Object): void => {
         if (typeof json.req_id === 'undefined') {
@@ -239,7 +253,7 @@ export default class LiveApi {
                 streamObs.onError(new ServerError(json));
             }
         }
-    }
+    };
 
     onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
@@ -262,7 +276,7 @@ export default class LiveApi {
         }
 
         return this.resolvePromiseForResponse(json);
-    }
+    };
 
     generatePromiseOrObservable = (json: Object): LivePromise => {
         const reqId = json.req_id.toString();
@@ -285,13 +299,13 @@ export default class LiveApi {
 
             const published = obs.publish();
 
-            return published;       // use hot observables
+            return published; // use hot observables
         }
 
         return new Promise((resolve, reject) => {
             this.unresolvedPromises[reqId] = { resolve, reject };
         });
-    }
+    };
 
     sendAndUpdateState = (callName: string, ...param: Object): ?LivePromise => {
         const reqId = getUniqueId();
@@ -339,7 +353,7 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
+    };
 
     execute = (func: () => void): void => {
         if (this.isReady()) {
@@ -347,7 +361,7 @@ export default class LiveApi {
         } else {
             this.bufferedExecutes.push(func);
         }
-    }
+    };
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
@@ -357,14 +371,14 @@ export default class LiveApi {
             req_id: reqId,
             ...json,
         });
-    }
+    };
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
         console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const socketSend = () => {
-          this.sendSpy(JSON.stringify(json));
-          this.socket.send(JSON.stringify(json));
+            this.sendSpy(JSON.stringify(json));
+            this.socket.send(JSON.stringify(json));
         };
         if (this.isReady()) {
             socketSend();
@@ -377,5 +391,5 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
+    };
 }

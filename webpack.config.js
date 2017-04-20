@@ -3,9 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     devtool: 'source-map',
-    entry: [
-        './src/index.js',
-    ],
+    entry: ['./src/index.js'],
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
@@ -14,20 +12,23 @@ module.exports = {
         }),
     ],
     module: {
-        loaders: [{
-            test: /\.js$/,
-            loader: 'babel-loader',
-            include: path.join(__dirname, 'src'),
-        }, {
-            test: /\.js$/,
-            loader: 'eslint-loader',
-            include: path.join(__dirname, 'src'),
-        }],
+        loaders: [
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                include: path.join(__dirname, 'src'),
+            },
+            {
+                test: /\.js$/,
+                loader: 'eslint-loader',
+                include: path.join(__dirname, 'src'),
+            },
+        ],
     },
     output: {
         library: 'binary-live-api',
         libraryTarget: 'umd',
-        path: 'lib',
+        path: path.resolve(__dirname, 'lib'),
         filename: 'binary-live-api.js',
     },
 };

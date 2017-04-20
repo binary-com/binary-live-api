@@ -1,11 +1,11 @@
-import WS from 'ws';
+import websocket from 'ws';
 import LiveApi from '../LiveApi';
 
 describe('stateful', () => {
     let liveApi;
 
     beforeAll(async () => {
-        liveApi = new LiveApi({ websocket: WS });
+        liveApi = new LiveApi({ websocket, appId: 1089 });
         await liveApi.ping();
     });
 
@@ -106,23 +106,25 @@ describe('stateful', () => {
     });
 
     it('unsubscribeById should remove corresponding id', async () => {
-        await liveApi.subscribeToPriceForContractProposal({
-            amount: 100,
-            basis: 'payout',
-            contract_type: 'CALL',
-            currency: 'USD',
-            duration: 60,
-            duration_unit: 's',
-            symbol: 'R_100',
-        }).then(r => {
-            const id = r.proposal.id;
+        await liveApi
+            .subscribeToPriceForContractProposal({
+                amount       : 100,
+                basis        : 'payout',
+                contract_type: 'CALL',
+                currency     : 'USD',
+                duration     : 60,
+                duration_unit: 's',
+                symbol       : 'R_100',
+            })
+            .then(r => {
+                const id = r.proposal.id;
 
-            const stateBefore = liveApi.apiState.getState();
-            expect(stateBefore.proposals.size).toEqual(1);
-            liveApi.unsubscribeByID(id);
+                const stateBefore = liveApi.apiState.getState();
+                expect(stateBefore.proposals.size).toEqual(1);
+                liveApi.unsubscribeByID(id);
 
-            const stateAfter = liveApi.apiState.getState();
-            expect(stateAfter.proposals.size).toEqual(0);
-        });
+                const stateAfter = liveApi.apiState.getState();
+                expect(stateAfter.proposals.size).toEqual(0);
+            });
     });
 });

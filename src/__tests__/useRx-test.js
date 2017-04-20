@@ -1,11 +1,10 @@
 // import { Observable } from 'rx-lite';
 import 'babel-polyfill';
-import ws from 'ws';
+import websocket from 'ws';
 import LiveApi from '../LiveApi';
 
-
 describe('use rx', () => {
-    const apiWithRX = new LiveApi({ websocket: ws, useRx: true });
+    const apiWithRX = new LiveApi({ websocket, useRx: true, appId: 1089 });
 
     it('should return observable for any call', callback => {
         const obs = apiWithRX.ping();
@@ -15,7 +14,7 @@ describe('use rx', () => {
                 expect(next.msg_type).toEqual('ping');
             },
             err => console.log(err), // eslint-disable-line no-console
-            callback,
+            callback
         );
         obs.connect();
     });
@@ -26,15 +25,16 @@ describe('use rx', () => {
 
         const avgPerTick = stream.scan((avg, json, idx) => {
             const currentVal = +json.tick.quote;
-            const newAvg = ((avg * idx) + currentVal) / (idx + 1);
+            const newAvg = (avg * idx + currentVal) / (idx + 1);
             return newAvg;
         }, 0);
 
-        avgPerTick.take(3).subscribe(avg => {
+        avgPerTick.take(2).subscribe(
+            avg => {
                 expect(typeof avg).toBe('number');
             },
             err => console.log(err), // eslint-disable-line no-console
-            callback,
+            callback
         );
         stream.connect();
     });

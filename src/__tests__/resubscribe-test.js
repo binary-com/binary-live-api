@@ -1,4 +1,4 @@
-import WS from 'ws';
+import websocket from 'ws';
 import LiveApi from '../LiveApi';
 
 function sleep(ms = 0) {
@@ -7,11 +7,15 @@ function sleep(ms = 0) {
 
 describe('resubscribe', () => {
     it('should reconnect when disconnected', async () => {
-        const api = new LiveApi({ websocket: WS });
+        const api = new LiveApi({ websocket, appId: 1089 });
 
         await api.ping();
 
-        api.socket.close();
+        try {
+            api.socket.close();
+        } catch (e) {
+            // ignore error
+        }
 
         await sleep(2000);
 
@@ -21,7 +25,7 @@ describe('resubscribe', () => {
 
     it.skip('should resubscribe all subscription after reconnect', async () => {
         const spy = jest.fn();
-        const api = new LiveApi({ websocket: WS });
+        const api = new LiveApi({ websocket, appId: 1089 });
 
         await api.ping();
 
@@ -30,7 +34,12 @@ describe('resubscribe', () => {
         const ticks = ['R_100'];
         api.subscribeToTicks(ticks);
 
-        api.socket.close();
+        try {
+            api.socket.close();
+        } catch (e) {
+            // ignore error
+        }
+
         await sleep(2000);
 
         expect(api.apiState.getState().ticks.has('R_100')).toEqual(true);
@@ -40,11 +49,18 @@ describe('resubscribe', () => {
     // check if empty state, and no resubsription when new
     // check for specific resubsriptions
 
-    it('should reject promise with DisconnectError when socket disconnected before response received', () => {
-        const api = new LiveApi({ websocket: WS });
+    it('should reject promise with DisconnectError when socket disconnected before response received', async () => {
+        const api = new LiveApi({ websocket, appId: 1089 });
+
+        await sleep(2000);
 
         const promise = api.ping();
-        api.socket.close();
+
+        try {
+            api.socket.close();
+        } catch (e) {
+            // ignore error
+        }
 
         return promise.catch(err => expect(err.name).toEqual('DisconnectError'));
     });

@@ -1,13 +1,13 @@
 const getInitialState = () => ({
-    token: undefined,
-    balance: false,
-    contracts: new Set(),
-    allContract: false,
-    transactions: false,
-    ticks: new Set(),
-    ticksHistory: new Map(),
-    candlesHistory: new Map(),
-    proposals: new Set(),
+    token          : undefined,
+    balance        : false,
+    contracts      : new Set(),
+    allContract    : false,
+    transactions   : false,
+    ticks          : new Set(),
+    ticksHistory   : new Map(),
+    candlesHistory : new Map(),
+    proposals      : new Set(),
     streamIdMapping: new Map(),
 });
 
@@ -26,7 +26,6 @@ export default class ApiState {
         this.state.token = token;
     };
 
-
     subscribeToBalance = () => {
         this.state.balance = true;
     };
@@ -34,7 +33,6 @@ export default class ApiState {
     unsubscribeFromBalance = () => {
         this.state.balance = false;
     };
-
 
     subscribeToOpenContract = (contractId: string, streamId: string) => {
         if (streamId) {
@@ -46,12 +44,11 @@ export default class ApiState {
     unsubscribeFromAllProposalsOpenContract = () => {
         this.state.contracts.clear();
         this.state.allContract = false;
-    }
+    };
 
     subscribeToAllOpenContracts = () => {
         this.state.allContract = true;
     };
-
 
     subscribeToTransactions = () => {
         this.state.transactions = true;
@@ -60,7 +57,6 @@ export default class ApiState {
     unsubscribeFromTransactions = () => {
         this.state.transactions = false;
     };
-
 
     subscribeToTick = (symbol: string) => {
         this.state.ticks.add(symbol);
@@ -73,11 +69,11 @@ export default class ApiState {
     unsubscribeFromAllTicks = () => {
         this.state.ticks.clear();
         this.state.ticksHistory.clear();
-    }
+    };
 
     unsubscribeFromAllCandles = () => {
         this.state.candlesHistory.clear();
-    }
+    };
 
     getTickHistory = (symbol: string, params: Object) => {
         if (params && params.subscribe === 1) {
@@ -100,10 +96,9 @@ export default class ApiState {
         this.state.proposals.clear();
     };
 
-
     // special care needed to forget subscription, as backends rely on
     // and id instead of more natural keys like symbol and payload
-    unsubscribeByID = (id) => {
+    unsubscribeByID = id => {
         this.state.streamIdMapping.forEach((payload, streamId) => {
             if (streamId === id) {
                 this.state.contracts.delete(payload);
@@ -111,5 +106,5 @@ export default class ApiState {
             }
         });
         this.state.streamIdMapping.delete(id);
-    }
+    };
 }

@@ -1,41 +1,40 @@
-import ws from 'ws';
+import websocket from 'ws';
 import LiveApi from '../LiveApi';
 
 describe('custom', () => {
     let liveApi;
     const token = 'qdJ86Avvrsh0Le4';
     beforeAll(() => {
-        liveApi = new LiveApi({ websocket: ws });
+        liveApi = new LiveApi({ websocket, appId: 1089 });
     });
 
     describe('getDataForContract', () => {
         it('should get more extra ticks for non-tick-contract', async () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
-            const { ticks } = await liveApi
-                .getDataForContract(() =>
-                    liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract)
-                );
+            const { ticks } = await liveApi.getDataForContract(() =>
+                liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract)
+            );
             expect(ticks.length).toBe(165);
         });
 
         it('should get exact number of ticks for tick-contract', async () => {
             await liveApi.authorize(token);
             const tickContractID = '8818581808';
-            const { ticks } = await liveApi
-                .getDataForContract(() => liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract));
+            const { ticks } = await liveApi.getDataForContract(() =>
+                liveApi.getContractInfo(tickContractID).then(r => r.proposal_open_contract)
+            );
             expect(ticks.length).toBe(11);
         });
 
         it('should return candles if user request candles', async () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
-            const { candles } = await liveApi
-                .getDataForContract(
-                    () => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract),
-                    undefined,
-                    'candles',
-                );
+            const { candles } = await liveApi.getDataForContract(
+                () => liveApi.getContractInfo(nonTickContractID).then(r => r.proposal_open_contract),
+                undefined,
+                'candles'
+            );
             expect(candles.length).toBe(6);
             expect(candles[0].open).toBeTruthy();
             expect(candles[0].close).toBeTruthy();
@@ -47,17 +46,17 @@ describe('custom', () => {
         it('should return even if contract does not have end time', async () => {
             await liveApi.authorize(token);
             const nonTickContractID = '8686424368';
-            const { candles } = await liveApi
-                .getDataForContract(
-                    () => liveApi.getContractInfo(nonTickContractID).then(r => {
+            const { candles } = await liveApi.getDataForContract(
+                () =>
+                    liveApi.getContractInfo(nonTickContractID).then(r => {
                         const cloned = Object.assign({}, r.proposal_open_contract);
                         delete cloned.exit_tick_time;
                         delete cloned.date_expiry;
                         return cloned;
                     }),
-                    undefined,
-                    'candles',
-                );
+                undefined,
+                'candles'
+            );
             expect(candles.length).toBeLessThan(700);
             expect(candles[0].open).toBeTruthy();
             expect(candles[0].close).toBeTruthy();

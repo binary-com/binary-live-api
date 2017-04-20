@@ -16,19 +16,25 @@
     "coveralls": "^2.11.14",
     "eslint": "~3.10.2",
     "eslint-config-airbnb": "^13.0.0",
+    "eslint-config-binary": "^1.0.2",
+    "eslint-config-prettier": "^1.7.0",
     "eslint-loader": "^1.6.0",
     "eslint-plugin-import": "^2.0.1",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
+    "husky": "^0.13.3",
     "jest-cli": "^17.0.3",
+    "lint-staged": "^3.4.0",
+    "prettier": "^1.2.2",
+    "prettier-eslint-cli": "^3.3.0",
     "rimraf": "^2.5.4",
     "webpack": "^2.1.0-beta.23",
     "ws": "^1.1.1"
   },
   "scripts": {
     "clean": "rimraf lib dist",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test": "jest --forceExit",
+    "test:coverage": "jest --forceExit --coverage",
     "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "start": "webpack --watch",
     "test:eslint": "eslint src/*.js src/calls/*.js",
@@ -36,7 +42,8 @@
     "test:full": "npm run test:eslint && npm run test:coveralls",
     "build": "webpack",
     "lint": "eslint src",
-    "prepublish": "webpack"
+    "prepublish": "webpack",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -56,6 +63,12 @@
     "plugins": [
       "transform-async-to-generator",
       "transform-flow-strip-types"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier-eslint --write",
+      "git add"
     ]
   },
   "dependencies": {
