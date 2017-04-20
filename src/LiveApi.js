@@ -185,6 +185,7 @@ export default class LiveApi {
         },
     };
 
+    queuedResubscriptions = new Set();
     shouldResubscribeOnError = (json: Object): void => {
         const { msg_type: msgType, error } = json;
 
@@ -205,8 +206,12 @@ export default class LiveApi {
             const stream = this.resubscriptions[k];
             const type = Object.keys(stream).find(t => t === msgType);
 
-            if (type) {
-                setTimeout(() => stream[type](), 1000);
+            if (type && !this.queuedResubscriptions.has(type)) {
+                this.queuedResubscriptions.add(type);
+                setTimeout(() => {
+                    this.queuedResubscriptions.delete(type);
+                    stream[type]();
+                }, 5000);
             }
         });
     };
@@ -439,4 +444,3 @@ export default class LiveApi {
         return undefined;
     };
 }
-
