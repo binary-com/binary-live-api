@@ -187,19 +187,22 @@ export default class LiveApi {
 
     queuedResubscriptions = new Set();
     shouldResubscribeOnError = (json: Object): void => {
-        const { msg_type: msgType, error } = json;
+        const { msg_type: msgType, error, echo_req: { subscribe } } = json;
 
-        if (
-            ![
+        const shouldResubscribe =
+            subscribe &&
+            error &&
+            [
                 'CallError',
                 'WrongResponse',
                 'GetProposalFailure',
                 'ProposalArrayFailure',
                 'ContractValidationError',
                 'ContractCreationFailure',
-            ].includes(error.code)
-        ) {
-            return;
+            ].includes(error.code);
+
+        if (!shouldResubscribe) {
+            return false;
         }
 
         Object.keys(this.resubscriptions).forEach(k => {
@@ -211,9 +214,11 @@ export default class LiveApi {
                 setTimeout(() => {
                     this.queuedResubscriptions.delete(type);
                     stream[type]();
-                }, 5000);
+                }, 500);
             }
         });
+
+        return true;
     };
     changeLanguage = (ln: string): void => {
         if (ln === this.language) {
@@ -254,10 +259,9 @@ export default class LiveApi {
         const reqId = json.req_id.toString();
         const promise = this.unresolvedPromises[reqId];
 
+        const shouldResubscribe = this.shouldResubscribeOnError(json);
+
         if (!promise) {
-            if (json.error) {
-                this.shouldResubscribeOnError(json);
-            }
             return Promise.resolve();
         }
 
@@ -266,7 +270,7 @@ export default class LiveApi {
             return promise.resolve(json);
         }
 
-        if (!shouldIgnoreError(json.error)) {
+        if (!shouldResubscribe && !shouldIgnoreError(json.error)) {
             return promise.reject(new ServerError(json));
         }
 
