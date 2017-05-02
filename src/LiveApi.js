@@ -135,6 +135,7 @@ export default class LiveApi {
 
         this.authStream.take(1).subscribe(() => {
             Object.keys(authorized).forEach(msgType => authorized[msgType]());
+            this.sendBufferedSends();
         });
 
         Object.keys(unauthorized).forEach(msgType => unauthorized[msgType]());
