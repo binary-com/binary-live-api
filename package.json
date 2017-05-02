@@ -26,7 +26,6 @@
     "husky": "^0.13.3",
     "jest-cli": "^19.0.2",
     "lint-staged": "^3.4.0",
-    "prettier": "^1.2.2",
     "prettier-eslint-cli": "^3.3.0",
     "rimraf": "^2.6.1",
     "webpack": "^2.3.0",
