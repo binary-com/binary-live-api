@@ -238,11 +238,8 @@ export default class LiveApi {
     isReady = (): boolean => !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        if (this.isReady()) {
-            // TODO: test fail without this check, find out why!!??
-            while (this.bufferedSends.length > 0) {
-                this.bufferedSends.shift()();
-            }
+        while (this.bufferedSends.length > 0) {
+            this.bufferedSends.shift()();
         }
     };
 
