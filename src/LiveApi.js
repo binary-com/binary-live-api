@@ -188,19 +188,16 @@ export default class LiveApi {
 
     queuedResubscriptions = new Set();
     shouldResubscribeOnError = (json: Object): void => {
-        const { msg_type: msgType, error, echo_req: { subscribe } } = json;
+        const { msg_type: msgType } = json;
 
-        const shouldResubscribe =
-            subscribe &&
-            error &&
-            [
-                'CallError',
-                'WrongResponse',
-                'GetProposalFailure',
-                'ProposalArrayFailure',
-                'ContractValidationError',
-                'ContractCreationFailure',
-            ].includes(error.code);
+        const shouldResubscribe = [
+            'CallError',
+            'WrongResponse',
+            'GetProposalFailure',
+            'ProposalArrayFailure',
+            'ContractValidationError',
+            'ContractCreationFailure',
+        ].includes(error.code);
 
         if (!shouldResubscribe) {
             return false;
@@ -257,9 +254,11 @@ export default class LiveApi {
         const reqId = json.req_id.toString();
         const promise = this.unresolvedPromises[reqId];
 
-        const shouldResubscribe = this.shouldResubscribeOnError(json);
-
         if (!promise) {
+            if (json.error) {
+                this.shouldResubscribeOnError(json);
+            }
+
             return Promise.resolve();
         }
 
@@ -268,7 +267,7 @@ export default class LiveApi {
             return promise.resolve(json);
         }
 
-        if (!shouldResubscribe && !shouldIgnoreError(json.error)) {
+        if (!shouldIgnoreError(json.error)) {
             return promise.reject(new ServerError(json));
         }
 
