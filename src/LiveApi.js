@@ -188,7 +188,7 @@ export default class LiveApi {
 
     queuedResubscriptions = new Set();
     shouldResubscribeOnError = (json: Object): void => {
-        const { msg_type: msgType } = json;
+        const { msg_type: msgType, error } = json;
 
         const shouldResubscribe = [
             'CallError',

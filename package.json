@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "28.2.2",
+  "version": "28.2.3",
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
