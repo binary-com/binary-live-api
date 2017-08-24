@@ -14,7 +14,7 @@ describe('ServerError', () => {
             },
             error: {
                 message: 'Unrecognised request.',
-                code: 'UnrecognisedRequest',
+                code   : 'UnrecognisedRequest',
             },
             msg_type: 'error',
         };

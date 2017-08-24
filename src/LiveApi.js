@@ -12,12 +12,9 @@ const nullFunc = () => {};
 const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
-const shouldIgnoreError = (error: Error): boolean =>
-    error.message.includes('You are already subscribed to') ||
-        error.message.includes('Input validation failed: forget');
+const shouldIgnoreError = (error: Error): boolean => error.code === 'AlreadySubscribed';
 
 export default class LiveApi {
-
     token: string;
     apiUrl: string;
     language: string;
@@ -25,15 +22,23 @@ export default class LiveApi {
     brand: string;
     socket: WebSocket;
     bufferedSends: Object[];
-    bufferedExecutes: (() => void)[];
+    bufferedExecutes: () => void[];
     unresolvedPromises: Object;
     events: LiveEvents;
-    onAuth: () => void;
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
-        const { apiUrl = defaultApiUrl, language = 'en', appId = 0, brand = '',
-            sendSpy = () => {}, websocket, connection, keepAlive, useRx = false } = initParams || {};
+        const {
+            apiUrl = defaultApiUrl,
+            language = 'en',
+            appId = 0,
+            brand = '',
+            sendSpy = () => {},
+            websocket,
+            connection,
+            keepAlive,
+            useRx = false,
+        } = initParams || {};
 
         this.apiUrl = apiUrl;
         this.language = language;
@@ -64,6 +69,14 @@ export default class LiveApi {
             this.uncompleteStreamObs = {};
         }
 
+        this.authStream = Observable.create(observer => {
+            this.onAuth = observer;
+
+            return (): void => {
+                this.onAuth = null;
+            };
+        });
+
         this.bindCallsAndStateMutators();
 
         this.connect(connection);
@@ -71,14 +84,11 @@ export default class LiveApi {
 
     bindCallsAndStateMutators(): void {
         Object.keys(calls).forEach(callName => {
-                this[callName] =
-                    (...params) => this.sendAndUpdateState(callName, ...params);
-            }
-        );
+            this[callName] = (...params) => this.sendAndUpdateState(callName, ...params);
+        });
 
         Object.keys(customCalls).forEach(callName => {
-            this[callName] = (...params) =>
-                customCalls[callName](this, ...params);      // seems to be a good place to do some simple cache
+            this[callName] = (...params) => customCalls[callName](this, ...params); // seems to be a good place to do some simple cache
         });
     }
 
@@ -107,45 +117,28 @@ export default class LiveApi {
     onOpen = (): void => {
         this.resubscribe();
         this.executeBufferedExecutes();
-    }
+    };
 
     disconnect = (): void => {
         this.token = '';
         this.socket.onclose = nullFunc;
-        this.socket.close();
-    }
-
-    resubscribe = (): void => {
-        const { token, contracts, balance, allContract, candlesHistory,
-            transactions, ticks, ticksHistory, proposals } = this.apiState.getState();
-
-        this.onAuth = () => {
-            if (balance) {
-                this.subscribeToBalance();
-            }
-
-            if (transactions) {
-                this.subscribeToTransactions();
-            }
-
-            if (allContract) {
-                this.subscribeToAllOpenContracts();
-            }
-
-            contracts.forEach(id => this.subscribeToOpenContract(id));
-
-            this.onAuth = () => {};
-        };
-
-        if (ticks.size !== 0) {
-            this.subscribeToTicks([...ticks]);
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
         }
+    };
+    resubscribe = (): void => {
+        const { token } = this.apiState.getState();
 
-        ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
+        const { authorized, unauthorized } = this.resubscriptions;
 
-        candlesHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
+        this.authStream.take(1).subscribe(() => {
+            Object.keys(authorized).forEach(msgType => authorized[msgType]());
+            this.sendBufferedSends();
+        });
 
-        proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
+        Object.keys(unauthorized).forEach(msgType => unauthorized[msgType]());
 
         if (token) {
             this.authorize(token);
@@ -154,34 +147,104 @@ export default class LiveApi {
             // ticksHistory, candlesHistory and proposals
             this.sendBufferedSends();
         }
-    }
+    };
 
+    getInState = name => this.apiState.getState()[name];
+    resubscriptions = {
+        authorized: {
+            balance: (): void => {
+                if (this.getInState('balance')) {
+                    this.subscribeToBalance();
+                }
+            },
+            transaction: (): void => {
+                if (this.getInState('transactions')) {
+                    this.subscribeToTransactions();
+                }
+            },
+            proposal_open_contract: (): void => {
+                if (this.getInState('allContract')) {
+                    this.subscribeToAllOpenContracts();
+                }
+                this.getInState('contracts').forEach(id => this.subscribeToOpenContract(id));
+            },
+        },
+        unauthorized: {
+            tick: (): void => {
+                if (this.getInState('ticks').size !== 0) {
+                    this.subscribeToTicks([...this.getInState('ticks')]);
+                }
+
+                this.getInState('ticksHistory').forEach((param, symbol) => this.getTickHistory(symbol, param));
+            },
+            ohlc: (): void => {
+                this.getInState('candlesHistory').forEach((param, symbol) => this.getTickHistory(symbol, param));
+            },
+            proposal: (): void => {
+                this.getInState('proposals').forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
+            },
+        },
+    };
+
+    queuedResubscriptions = new Set();
+    shouldResubscribeOnError = (json: Object): void => {
+        const { msg_type: msgType, error } = json;
+
+        const shouldResubscribe = [
+            'CallError',
+            'WrongResponse',
+            'GetProposalFailure',
+            'ProposalArrayFailure',
+            'ContractValidationError',
+            'ContractCreationFailure',
+        ].includes(error.code);
+
+        if (!shouldResubscribe) {
+            return false;
+        }
+
+        Object.keys(this.resubscriptions).forEach(k => {
+            const stream = this.resubscriptions[k];
+            const type = Object.keys(stream).find(t => t === msgType);
+
+            if (type && !this.queuedResubscriptions.has(type)) {
+                this.queuedResubscriptions.add(type);
+                setTimeout(() => {
+                    this.queuedResubscriptions.delete(type);
+                    stream[type]();
+                }, 500);
+            }
+        });
+
+        return true;
+    };
     changeLanguage = (ln: string): void => {
         if (ln === this.language) {
             return;
         }
         this.socket.onclose = nullFunc;
-        this.socket.close();
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
+        }
         this.language = ln;
         this.connect();
-    }
+    };
 
-    isReady = (): boolean =>
-        !!this.socket && this.socket.readyState === 1;
+    isReady = (): boolean => !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        if (this.isReady()) {                           // TODO: test fail without this check, find out why!!??
-            while (this.bufferedSends.length > 0) {
-                this.bufferedSends.shift()();
-            }
+        while (this.bufferedSends.length > 0) {
+            this.bufferedSends.shift()();
         }
-    }
+    };
 
     executeBufferedExecutes = (): void => {
         while (this.bufferedExecutes.length > 0) {
             this.bufferedExecutes.shift()();
         }
-    }
+    };
 
     resolvePromiseForResponse = (json: Object): LivePromise => {
         if (typeof json.req_id === 'undefined') {
@@ -192,6 +255,10 @@ export default class LiveApi {
         const promise = this.unresolvedPromises[reqId];
 
         if (!promise) {
+            if (json.error) {
+                this.shouldResubscribeOnError(json);
+            }
+
             return Promise.resolve();
         }
 
@@ -205,7 +272,7 @@ export default class LiveApi {
         }
 
         return Promise.resolve();
-    }
+    };
 
     publishToObservables = (json: Object): void => {
         if (typeof json.req_id === 'undefined') {
@@ -239,19 +306,18 @@ export default class LiveApi {
                 streamObs.onError(new ServerError(json));
             }
         }
-    }
+    };
 
     onMessage = (message: MessageEvent): LivePromise => {
         const json = JSON.parse(message.data);
 
         if (json.msg_type === 'authorize' && this.onAuth) {
-            this.sendBufferedSends();
+            if (!json.error) {
+                this.onAuth.next();
+            }
         }
 
         if (!json.error) {
-            if (json.msg_type === 'authorize' && this.onAuth) {
-                this.onAuth();
-            }
             this.events.emit(json.msg_type, json);
         } else {
             this.events.emit('error', json);
@@ -262,7 +328,7 @@ export default class LiveApi {
         }
 
         return this.resolvePromiseForResponse(json);
-    }
+    };
 
     generatePromiseOrObservable = (json: Object): LivePromise => {
         const reqId = json.req_id.toString();
@@ -285,13 +351,13 @@ export default class LiveApi {
 
             const published = obs.publish();
 
-            return published;       // use hot observables
+            return published; // use hot observables
         }
 
         return new Promise((resolve, reject) => {
             this.unresolvedPromises[reqId] = { resolve, reject };
         });
-    }
+    };
 
     sendAndUpdateState = (callName: string, ...param: Object): ?LivePromise => {
         const reqId = getUniqueId();
@@ -339,7 +405,7 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
+    };
 
     execute = (func: () => void): void => {
         if (this.isReady()) {
@@ -347,7 +413,7 @@ export default class LiveApi {
         } else {
             this.bufferedExecutes.push(func);
         }
-    }
+    };
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
@@ -357,14 +423,14 @@ export default class LiveApi {
             req_id: reqId,
             ...json,
         });
-    }
+    };
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
         console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const socketSend = () => {
-          this.sendSpy(JSON.stringify(json));
-          this.socket.send(JSON.stringify(json));
+            this.sendSpy(JSON.stringify(json));
+            this.socket.send(JSON.stringify(json));
         };
         if (this.isReady()) {
             socketSend();
@@ -377,5 +443,5 @@ export default class LiveApi {
         }
 
         return undefined;
-    }
+    };
 }

@@ -1,7 +1,6 @@
 type LivEventHandler = (msgData: Object) => void;
 
 export default class LiveEvents {
-
     messageHandlers: Object;
 
     constructor() {

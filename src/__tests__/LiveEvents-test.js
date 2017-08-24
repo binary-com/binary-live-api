@@ -12,28 +12,24 @@ describe('LiveEvents', () => {
     });
 
     it('can subscribe to events', () => {
-        expect(() =>
-            liveEvents.on('message', () => {})
-        ).not.toThrow();
+        expect(() => liveEvents.on('message', () => {})).not.toThrow();
     });
 
     it('can emit events', () => {
-        expect(() =>
-            liveEvents.emit('message', {})
-        ).not.toThrow();
+        expect(() => liveEvents.emit('message', {})).not.toThrow();
     });
 
-    it('can receive emitted events', (done) => {
+    it('can receive emitted events', done => {
         liveEvents.on('message', done);
         liveEvents.emit('message');
     });
 
-    it('wildcard event handler should catch any event', (done) => {
+    it('wildcard event handler should catch any event', done => {
         liveEvents.on('*', done);
         liveEvents.emit('message');
     });
 
-    it('can have multiple handlers per message', (done) => {
+    it('can have multiple handlers per message', done => {
         let handleCount = 0;
         const handler = () => {
             handleCount++;

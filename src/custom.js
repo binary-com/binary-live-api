@@ -4,8 +4,7 @@ const responseSizeLimit = 700;
 
 const granularities: number[] = [60, 120, 180, 300, 600, 900, 1800, 3600, 7200, 14400, 28800, 86400];
 
-const ohlcDataToTicks = (candles: Candle[]): Tick[] =>
-    candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
+const ohlcDataToTicks = (candles: Candle[]): Tick[] => candles.map(data => ({ quote: +data.open, epoch: +data.epoch }));
 
 export const autoAdjustGetData = (
     api: LiveApi,
@@ -14,7 +13,7 @@ export const autoAdjustGetData = (
     end: Epoch,
     style: string = 'ticks',
     subscribe: boolean,
-    extra = {},
+    extra = {}
 ) => {
     const secs = end - start;
     const ticksCount = secs / 2;
@@ -28,59 +27,59 @@ export const autoAdjustGetData = (
         });
         finalGranularity = Math.min(86400, finalGranularity);
 
-        return api.getTickHistory(symbol,
-            {
+        return api
+            .getTickHistory(symbol, {
                 start,
                 end,
                 adjust_start_time: 1,
-                count: responseSizeLimit,
-                style: 'candles',
-                granularity: finalGranularity,
-                subscribe: subscribe ? 1 : undefined,
-            }
-        ).then(r => {
-            if (style === 'ticks') {
+                count            : responseSizeLimit,
+                style            : 'candles',
+                granularity      : finalGranularity,
+                subscribe        : subscribe ? 1 : undefined,
+            })
+            .then(r => {
+                if (style === 'ticks') {
+                    return {
+                        ...extra,
+                        ticks: ohlcDataToTicks(r.candles),
+                        symbol,
+                    };
+                }
                 return {
                     ...extra,
-                    ticks: ohlcDataToTicks(r.candles),
+                    candles: r.candles,
                     symbol,
                 };
-            }
-            return {
-                ...extra,
-                candles: r.candles,
-                symbol,
-            };
-        });
+            });
     }
-    return api.getTickHistory(symbol,
-        {
+    return api
+        .getTickHistory(symbol, {
             start,
             end,
             adjust_start_time: 1,
-            count: responseSizeLimit,
-            style: 'ticks',
-            subscribe: subscribe ? 1 : undefined,
-        }
-    ).then(r => {
-        const ticks = r.history.times.map((t, idx) => {
-            const quote = r.history.prices[idx];
-            return { epoch: +t, quote: +quote };
+            count            : responseSizeLimit,
+            style            : 'ticks',
+            subscribe        : subscribe ? 1 : undefined,
+        })
+        .then(r => {
+            const ticks = r.history.times.map((t, idx) => {
+                const quote = r.history.prices[idx];
+                return { epoch: +t, quote: +quote };
+            });
+            return {
+                ...extra,
+                ticks,
+                symbol,
+            };
         });
-        return {
-            ...extra,
-            ticks,
-            symbol,
-        };
-    });
 };
 
 export function getDataForSymbol(
-        api: LiveApi,
-        symbol: string,
-        duration: Epoch = 600,
-        style: string = 'ticks',
-        subscribe: boolean,
+    api: LiveApi,
+    symbol: string,
+    duration: Epoch = 600,
+    style: string = 'ticks',
+    subscribe: boolean
 ) {
     const end = nowAsEpoch();
     const start = end - duration;
@@ -104,54 +103,40 @@ export function getDataForContract(
     getContract,
     duration?: Epoch,
     style: string = 'ticks',
-    subscribe: boolean,
+    subscribe: boolean
 ) {
     const getAllData = () =>
-        getContract()
-            .then(contract => {
-                const symbol = contract.underlying;
-                const { start, end } = computeStartEndForContract(contract);
-                return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
-            });
+        getContract().then(contract => {
+            const symbol = contract.underlying;
+            const { start, end } = computeStartEndForContract(contract);
+            return autoAdjustGetData(api, symbol, start, end, style, subscribe, { isSold: !!contract.sell_time });
+        });
 
     if (!duration) {
         return getAllData();
     }
 
-    return getContract()
-        .then(contract => {
-            const symbol = contract.underlying;
-            const startTime = +(contract.date_start);
+    return getContract().then(contract => {
+        const symbol = contract.underlying;
+        const startTime = +contract.date_start;
 
-            // handle Contract not started yet
-            if (startTime > nowAsEpoch()) {
-                return autoAdjustGetData(
-                    api,
-                    symbol,
-                    nowAsEpoch() - 600,
-                    nowAsEpoch(),
-                    style,
-                    subscribe,
-                    { isSold: !!contract.sell_time },
-                );
-            }
+        // handle Contract not started yet
+        if (startTime > nowAsEpoch()) {
+            return autoAdjustGetData(api, symbol, nowAsEpoch() - 600, nowAsEpoch(), style, subscribe, {
+                isSold: !!contract.sell_time,
+            });
+        }
 
-            const sellT = contract.sell_time;
-            const end = sellT || nowAsEpoch();
+        const sellT = contract.sell_time;
+        const end = sellT || nowAsEpoch();
 
-            const buffer = (end - startTime) * 0.05;
+        const buffer = (end - startTime) * 0.05;
 
-            const start = Math.min(startTime - buffer, end - duration);
-            return autoAdjustGetData(
-                api,
-                symbol,
-                Math.round(start),
-                Math.round(end),
-                style,
-                subscribe,
-                { isSold: !!contract.sell_time },
-            );
+        const start = Math.min(startTime - buffer, end - duration);
+        return autoAdjustGetData(api, symbol, Math.round(start), Math.round(end), style, subscribe, {
+            isSold: !!contract.sell_time,
         });
+    });
 }
 
 export const helpers = {
