@@ -19,7 +19,7 @@ describe('read', () => {
     it('should be able return account limits in a server response', async () => {
         await liveApi.authorize(token);
         const response = await liveApi.getAccountLimits();
-        expect(response.get_limits.account_balance).toEqual(100000);
+        expect(response.get_limits.account_balance).toEqual('100000.00');
     });
 
     it('should be able to call the function getAccountSettings', () =>

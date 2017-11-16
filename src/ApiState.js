@@ -41,7 +41,7 @@ export default class ApiState {
         }
     };
 
-    unsubscribeFromAllProposalsOpenContract = () => {
+    unsubscribeFromAllOpenContracts = () => {
         this.state.contracts.clear();
         this.state.allContract = false;
     };
