@@ -7,7 +7,7 @@ import ApiState from './ApiState';
 import * as customCalls from './custom';
 
 getUniqueId(); // skip 0 value
-const defaultApiUrl = 'wss://ws.binaryws.com/websockets/v3';
+const defaultApiUrl = 'wss://frontend.binaryws.com/websockets/v3';
 const nullFunc = () => {};
 const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
