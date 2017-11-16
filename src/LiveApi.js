@@ -12,9 +12,7 @@ const nullFunc = () => {};
 const MockWebSocket = nullFunc;
 let WebSocket = typeof window !== 'undefined' ? window.WebSocket : MockWebSocket;
 
-const shouldIgnoreError = (error: Error): boolean =>
-    error.message.includes('You are already subscribed to') ||
-    error.message.includes('Input validation failed: forget');
+const shouldIgnoreError = (error: Error): boolean => error.code === 'AlreadySubscribed';
 
 export default class LiveApi {
     token: string;
@@ -27,7 +25,6 @@ export default class LiveApi {
     bufferedExecutes: () => void[];
     unresolvedPromises: Object;
     events: LiveEvents;
-    onAuth: () => void;
     apiState: ApiState;
 
     constructor(initParams: InitParams) {
@@ -71,6 +68,14 @@ export default class LiveApi {
             this.uncompleteOneTimeObs = {};
             this.uncompleteStreamObs = {};
         }
+
+        this.authStream = Observable.create(observer => {
+            this.onAuth = observer;
+
+            return (): void => {
+                this.onAuth = null;
+            };
+        });
 
         this.bindCallsAndStateMutators();
 
@@ -117,49 +122,23 @@ export default class LiveApi {
     disconnect = (): void => {
         this.token = '';
         this.socket.onclose = nullFunc;
-        this.socket.close();
-    };
-
-    resubscribe = (): void => {
-        const {
-            token,
-            contracts,
-            balance,
-            allContract,
-            candlesHistory,
-            transactions,
-            ticks,
-            ticksHistory,
-            proposals,
-        } = this.apiState.getState();
-
-        this.onAuth = () => {
-            if (balance) {
-                this.subscribeToBalance();
-            }
-
-            if (transactions) {
-                this.subscribeToTransactions();
-            }
-
-            if (allContract) {
-                this.subscribeToAllOpenContracts();
-            }
-
-            contracts.forEach(id => this.subscribeToOpenContract(id));
-
-            this.onAuth = () => {};
-        };
-
-        if (ticks.size !== 0) {
-            this.subscribeToTicks([...ticks]);
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
         }
+    };
+    resubscribe = (): void => {
+        const { token } = this.apiState.getState();
 
-        ticksHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
+        const { authorized, unauthorized } = this.resubscriptions;
 
-        candlesHistory.forEach((param, symbol) => this.getTickHistory(symbol, param));
+        this.authStream.take(1).subscribe(() => {
+            Object.keys(authorized).forEach(msgType => authorized[msgType]());
+            this.sendBufferedSends();
+        });
 
-        proposals.forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
+        Object.keys(unauthorized).forEach(msgType => unauthorized[msgType]());
 
         if (token) {
             this.authorize(token);
@@ -170,12 +149,85 @@ export default class LiveApi {
         }
     };
 
+    getInState = name => this.apiState.getState()[name];
+    resubscriptions = {
+        authorized: {
+            balance: (): void => {
+                if (this.getInState('balance')) {
+                    this.subscribeToBalance();
+                }
+            },
+            transaction: (): void => {
+                if (this.getInState('transactions')) {
+                    this.subscribeToTransactions();
+                }
+            },
+            proposal_open_contract: (): void => {
+                if (this.getInState('allContract')) {
+                    this.subscribeToAllOpenContracts();
+                }
+                this.getInState('contracts').forEach(id => this.subscribeToOpenContract(id));
+            },
+        },
+        unauthorized: {
+            tick: (): void => {
+                if (this.getInState('ticks').size !== 0) {
+                    this.subscribeToTicks([...this.getInState('ticks')]);
+                }
+
+                this.getInState('ticksHistory').forEach((param, symbol) => this.getTickHistory(symbol, param));
+            },
+            ohlc: (): void => {
+                this.getInState('candlesHistory').forEach((param, symbol) => this.getTickHistory(symbol, param));
+            },
+            proposal: (): void => {
+                this.getInState('proposals').forEach(proposal => this.subscribeToPriceForContractProposal(proposal));
+            },
+        },
+    };
+
+    queuedResubscriptions = new Set();
+    shouldResubscribeOnError = (json: Object): void => {
+        const { msg_type: msgType, error } = json;
+
+        const shouldResubscribe = [
+            'CallError',
+            'WrongResponse',
+            'GetProposalFailure',
+            'ProposalArrayFailure',
+            'ContractValidationError',
+            'ContractCreationFailure',
+        ].includes(error.code);
+
+        if (!shouldResubscribe) {
+            return false;
+        }
+
+        Object.keys(this.resubscriptions).forEach(k => {
+            const stream = this.resubscriptions[k];
+            const type = Object.keys(stream).find(t => t === msgType);
+
+            if (type && !this.queuedResubscriptions.has(type)) {
+                this.queuedResubscriptions.add(type);
+                setTimeout(() => {
+                    this.queuedResubscriptions.delete(type);
+                    stream[type]();
+                }, 500);
+            }
+        });
+
+        return true;
+    };
     changeLanguage = (ln: string): void => {
         if (ln === this.language) {
             return;
         }
         this.socket.onclose = nullFunc;
-        this.socket.close();
+        try {
+            this.socket.close();
+        } catch (e) {
+            // ignore the error
+        }
         this.language = ln;
         this.connect();
     };
@@ -183,11 +235,8 @@ export default class LiveApi {
     isReady = (): boolean => !!this.socket && this.socket.readyState === 1;
 
     sendBufferedSends = (): void => {
-        if (this.isReady()) {
-            // TODO: test fail without this check, find out why!!??
-            while (this.bufferedSends.length > 0) {
-                this.bufferedSends.shift()();
-            }
+        while (this.bufferedSends.length > 0) {
+            this.bufferedSends.shift()();
         }
     };
 
@@ -206,6 +255,10 @@ export default class LiveApi {
         const promise = this.unresolvedPromises[reqId];
 
         if (!promise) {
+            if (json.error) {
+                this.shouldResubscribeOnError(json);
+            }
+
             return Promise.resolve();
         }
 
@@ -259,13 +312,12 @@ export default class LiveApi {
         const json = JSON.parse(message.data);
 
         if (json.msg_type === 'authorize' && this.onAuth) {
-            this.sendBufferedSends();
+            if (!json.error) {
+                this.onAuth.next();
+            }
         }
 
         if (!json.error) {
-            if (json.msg_type === 'authorize' && this.onAuth) {
-                this.onAuth();
-            }
             this.events.emit(json.msg_type, json);
         } else {
             this.events.emit('error', json);
