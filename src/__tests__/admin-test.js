@@ -78,4 +78,8 @@ describe('admin', () => {
     it('should be able to call setTnCApproval function without thrwoing error', () => {
         expect(() => liveApi.setTnCApproval()).not.toThrow();
     });
+
+    it('should be able to call setTnCApproval function without thrwoing error', () => {
+        expect(() => liveApi.mt5LoginList()).not.toThrow();
+    });
 });

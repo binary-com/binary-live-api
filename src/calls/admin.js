@@ -63,3 +63,7 @@ export const setAccountSettings = (options: Object) => ({
 export const setTnCApproval = () => ({
     tnc_approval: 1,
 });
+
+export const mt5LoginList = () => ({
+    mt5_login_list: 1,
+});
