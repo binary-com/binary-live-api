@@ -29,7 +29,7 @@
     "prettier-eslint-cli": "^3.3.0",
     "rimraf": "^2.6.1",
     "webpack": "^2.3.0",
-    "ws": "^2.2.2"
+    "ws": "^7.0.0"
   },
   "scripts": {
     "clean": "rimraf lib dist",
