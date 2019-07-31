@@ -91,5 +91,8 @@
   "dependencies": {
     "binary-utils": "^4.21.0",
     "rx-lite": "^4.0.8"
+  },
+  "resolutions": {
+    "braces": "3.0.2"
   }
 }
