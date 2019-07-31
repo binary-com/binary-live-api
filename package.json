@@ -4,7 +4,7 @@
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "babel-cli": "^6.24.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.0",
     "babel-loader": "^6.4.1",
