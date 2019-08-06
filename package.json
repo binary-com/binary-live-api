@@ -4,7 +4,7 @@
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
-    "babel-cli": "^6.24.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.0",
     "babel-loader": "^6.4.1",
@@ -14,7 +14,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
-    "coveralls": "^2.12.0",
+    "coveralls": "^3.0.5",
     "eslint": "~3.19.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-config-binary": "^1.0.2",
@@ -91,5 +91,8 @@
   "dependencies": {
     "binary-utils": "^4.21.0",
     "rx-lite": "^4.0.8"
+  },
+  "resolutions": {
+    "braces": "3.0.2"
   }
 }
