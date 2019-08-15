@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "binary-live-api": "*",
-    "ws": "^1.0.1"
+    "ws": "^7.0.0"
   }
 }
