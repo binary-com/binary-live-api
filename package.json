@@ -6,7 +6,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.24.0",
-    "babel-eslint": "^7.2.0",
+    "babel-eslint": "10.0.3",
     "babel-loader": "^6.4.1",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
@@ -90,6 +90,8 @@
   },
   "dependencies": {
     "binary-utils": "^4.21.0",
+    "gulp": "^4.0.2",
+    "gulp-gh-pages": "^0.5.4",
     "rx-lite": "^4.0.8"
   },
   "resolutions": {
