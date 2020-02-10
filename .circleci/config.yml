@@ -53,7 +53,40 @@ commands:
       - run:
           name: "yarn build"
           command: yarn build
+  
+  compress:
+    description: "Compress"
+    steps:
+      - run:
+          name: "Compress"
+          command: |
+            pushd lib/
+            tar -cvf artifact.tar *
+            mv artifact.tar ${OLDPWD}/
+      - run:
+          name: "Tag commit id as artifact identifer"
+          command: echo "${CIRCLE_SHA1}" > artifact-info.txt
 
+  upload_artifact:
+    description: "upload build artifact to s3 bucket"
+    steps:
+      - s3/copy:
+          from: artifact.tar
+          to: 's3://${CONTEXT_ARTIFACT_S3_BUCKET}/${CIRCLE_PROJECT_REPONAME}/'
+          aws-access-key-id: env_CONTEXT_ARTIFACT_S3_AWS_ACCESS_KEY_ID
+          aws-secret-access-key: env_CONTEXT_ARTIFACT_S3_AWS_SECRET_ACCESS_KEY
+          aws-region: env_CONTEXT_ARTIFACT_S3_AWS_REGION
+          arguments: '--metadata "{\"x-amz-artifact-id\": \"${CIRCLE_SHA1}\" }"'
+
+  upload_checksum:
+    description: "upload artifact checksum to s3"
+    steps:
+      - s3/copy:
+          from: artifact-info.txt
+          to: 's3://${CONTEXT_ARTIFACT_S3_BUCKET}/${CIRCLE_PROJECT_REPONAME}/'
+          aws-access-key-id: env_CONTEXT_ARTIFACT_S3_AWS_ACCESS_KEY_ID
+          aws-secret-access-key: env_CONTEXT_ARTIFACT_S3_AWS_SECRET_ACCESS_KEY
+          aws-region: env_CONTEXT_ARTIFACT_S3_AWS_REGION 
   docker:
     description: "Build and Push image to docker hub"
     steps:
@@ -86,6 +119,9 @@ jobs:
       - git_checkout_from_cache
       - npm_install
       - build
+      - compress
+      - upload_artifact  # uploading the built code to s3 to create a backup of key services separate from Kubernetes deployment
+      - upload_checksum  # uploading compressed artifact checksum to cross match artifact fingerprint
       - docker
       - k8s_deploy
       
@@ -96,4 +132,5 @@ workflows:
           filters:
             branches:
               only: /^master$/
+          context: binary-frontend-deploy  # using context to retrieve shared secret from circle ci
 
