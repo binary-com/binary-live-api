@@ -95,6 +95,7 @@
     "rx-lite": "^4.0.8"
   },
   "resolutions": {
-    "braces": "3.0.2"
+    "braces": "3.0.2",
+    "acorn": "5.7.4"
   }
 }
