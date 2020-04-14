@@ -1,6 +1,6 @@
 {
   "name": "binary-live-api",
-  "version": "29.0.0",
+  "version": "29.0.1",
   "description": "Library to consume Binary.com WebSocket API",
   "main": "lib/binary-live-api.js",
   "devDependencies": {
@@ -95,6 +95,7 @@
     "rx-lite": "^4.0.8"
   },
   "resolutions": {
-    "braces": "3.0.2"
+    "braces": "3.0.2",
+    "acorn": "5.7.4"
   }
 }
