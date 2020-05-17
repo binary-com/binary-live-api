@@ -97,6 +97,7 @@
   "resolutions": {
     "braces": "3.0.2",
     "acorn": "5.7.4",
-    "lodash.template": "4.5.0"
+    "lodash.template": "4.5.0",
+    "minimist": "0.2.1"
   }
 }
