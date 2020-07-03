@@ -73,7 +73,7 @@ commands:
             git config user.name "ci-build"
       - add_ssh_keys:
           fingerprints:
-            - "35:e7:65:b0:73:62:54:bb:33:f4:bf:a9:6d:41:89:62"
+            - "01:67:4a:6d:26:9c:70:c4:1a:60:91:88:d9:dd:f0:83"
       - run:
           name: Deploy docs to gh-pages branch
           command: gh-pages -d lib --branch << parameters.target_branch >> --message '[skip ci]'
