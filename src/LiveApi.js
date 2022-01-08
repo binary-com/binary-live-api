@@ -97,9 +97,14 @@ export default class LiveApi {
         const urlPlusParams = `${this.apiUrl}?l=${this.language}&app_id=${this.appId}${optionalParam}`;
 
         Object.keys(this.unresolvedPromises).forEach(reqId => {
-            const disconnectedError = new Error('Websocket disconnected before response received.');
-            disconnectedError.name = 'DisconnectError';
-            this.unresolvedPromises[reqId].reject(disconnectedError);
+            /*
+            * Swallow connection errors, we can't do anything about them.
+            * Instead of raising, just log them to the console as a warning.
+            */
+            // const disconnectedError = new Error('Websocket disconnected before response received.');
+            // disconnectedError.name = 'DisconnectError';
+            // this.unresolvedPromises[reqId].reject(disconnectedError);
+            console.warn(`DisconnectError: Websocket disconnected before response received for req ID: ${reqId}.`);
             delete this.unresolvedPromises[reqId];
         });
 
