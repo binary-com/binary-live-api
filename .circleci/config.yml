@@ -12,16 +12,6 @@ commands:
             - source-v1-{{ .Branch }}-{{ .Revision }}
             - source-v1-{{ .Branch }}-
             - source-v1-
-      - run: 
-          name: Fetch git tags 
-          command: |
-            mkdir -p ~/.ssh
-            echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ== ' >> ~/.ssh/known_hosts
-            # Fetch tags if git cache is present
-            if [ -e /home/circleci/project/.git ]
-            then
-              git fetch origin --tags
-            fi
       - checkout
       - run:
           name: Compress git objects 
@@ -119,6 +109,25 @@ commands:
           failure_message: "Release failed for liveapi.binary.com with version *$(cat lib/version)*"
           success_message: "Release succeeded for liveapi.binary.com with version *$(cat lib/version)*"
           webhook: ${SLACK_WEBHOOK} 
+  publish_to_pages_staging:
+    description: "Publish to cloudflare pages"
+    steps:
+      - run:
+          name: "Publish to cloudflare pages (staging)"
+          command: |
+            cd lib
+            npx wrangler pages publish . --project-name=binary-live-api-pages --branch=staging
+            echo "New staging website - http://staging.cf-pages-binary-live-api.binary.com"
+            
+  publish_to_pages_production:
+    description: "Publish to cloudflare pages"
+    steps:
+      - run:
+          name: "Publish to cloudflare pages (production)"
+          command: |
+            cd lib
+            npx wrangler pages publish . --project-name=binary-live-api-pages --branch=main
+            echo "New website - http://cf-pages-binary-live-api.binary.com"
 jobs:
   build:
     docker:
@@ -127,6 +136,17 @@ jobs:
       - git_checkout_from_cache
       - npm_install
       - build
+  release_staging:
+    docker:
+      - image: circleci/node:8.10.0-stretch
+    steps:
+      - git_checkout_from_cache
+      - npm_install
+      - build
+      - persist_to_workspace:
+          root: lib
+          paths:
+            - .
   release_production:
     docker:
       - image: circleci/node:8.10.0-stretch
@@ -134,6 +154,10 @@ jobs:
       - git_checkout_from_cache
       - npm_install
       - build
+      - persist_to_workspace:
+          root: lib
+          paths:
+            - .
       - deploy:
           target_branch: "production"
       - notify_slack
@@ -145,15 +169,36 @@ jobs:
       - npm_install
       - build
       - docker_build_push
-      - k8s_deploy 
+      - k8s_deploy
       - notify_slack
+  publish_cloudflare_staging:
+    docker:
+      - image: cimg/node:18.4.0
+    steps:
+      - attach_workspace:
+          at: lib
+      - publish_to_pages_staging
+  publish_cloudflare_production:
+    docker:
+      - image: cimg/node:18.4.0
+    steps:
+      - attach_workspace:
+          at: lib
+      - publish_to_pages_production 
       
 workflows:
   build:
-     jobs:
-      - build
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /^master$/
   release:
     jobs:
+      - release_staging:
+          filters:
+            branches:
+              only: /^master$/
       - release_production:
           filters:
             branches:
@@ -161,6 +206,22 @@ workflows:
             tags:
               only: /^production.*/
       - release_aws_production:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^production.*/
+          context: binary-frontend-artifact-upload
+      - publish_cloudflare_staging:
+          requires:
+            - release_staging
+          filters:
+            branches:
+              only: /^master$/
+          context: binary-frontend-artifact-upload
+      - publish_cloudflare_production:
+          requires:
+            - release_production
           filters:
             branches:
               ignore: /.*/
