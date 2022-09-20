@@ -95,12 +95,11 @@ commands:
       - run: 
           name: Deploying to k8s cluster for service binary-liveapi
           command: |
-            TAG=${CIRCLE_TAG:-$CIRCLE_SHA1}
             export NAMESPACE=<< parameters.k8s_namespace >>
             git clone https://github.com/binary-com/devops-ci-scripts
             cd devops-ci-scripts/k8s-build_tools
             echo $CA_CRT | base64 --decode > ca.crt
-            ./release.sh << parameters.k8s_service >> ${TAG}
+            ./release.sh << parameters.k8s_service >> ${CIRCLE_SHA1}
   notify_slack:
     description: "Notify slack"
     steps:
