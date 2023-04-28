@@ -128,14 +128,6 @@ jobs:
           root: lib
           paths:
             - .
-      - notify_slack
-  release_aws_production:
-    docker:
-      - image: circleci/node:9.9.0-stretch
-    steps:
-      - checkout
-      - npm_install
-      - build
       - docker_build_push
       - k8s_deploy
       - notify_slack
@@ -167,6 +159,7 @@ workflows:
           filters:
             branches:
               only: /^master$/
+          context: binary-frontend-artifact-upload
       - publish_cloudflare_staging:
           requires:
             - release_staging
@@ -176,19 +169,13 @@ workflows:
           context: binary-frontend-artifact-upload
   release_production:
     jobs:
-      - release_aws_production:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^production.*/
-          context: binary-frontend-artifact-upload
       - release_production:
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /^production.*/
+          context: binary-frontend-artifact-upload
       - publish_cloudflare_production:
           requires:
             - release_production
