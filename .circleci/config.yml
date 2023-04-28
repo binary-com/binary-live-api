@@ -161,25 +161,12 @@ workflows:
           filters:
             branches:
               ignore: /^master$/
-  release:
+  release_staging:
     jobs:
       - release_staging:
           filters:
             branches:
               only: /^master$/
-      - release_production:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^production.*/
-      - release_aws_production:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^production.*/
-          context: binary-frontend-artifact-upload
       - publish_cloudflare_staging:
           requires:
             - release_staging
@@ -187,6 +174,21 @@ workflows:
             branches:
               only: /^master$/
           context: binary-frontend-artifact-upload
+  release_production:
+    jobs:
+      - release_aws_production:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^production.*/
+          context: binary-frontend-artifact-upload
+      - release_production:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^production.*/
       - publish_cloudflare_production:
           requires:
             - release_production
