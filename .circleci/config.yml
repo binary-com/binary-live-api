@@ -92,7 +92,7 @@ commands:
           name: "Publish to cloudflare pages (production)"
           command: |
             cd lib
-            npx wrangler pages publish . --project-name=binary-live-api-pages --branch=maintest
+            npx wrangler pages publish . --project-name=binary-live-api-pages --branch=main
             echo "New website - http://cf-pages-binary-live-api.binary.com"
 jobs:
   build:
